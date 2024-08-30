@@ -1,5 +1,6 @@
 import initTranslations from "../i18n";
 import TranslationsProvider from "@/components/TranslationsProvider";
+import { MyCalendar } from "@/components/calendar";
 
 const i18nNamespaces = ["home"];
 
@@ -11,9 +12,7 @@ export default async function Home({ params: { locale } }) {
             locale={locale}
             resources={resources}
         >
-            <>
-                <h1>{t("header")}</h1>
-            </>
+            <MyCalendar />
         </TranslationsProvider>
     );
 }

@@ -13,11 +13,25 @@ import {
     Settings,
     ShoppingCart,
     Users2,
+    Notebook,
+    Tag,
+    Plus,
+    SortAsc,
 } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+    DialogFooter,
+} from "@/components/ui/dialog";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
@@ -27,8 +41,9 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import MultipleSelector from "@/components/ui/multiple-selector";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
     Tooltip,
@@ -40,12 +55,37 @@ import {
 import favicon from "../app/[locale]/favicon.ico";
 import { ModeToggle } from "./mode-toggle";
 import { NotiToggle } from "./notification-toggle";
-import { MyCalendar } from "./calendar";
 import { NewsCard } from "./NewsCard";
-import { Breadcrumb } from "./ui/breadcrumb";
 import { DynamicBreadcrumb } from "./DynamicBreadcrumb";
 
-export function Dashboard() {
+import "@uiw/react-md-editor/markdown-editor.css";
+import "@uiw/react-markdown-preview/markdown.css";
+import dynamic from "next/dynamic";
+import { useState } from "react";
+import rehypeSanitize from "rehype-sanitize";
+import * as commands from "@uiw/react-md-editor/lib/commands";
+
+const MDEditor = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
+const tags = Array.from({ length: 50 }).map(
+    (_, i, a) => `v1.2.0-beta.${a.length - i}`
+);
+
+const OPTIONS = [
+    { label: "Nextjs", value: "nextjs" },
+    { label: "React", value: "react" },
+    { label: "Remix", value: "remix" },
+    { label: "Vite", value: "vite" },
+    { label: "Nuxt", value: "nuxt" },
+    { label: "Vue", value: "vue" },
+    { label: "Svelte", value: "svelte" },
+    { label: "Angular", value: "angular" },
+    { label: "Ember", value: "ember", disable: true },
+    { label: "Gatsby", value: "gatsby", disable: true },
+    { label: "Astro", value: "astro" },
+];
+
+export function Note() {
+    const [value, setValue] = useState("");
     return (
         <div className="flex min-h-screen w-full flex-col bg-muted/40">
             <TooltipProvider>
@@ -242,12 +282,129 @@ export function Dashboard() {
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </header>
-                <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
-                    <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
-                        <MyCalendar />
+                <main className="flex flex-col lg:flex-row">
+                    <div className="block w-full lg:w-1/4">
+                        <div className="flex-col w-full h-[800px] items-center ">
+                            <div className="flex p-4 justify-between">
+                                <div className="flex items-center">
+                                    <Notebook />
+                                    <h3 className="pl-2">Note</h3>
+                                </div>
+                                <div className="flex">
+                                    <div className="relative ml-auto flex-1 md:grow-0">
+                                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                                        <Input
+                                            type="search"
+                                            placeholder="Search..."
+                                            className="w-full rounded-lg bg-background pl-8 md:w-[150px] lg:w-[250px]"
+                                        />
+                                    </div>
+                                    <Button variant="ghost" className="p-2">
+                                        <Plus />
+                                    </Button>
+                                </div>
+                            </div>
+                            <ScrollArea className="h-64 w-full rounded-md">
+                                <div className="p-4">
+                                    {tags.map((tag) => (
+                                        <>
+                                            <Button
+                                                key={tag}
+                                                className="text-sm text-foreground w-full m-0 justify-start"
+                                                variant="ghost"
+                                            >
+                                                {tag}
+                                            </Button>
+                                            <Separator className="" />
+                                        </>
+                                    ))}
+                                </div>
+                            </ScrollArea>
+                            <div className="flex p-4 justify-between mt-10">
+                                <div className="flex items-center">
+                                    <Tag />
+                                    <h3 className="pl-2">Tag</h3>
+                                </div>
+                            </div>
+                            <ScrollArea className="h-64 w-full rounded-md">
+                                <div className="p-4">
+                                    {tags.map((tag) => (
+                                        <>
+                                            <Button
+                                                key={tag}
+                                                className="text-sm text-foreground w-full m-0 justify-start"
+                                                variant="ghost"
+                                            >
+                                                {tag}
+                                            </Button>
+                                            <Separator className="" />
+                                        </>
+                                    ))}
+                                </div>
+                            </ScrollArea>
+                        </div>
                     </div>
-                    <div>
-                        <NewsCard />
+                    <div className="w-full flex-col flex items-center justify-center m-2 p-0 lg:w-3/4">
+                        <div className="w-full mb-2">
+                            <Input placeholder="Note's title" />
+                        </div>
+                        <div className="w-full">
+                            <MDEditor
+                                value={value}
+                                onChange={setValue}
+                                previewOptions={{
+                                    rehypePlugins: [[rehypeSanitize]],
+                                }}
+                                textareaProps={{
+                                    placeholder: "Please enter Markdown text",
+                                }}
+                                visibleDragbar={false}
+                                // height="100%"
+                                // minHeight={1000}
+                                height={750}
+                            />
+                        </div>
+                        <div className="w-full mt-1 flex items-center flex-wrap">
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <Button variant="ghost" className="p-1 h-6">
+                                        <Tag size={20} />
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-md">
+                                    <DialogHeader>
+                                        <DialogTitle>
+                                            Add or remove tags
+                                        </DialogTitle>
+                                        <DialogDescription></DialogDescription>
+                                    </DialogHeader>
+                                    <div className="flex items-center space-x-2">
+                                        <MultipleSelector
+                                            defaultOptions={OPTIONS}
+                                            placeholder="Type something that does not exist in dropdowns..."
+                                            creatable
+                                            emptyIndicator={
+                                                <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
+                                                    no results found.
+                                                </p>
+                                            }
+                                        />
+                                    </div>
+                                    <DialogFooter className="sm:justify-start">
+                                        <Button type="submit">
+                                            Save changes
+                                        </Button>
+                                    </DialogFooter>
+                                </DialogContent>
+                            </Dialog>
+                            {OPTIONS.map((option) => {
+                                return (
+                                    <div className="m-1">
+                                        <Badge>{option.value}</Badge>
+                                    </div>
+                                );
+                            })}
+                        </div>
                     </div>
                 </main>
             </div>

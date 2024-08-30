@@ -19,7 +19,6 @@ export function generateStaticParams() {
 export default function RootLayout({ children, params: { locale } }) {
     return (
         <html lang={locale} dir={dir(locale)} suppressHydrationWarning>
-            <head />
             <body className={inter.className}>
                 <StoreProvider>
                     <ThemeProvider

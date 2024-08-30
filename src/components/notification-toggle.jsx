@@ -7,10 +7,61 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Button } from "./ui/button";
+
+const notifications = [
+    {
+        id: 1,
+        title: "New message",
+        description: "You have a new message from John",
+        isRead: false,
+        time: "5 min ago",
+    },
+    {
+        id: 2,
+        title: "Meeting reminder",
+        description: "Team meeting in 30 minutes",
+        isRead: false,
+        time: "30 min ago",
+    },
+    {
+        id: 3,
+        title: "Task completed",
+        description: "Project X has been marked as complete",
+        isRead: true,
+        time: "2 hours ago",
+    },
+    {
+        id: 4,
+        title: "New follower",
+        description: "Jane Doe started following you",
+        isRead: true,
+        time: "1 day ago",
+    },
+    {
+        id: 5,
+        title: "New follower",
+        description: "Jane Doe started following you",
+        isRead: true,
+        time: "1 day ago",
+    },
+    {
+        id: 6,
+        title: "New follower",
+        description: "Jane Doe started following you",
+        isRead: true,
+        time: "1 day ago",
+    },
+    {
+        id: 7,
+        title: "New follower",
+        description: "Jane Doe started following you",
+        isRead: true,
+        time: "1 day ago",
+    },
+];
 export function NotiToggle() {
     return (
         <Popover>
@@ -23,47 +74,39 @@ export function NotiToggle() {
                 </Button>
             </PopoverTrigger>
             <PopoverContent align="end" className="w-80">
-                <div className="grid gap-4">
-                    <div className="space-y-2">
-                        <h4 className="font-medium leading-none">Dimensions</h4>
-                        <p className="text-sm text-muted-foreground">
-                            Set the dimensions for the layer.
-                        </p>
+                <h3 className="font-semibold text-lg mb-2">Notifications</h3>
+                <ScrollArea className="h-60">
+                    <div className="space-y-4">
+                        {notifications.map((notification) => (
+                            <Button
+                                key={notification.id}
+                                onClick={() =>
+                                    handleNotificationClick(notification.id)
+                                }
+                                className={`w-72 p-3 h-auto rounded-lg text-left flex flex-col items-start ${
+                                    notification.isRead
+                                        ? "bg-background hover:bg-muted"
+                                        : "bg-muted hover:bg-muted/80"
+                                }`}
+                                variant="ghost"
+                            >
+                                <div className="flex justify-between items-start w-full">
+                                    <h4 className="font-semibold text-sm">
+                                        {notification.title}
+                                    </h4>
+                                    <span className="text-xs text-muted-foreground">
+                                        {notification.time}
+                                    </span>
+                                </div>
+                                <p className="text-sm text-muted-foreground mt-1">
+                                    {notification.description}
+                                </p>
+                            </Button>
+                        ))}
                     </div>
-                    <div className="grid gap-2">
-                        <div className="grid grid-cols-3 items-center gap-4">
-                            <Label htmlFor="width">Width</Label>
-                            <Input
-                                id="width"
-                                defaultValue="100%"
-                                className="col-span-2 h-8"
-                            />
-                        </div>
-                        <div className="grid grid-cols-3 items-center gap-4">
-                            <Label htmlFor="maxWidth">Max. width</Label>
-                            <Input
-                                id="maxWidth"
-                                defaultValue="300px"
-                                className="col-span-2 h-8"
-                            />
-                        </div>
-                        <div className="grid grid-cols-3 items-center gap-4">
-                            <Label htmlFor="height">Height</Label>
-                            <Input
-                                id="height"
-                                defaultValue="25px"
-                                className="col-span-2 h-8"
-                            />
-                        </div>
-                        <div className="grid grid-cols-3 items-center gap-4">
-                            <Label htmlFor="maxHeight">Max. height</Label>
-                            <Input
-                                id="maxHeight"
-                                defaultValue="none"
-                                className="col-span-2 h-8"
-                            />
-                        </div>
-                    </div>
+                </ScrollArea>
+                <div className="w-full mt-2">
+                    <Button className="w-full p-0 m-0">Mark all as read</Button>
                 </div>
             </PopoverContent>
         </Popover>
