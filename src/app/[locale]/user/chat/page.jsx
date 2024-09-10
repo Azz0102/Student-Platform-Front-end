@@ -1,9 +1,9 @@
-import { Dashboard } from "@/components/dashboard";
+import Chat from "@/components/UserChat";
 
 export default function Page() {
     return (
         <div>
-            <Dashboard />
+            <Chat />
         </div>
     );
 }

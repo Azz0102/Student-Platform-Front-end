@@ -1,0 +1,34 @@
+@import "./variables.scss";
+$primary: hsl(221, 68%, 77%);
+$background: hsl(222.2, 84%, 4.9%);
+$foreground: hsl(210, 40%, 98%);
+
+.dark {
+    .rbc-toolbar {
+        .rbc-btn-group {
+            & button {
+                color: #fff;
+
+                &:active,
+                &.rbc-active {
+                    color: $btn-color;
+                }
+                &:focus {
+                    color: $btn-color;
+                }
+
+                &:hover {
+                    color: $btn-color;
+                }
+            }
+        }
+    }
+
+    .rbc-today {
+        background-color: $primary;
+    }
+
+    .rbc-current-time-indicator {
+        background-color: $background;
+    }
+}

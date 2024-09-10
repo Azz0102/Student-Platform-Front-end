@@ -1,7 +1,6 @@
-import { Dashboard } from "@/components/dashboard";
-import { Note } from "@/components/note";
+import { Note } from "@/components/Note";
 
-export default function UserNote() {
+export default function Page() {
     return (
         <div>
             <Note />

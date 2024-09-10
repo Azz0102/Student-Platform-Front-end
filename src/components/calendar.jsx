@@ -5,6 +5,8 @@ import { useCallback, useMemo, useState } from "react";
 import { Calendar, dayjsLocalizer, Views } from "react-big-calendar";
 import dayjs from "dayjs";
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import "../styles/customCalendar.scss";
+import { CustomToolbar } from "./CustomToolbarCalendar";
 
 const localizer = dayjsLocalizer(dayjs);
 
@@ -45,6 +47,9 @@ export function MyCalendar({ className }) {
                 onView={onView}
                 startAccessor="start"
                 endAccessor="end"
+                components={{
+                    toolbar: CustomToolbar,
+                }}
                 // views={views}
             />
         </div>
