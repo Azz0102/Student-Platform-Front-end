@@ -9,27 +9,19 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { LoadingSpinner } from "./ui/loading-spinner";
 
 const tags = Array.from({ length: 3 }).map(
-    (_, i, a) => `v1.2.0-beta.${a.length - i}`
+    (_, i, a) => `v1.2.0-beta.${a.length - i}`,
 );
 export function NoteList() {
     const { data, error, isLoading } = useGetListNoteQuery("2");
 
     return (
-        <div className="flex-col items-center w-1/2 flex">
-            <div className="flex p-4 justify-between w-full">
+        <div className="flex w-1/2 flex-col items-center">
+            <div className="flex w-full justify-between p-4">
                 <div className="flex items-center">
                     <Notebook />
                     <h3 className="pl-2">Note</h3>
                 </div>
                 <div className="flex">
-                    <div className="relative ml-auto flex-1 md:grow-0">
-                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                        <Input
-                            type="search"
-                            placeholder="Search..."
-                            className="w-[50px] rounded-lg bg-background pl-8 md:w-[120px] lg:w-[150px]"
-                        />
-                    </div>
                     <Button
                         variant="ghost"
                         className="p-2"
@@ -37,6 +29,16 @@ export function NoteList() {
                     >
                         <Plus />
                     </Button>
+                </div>
+            </div>
+            <div className="w-full px-2">
+                <div className="relative w-full flex-1">
+                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Input
+                        type="search"
+                        placeholder="Search..."
+                        className="w-full rounded-lg bg-background pl-8"
+                    />
                 </div>
             </div>
             {/* {isLoading && (
@@ -59,7 +61,7 @@ export function NoteList() {
                             <>
                                 <Button
                                     key={tag}
-                                    className="text-sm text-foreground w-full m-0 justify-start"
+                                    className="m-0 w-full justify-start text-sm text-foreground"
                                     variant="ghost"
                                 >
                                     {tag}

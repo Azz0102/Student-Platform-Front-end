@@ -16,7 +16,7 @@ export function TagList() {
     return (
         <div className="flex-col items-center w-1/2 border-r-foreground border-r-2 flex">
             <div className="flex p-4 justify-between w-full">
-                <div className="flex items-center p-2">
+                <div className="flex items-center p-2 pb-12">
                     <Tag />
                     <h3 className="pl-2">Tag</h3>
                 </div>

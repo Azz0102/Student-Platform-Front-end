@@ -10,6 +10,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Sidebar } from "../ChatSideBar";
 import { Chat } from "./Chat";
+import { useWindowDimensions } from "@/hooks/useWindowDimension";
 
 export function ChatLayout({
     defaultLayout = [320, 480],
@@ -19,6 +20,7 @@ export function ChatLayout({
     const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed);
     const [selectedUser, setSelectedUser] = React.useState(userData[0]);
     const [isMobile, setIsMobile] = useState(false);
+    const { width, height } = useWindowDimensions();
 
     useEffect(() => {
         const checkScreenWidth = () => {
@@ -42,32 +44,35 @@ export function ChatLayout({
             direction="horizontal"
             onLayout={(sizes) => {
                 document.cookie = `react-resizable-panels:layout=${JSON.stringify(
-                    sizes
+                    sizes,
                 )}`;
             }}
-            className="!h-[820px] w-full items-stretch"
+            className={`w-full items-stretch`}
+            style={{
+                height: isMobile ? `${height - 58}px` : `${height - 89}px`,
+            }}
         >
             <ResizablePanel
                 defaultSize={defaultLayout[0]}
                 collapsedSize={navCollapsedSize}
                 collapsible={true}
-                minSize={isMobile ? 0 : 24}
-                maxSize={isMobile ? 8 : 30}
+                minSize={isMobile ? 13 : 24}
+                maxSize={isMobile ? 13 : 30}
                 onCollapse={() => {
                     setIsCollapsed(true);
                     document.cookie = `react-resizable-panels:collapsed=${JSON.stringify(
-                        true
+                        true,
                     )}`;
                 }}
                 onExpand={() => {
                     setIsCollapsed(false);
                     document.cookie = `react-resizable-panels:collapsed=${JSON.stringify(
-                        false
+                        false,
                     )}`;
                 }}
                 className={cn(
                     isCollapsed &&
-                        "min-w-[50px] md:min-w-[70px] transition-all duration-300 ease-in-out"
+                        "min-w-[50px] transition-all duration-300 ease-in-out md:min-w-[70px]",
                 )}
             >
                 <Sidebar

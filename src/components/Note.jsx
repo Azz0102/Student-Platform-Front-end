@@ -27,15 +27,16 @@ import rehypeSanitize from "rehype-sanitize";
 import * as commands from "@uiw/react-md-editor/commands";
 import { useTheme } from "next-themes";
 import { TagList } from "./TagList";
+import { useWindowDimensions } from "@/hooks/useWindowDimension";
 import { NoteList } from "./NoteList";
 
 const MDEditor = dynamic(
     () => import("@uiw/react-md-editor").then((mod) => mod.default),
-    { ssr: false }
+    { ssr: false },
 );
 
 const tags = Array.from({ length: 3 }).map(
-    (_, i, a) => `v1.2.0-beta.${a.length - i}`
+    (_, i, a) => `v1.2.0-beta.${a.length - i}`,
 );
 
 const OPTIONS = [
@@ -54,18 +55,22 @@ const OPTIONS = [
 
 export function Note() {
     const [value, setValue] = useState("");
+    const { width, height } = useWindowDimensions();
     const { theme } = useTheme();
 
     return (
         <main className="flex flex-col xl:flex-row">
             <div className="block w-full 2xl:w-2/5">
-                <div className="flex-row flex w-full h-[800px]">
+                <div
+                    className="flex w-full flex-row"
+                    style={{ height: `${height - 90}px` }}
+                >
                     <TagList />
                     <NoteList />
                 </div>
             </div>
-            <div className="w-full flex-col flex items-center justify-center my-4 p-0 2xl:w-3/5 2xl:mr-2">
-                <div className="w-full mb-2">
+            <div className="my-4 flex w-full flex-col items-center justify-center p-0 2xl:mr-2 2xl:w-3/5">
+                <div className="mb-2 w-full">
                     <Input placeholder="Note's title" />
                 </div>
                 <div className="w-full" data-color-mode={`${theme}`}>
@@ -81,13 +86,13 @@ export function Note() {
                         visibleDragbar={false}
                         // height="100%"
                         // minHeight={1000}
-                        height={750}
+                        height={height - 210}
                     />
                 </div>
-                <div className="w-full mt-1 flex items-center flex-wrap">
+                <div className="mt-1 flex w-full flex-wrap items-center">
                     <Dialog>
                         <DialogTrigger asChild>
-                            <Button variant="ghost" className="p-1 h-6">
+                            <Button variant="ghost" className="h-6 p-1">
                                 <Tag size={20} />
                             </Button>
                         </DialogTrigger>

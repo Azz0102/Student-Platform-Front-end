@@ -7,6 +7,7 @@ import dayjs from "dayjs";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "../styles/customCalendar.scss";
 import { CustomToolbar } from "./CustomToolbarCalendar";
+import { useWindowDimensions } from "@/hooks/useWindowDimension";
 
 const localizer = dayjsLocalizer(dayjs);
 
@@ -31,12 +32,14 @@ export function MyCalendar({ className }) {
             defaultDate: new Date(),
             // views: [Views.MONTH, Views.DAY, Views.AGENDA],
         }),
-        []
+        [],
     );
     const onNavigate = useCallback((newDate) => setDate(newDate), [setDate]);
     const onView = useCallback((newView) => setView(newView), [setView]);
+    const { width, height } = useWindowDimensions();
+
     return (
-        <div className={`${className}`} style={{ height: "700px" }}>
+        <div className={`${className}`} style={{ height: `${height - 120}px` }}>
             <Calendar
                 date={date}
                 localizer={localizer}
