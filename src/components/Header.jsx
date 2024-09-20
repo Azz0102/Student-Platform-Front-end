@@ -8,7 +8,7 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LineChart, Package2, PanelLeft, Search } from "lucide-react";
+import { LineChart, Package2, PanelLeft, Search, Settings } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -61,14 +61,14 @@ export function Header() {
 							);
 						})}
 						<Link
-							href='/user/settings'
+							href='/user/setting'
 							className={`flex items-center gap-4 px-2.5 ${
-								"/user/settings" === filterUrl(pathName)
+								"/user/setting" === filterUrl(pathName)
 									? "text-foreground"
 									: "text-muted-foreground hover:text-foreground"
 							}`}
 						>
-							<LineChart className='h-5 w-5' />
+							<Settings className='h-5 w-5' />
 							Settings
 						</Link>
 					</nav>

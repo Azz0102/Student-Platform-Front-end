@@ -53,9 +53,9 @@ export function NavBar() {
 					<Tooltip>
 						<TooltipTrigger asChild>
 							<Link
-								href='/user/settings'
+								href='/user/setting'
 								className={`flex h-9 w-9 items-center justify-center rounded-lg ${
-									"/user/settings" === filterUrl(pathName)
+									"/user/setting" === filterUrl(pathName)
 										? "bg-accent text-accent-foreground"
 										: "text-muted-foreground"
 								} transition-colors hover:text-foreground md:h-8 md:w-8`}

@@ -100,7 +100,6 @@ export default function Page() {
 									{news.relatedTo.map((item, idx) => (
 										<Badge
 											key={idx}
-											variant='outline'
 											className='whitespace-nowrap'
 										>
 											{item}

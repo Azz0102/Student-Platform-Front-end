@@ -10,7 +10,10 @@ export function filterUrl(url) {
 		pathSegments.shift(); // Remove the first segment if it’s a locale
 	}
 
-	// Return the rest of the path as a string
-	const filteredPath = `/${pathSegments.join("/")}`;
+	// Slice the first two elements after filtering out the locale
+	const firstTwoSegments = pathSegments.slice(0, 2);
+
+	// Return the filtered path containing only the first two segments
+	const filteredPath = `/${firstTwoSegments.join("/")}`;
 	return filteredPath; // e.g., /user/dashboard
 }
