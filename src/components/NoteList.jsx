@@ -1,5 +1,13 @@
 import { useState } from "react";
-import { Search, Notebook, Plus, AlertCircle } from "lucide-react";
+import {
+	Search,
+	Notebook,
+	Plus,
+	AlertCircle,
+	Tags,
+	Delete,
+	CopyPlus,
+} from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
@@ -7,6 +15,12 @@ import { Button } from "@/components/ui/button";
 import { useGetListNoteQuery } from "@/lib/services/note";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { LoadingSpinner } from "./ui/loading-spinner";
+import {
+	ContextMenu,
+	ContextMenuContent,
+	ContextMenuItem,
+	ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 
 export function NoteList({
 	notes,
@@ -18,6 +32,11 @@ export function NoteList({
 	newNoteIndex,
 	setNewNoteIndex,
 	focusOnContentInput,
+	focusOnTitleInput,
+	setSelectedValues,
+	setCurrentTag,
+	currentTag,
+	fullnotes,
 }) {
 	const { data, error, isLoading } = useGetListNoteQuery("2");
 	const [searchQuery, setSearchQuery] = useState("");
@@ -30,11 +49,12 @@ export function NoteList({
 				content: "",
 				tags: [],
 			},
-			...notes,
+			...fullnotes,
 		]);
 
 		setNewNoteIndex(newNoteIndex + 1);
-		focusOnContentInput();
+		// focusOnContentInput();
+		focusOnTitleInput();
 		setCurrentNote({
 			id: "new" + newNoteIndex,
 			title: "",
@@ -43,6 +63,8 @@ export function NoteList({
 		});
 		setTitleValue("");
 		setContentValue("");
+		setSelectedValues([]);
+		setCurrentTag("");
 	};
 
 	return (
@@ -93,19 +115,53 @@ export function NoteList({
 						{!searchQuery
 							? notes.map((note, index) => (
 									<>
-										<Button
-											key={index}
-											className={`m-0 w-full justify-start ${currentNote && currentNote.id === note.id && "bg-primary"} overflow-hidden text-sm text-foreground`}
-											variant='ghost'
-											onClick={() => {
-												setCurrentNote(note);
-												setContentValue(note.content);
-												setTitleValue(note.title);
-											}}
-										>
-											{note.title}
-										</Button>
-										<Separator className='' />
+										<ContextMenu>
+											<ContextMenuTrigger>
+												<Button
+													key={index}
+													className={`m-0 w-full justify-start ${currentNote && currentNote.id === note.id && "bg-primary"} overflow-hidden text-sm text-foreground`}
+													variant='ghost'
+													onClick={() => {
+														setCurrentNote(note);
+														setContentValue(
+															note.content
+														);
+														setTitleValue(
+															note.title
+														);
+														setSelectedValues(
+															!note.tags
+																? []
+																: note.tags.map(
+																		(
+																			e
+																		) => ({
+																			label: e,
+																			value: e,
+																		})
+																	)
+														);
+													}}
+												>
+													{note.title}
+												</Button>
+												<Separator className='' />
+											</ContextMenuTrigger>
+											<ContextMenuContent className='w-52'>
+												<ContextMenuItem className='flex justify-between'>
+													Tags
+													<Tags />
+												</ContextMenuItem>
+												<ContextMenuItem className='flex justify-between'>
+													Delete
+													<Delete />
+												</ContextMenuItem>
+												<ContextMenuItem className='flex justify-between'>
+													Duplicate
+													<CopyPlus />
+												</ContextMenuItem>
+											</ContextMenuContent>
+										</ContextMenu>
 									</>
 								))
 							: notes
@@ -114,21 +170,55 @@ export function NoteList({
 									)
 									.map((note, index) => (
 										<>
-											<Button
-												key={index}
-												className={`m-0 w-full justify-start ${currentNote && currentNote.id === note.id && "bg-primary"} overflow-hidden text-sm text-foreground`}
-												variant='ghost'
-												onClick={() => {
-													setCurrentNote(note);
-													setContentValue(
-														note.content
-													);
-													setTitleValue(note.title);
-												}}
-											>
-												{note.title}
-											</Button>
-											<Separator className='' />
+											<ContextMenu>
+												<ContextMenuTrigger>
+													<Button
+														key={index}
+														className={`m-0 w-full justify-start ${currentNote && currentNote.id === note.id && "bg-primary"} overflow-hidden text-sm text-foreground`}
+														variant='ghost'
+														onClick={() => {
+															setCurrentNote(
+																note
+															);
+															setContentValue(
+																note.content
+															);
+															setTitleValue(
+																note.title
+															);
+															setSelectedValues(
+																!note.tags
+																	? []
+																	: note.tags.map(
+																			(
+																				e
+																			) => ({
+																				label: e,
+																				value: e,
+																			})
+																		)
+															);
+														}}
+													>
+														{note.title}
+													</Button>
+													<Separator className='' />
+												</ContextMenuTrigger>
+												<ContextMenuContent className='w-52'>
+													<ContextMenuItem className='flex justify-between'>
+														Tags
+														<Tags />
+													</ContextMenuItem>
+													<ContextMenuItem className='flex justify-between'>
+														Delete
+														<Delete />
+													</ContextMenuItem>
+													<ContextMenuItem className='flex justify-between'>
+														Duplicate
+														<CopyPlus />
+													</ContextMenuItem>
+												</ContextMenuContent>
+											</ContextMenu>
 										</>
 									))}
 					</div>

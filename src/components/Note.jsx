@@ -11,6 +11,8 @@ import {
 	DialogTitle,
 	DialogTrigger,
 	DialogFooter,
+	DialogClose,
+	DialogOverlay,
 } from "@/components/ui/dialog";
 
 import { Button } from "@/components/ui/button";
@@ -57,12 +59,21 @@ export function Note() {
 			tags: ["React", "Remix"],
 		},
 	]);
-	const [currentNote, setCurrentNote] = useState(null);
+	const [currentNote, setCurrentNote] = useState({
+		id: 1,
+		title: "Note 1",
+		content: "This is the content of note 1",
+		tags: ["Nextjs", "React"],
+	});
 	const [currentTag, setCurrentTag] = useState(null);
 	const [newNoteIndex, setNewNoteIndex] = useState(0);
 
 	const titleInputRef = useRef(null);
 	const contentInputRef = useRef(null);
+
+	// State to hold selected values
+	const [selectedValues, setSelectedValues] = useState([]);
+	const [open, setOpen] = useState(false);
 
 	useEffect(() => {
 		setCurrentNote({
@@ -73,6 +84,9 @@ export function Note() {
 		});
 		setContentValue("This is the content of note 1");
 		setTitleValue("Note 1");
+		setSelectedValues(
+			["Nextjs", "React"].map((e) => ({ label: e, value: e }))
+		);
 	}, []);
 
 	const focusOnTitleInput = () => {
@@ -127,7 +141,61 @@ export function Note() {
 			setContentValue(notes[1].content);
 			setTitleValue(notes[1].title);
 			setCurrentNote(notes[1]);
+			setSelectedValues(
+				notes[1].tags.map((e) => ({ label: e, value: e }))
+			);
 		}
+	};
+
+	// Handler function that updates the state when the selection changes
+	const handleSelectChange = (newSelectedOptions) => {
+		setSelectedValues(newSelectedOptions);
+	};
+
+	const handleTagChange = () => {
+		const updatedNotes = [...notes];
+		updatedNotes[
+			updatedNotes.findIndex((note) => note.id === currentNote.id)
+		] = {
+			...currentNote,
+			tags:
+				selectedValues.length === 0
+					? []
+					: selectedValues.map((e) => e.label),
+		};
+
+		setCurrentNote({
+			...currentNote,
+			tags:
+				selectedValues.length === 0
+					? []
+					: selectedValues.map((e) => e.label),
+		});
+
+		if (selectedValues.length !== 0) {
+			for (let i = 0; i < selectedValues.length; i++) {
+				const element = selectedValues[i];
+				if (!tags.includes(element.label)) {
+					setTags([...tags, element.label]);
+				}
+			}
+		}
+
+		setNotes(updatedNotes);
+	};
+
+	const handleDialogChange = (isOpen) => {
+		if (!isOpen) {
+			// Perform cleanup or any actions needed on unmount
+			console.log(currentNote);
+			// Add your cleanup logic here, e.g., resetting state, clearing timers, etc.
+			setSelectedValues(
+				currentNote.tags.length === 0
+					? []
+					: currentNote.tags.map((e) => ({ label: e, value: e }))
+			);
+		}
+		setOpen(isOpen);
 	};
 
 	return (
@@ -145,6 +213,7 @@ export function Note() {
 						notes={notes}
 						setTitleValue={setTitleValue}
 						setContentValue={setContentValue}
+						setSelectedValues={setSelectedValues}
 					/>
 					<NoteList
 						setCurrentNote={setCurrentNote}
@@ -155,6 +224,10 @@ export function Note() {
 						newNoteIndex={newNoteIndex}
 						setNewNoteIndex={setNewNoteIndex}
 						focusOnContentInput={focusOnContentInput}
+						focusOnTitleInput={focusOnTitleInput}
+						setSelectedValues={setSelectedValues}
+						setCurrentTag={setCurrentTag}
+						currentTag={currentTag}
 						notes={
 							!currentTag
 								? notes
@@ -162,6 +235,7 @@ export function Note() {
 										note.tags.includes(currentTag)
 									)
 						}
+						fullnotes={notes}
 					/>
 				</div>
 			</div>
@@ -171,6 +245,7 @@ export function Note() {
 						placeholder="Note's title"
 						value={titleValue}
 						onChange={handleTitleChange}
+						onBlur={handleContentBlur}
 						ref={titleInputRef}
 					/>
 				</div>
@@ -185,7 +260,6 @@ export function Note() {
 							placeholder: "Please enter Markdown text",
 						}}
 						visibleDragbar={false}
-						onBlur={handleContentBlur}
 						ref={contentInputRef}
 						// height="100%"
 						// minHeight={1000}
@@ -193,9 +267,21 @@ export function Note() {
 					/>
 				</div>
 
-				<Dialog>
+				<Dialog open={open} onOpenChange={handleDialogChange}>
 					<DialogTrigger asChild>
-						<div className='mt-1 flex w-full flex-wrap items-center'>
+						<div
+							className='mt-1 flex w-full flex-wrap items-center'
+							onClick={() => {
+								setSelectedValues(
+									currentNote.tags.length === 0
+										? []
+										: currentNote.tags.map((e) => ({
+												label: e,
+												value: e,
+											}))
+								);
+							}}
+						>
 							<Button variant='ghost' className='h-6 p-1'>
 								<Tag size={20} />
 							</Button>
@@ -233,10 +319,16 @@ export function Note() {
 										no results found.
 									</p>
 								}
+								value={selectedValues}
+								onChange={handleSelectChange}
 							/>
 						</div>
 						<DialogFooter className='sm:justify-end'>
-							<Button type='submit'>Save changes</Button>
+							<DialogClose asChild>
+								<Button type='submit' onClick={handleTagChange}>
+									Save changes
+								</Button>
+							</DialogClose>
 						</DialogFooter>
 					</DialogContent>
 				</Dialog>
