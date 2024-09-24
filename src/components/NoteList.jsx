@@ -21,6 +21,12 @@ import {
 	ContextMenuItem,
 	ContextMenuTrigger,
 } from "@/components/ui/context-menu";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export function NoteList({
 	notes,
@@ -69,20 +75,29 @@ export function NoteList({
 
 	return (
 		<div className='flex w-1/2 flex-col items-center'>
-			<div className='flex w-full justify-between p-4'>
+			<div className='flex w-full justify-between p-4 pb-2'>
 				<div className='flex items-center'>
 					<Notebook />
 					<h3 className='pl-2'>Note</h3>
 				</div>
 				<div className='flex'>
-					<Button
-						variant='ghost'
-						className='p-2'
-						onClick={handleAddNote}
-						// disabled={isLoading || error ? true : false}
-					>
-						<Plus />
-					</Button>
+					<TooltipProvider>
+						<Tooltip>
+							<TooltipTrigger asChild>
+								<Button
+									variant='ghost'
+									className='p-2'
+									onClick={handleAddNote}
+									// disabled={isLoading || error ? true : false}
+								>
+									<Plus />
+								</Button>
+							</TooltipTrigger>
+							<TooltipContent>
+								<p>Add note</p>
+							</TooltipContent>
+						</Tooltip>
+					</TooltipProvider>
 				</div>
 			</div>
 			<div className='w-full px-2'>

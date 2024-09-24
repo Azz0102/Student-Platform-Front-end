@@ -1,26 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Tag } from "lucide-react";
-
-import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogHeader,
-	DialogTitle,
-	DialogTrigger,
-	DialogFooter,
-	DialogClose,
-	DialogOverlay,
-} from "@/components/ui/dialog";
-
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-
-import MultipleSelector from "@/components/ui/multiple-selector";
-
 import "@uiw/react-md-editor/markdown-editor.css";
 import "@uiw/react-markdown-preview/markdown.css";
 import dynamic from "next/dynamic";
@@ -33,6 +14,7 @@ import { useWindowDimensions } from "@/hooks/useWindowDimension";
 import { NoteList } from "./NoteList";
 import { current } from "@reduxjs/toolkit";
 import { set } from "date-fns";
+import { TagDialog } from "./TagDialog";
 
 const MDEditor = dynamic(
 	() => import("@uiw/react-md-editor").then((mod) => mod.default),
@@ -114,6 +96,10 @@ export function Note() {
 			title: e.target.value,
 		};
 		setNotes(updatedNotes);
+		setCurrentNote({
+			...currentNote,
+			title: e.target.value,
+		});
 		setTitleValue(e.target.value);
 	};
 
@@ -123,13 +109,12 @@ export function Note() {
 			updatedNotes.findIndex((note) => note.id === currentNote.id)
 		] = {
 			...currentNote,
-			title: !titleValue ? newContent.slice(0, 7) : currentNote.title,
 			content: newContent,
 		};
-
-		if (!titleValue) {
-			setTitleValue(newContent.slice(0, 7));
-		}
+		setCurrentNote({
+			...currentNote,
+			content: newContent,
+		});
 		setContentValue(newContent);
 		setNotes(updatedNotes);
 	};
@@ -267,71 +252,16 @@ export function Note() {
 					/>
 				</div>
 
-				<Dialog open={open} onOpenChange={handleDialogChange}>
-					<DialogTrigger asChild>
-						<div
-							className='mt-1 flex w-full flex-wrap items-center'
-							onClick={() => {
-								setSelectedValues(
-									currentNote.tags.length === 0
-										? []
-										: currentNote.tags.map((e) => ({
-												label: e,
-												value: e,
-											}))
-								);
-							}}
-						>
-							<Button variant='ghost' className='h-6 p-1'>
-								<Tag size={20} />
-							</Button>
-							{currentNote &&
-								currentNote.tags &&
-								currentNote.tags
-									.map((tag) => ({ label: tag, value: tag }))
-									.map((option, index) => {
-										return (
-											<div className='m-1' key={index}>
-												<Badge>{option.value}</Badge>
-											</div>
-										);
-									})}
-							<div className='ml-2 text-foreground'>
-								Click to add tags...
-							</div>
-						</div>
-					</DialogTrigger>
-					<DialogContent className='sm:max-w-md'>
-						<DialogHeader>
-							<DialogTitle>Add or remove tags</DialogTitle>
-							<DialogDescription></DialogDescription>
-						</DialogHeader>
-						<div className='flex items-center space-x-2'>
-							<MultipleSelector
-								defaultOptions={tags.map((tag) => ({
-									label: tag,
-									value: tag,
-								}))}
-								placeholder='Type something that does not exist in dropdowns...'
-								creatable
-								emptyIndicator={
-									<p className='text-center text-lg leading-10 text-gray-600 dark:text-gray-400'>
-										no results found.
-									</p>
-								}
-								value={selectedValues}
-								onChange={handleSelectChange}
-							/>
-						</div>
-						<DialogFooter className='sm:justify-end'>
-							<DialogClose asChild>
-								<Button type='submit' onClick={handleTagChange}>
-									Save changes
-								</Button>
-							</DialogClose>
-						</DialogFooter>
-					</DialogContent>
-				</Dialog>
+				<TagDialog
+					open={open}
+					handleDialogChange={handleDialogChange}
+					setSelectedValues={setSelectedValues}
+					currentNote={currentNote}
+					selectedValues={selectedValues}
+					handleSelectChange={handleSelectChange}
+					handleTagChange={handleTagChange}
+					tags={tags}
+				/>
 			</div>
 		</main>
 	);

@@ -12,6 +12,12 @@ import {
 	ContextMenuItem,
 	ContextMenuTrigger,
 } from "@/components/ui/context-menu";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export function TagList({
 	tags,
@@ -28,31 +34,40 @@ export function TagList({
 	return (
 		<div className='flex w-1/2 flex-col items-center border-r-2 border-r-foreground'>
 			<div className='flex w-full justify-between p-4'>
-				<div className='flex items-center p-2 pb-12'>
+				<div className='flex items-center p-2 pb-10'>
 					<Tags />
 					<h3 className='pl-2'>Tag</h3>
 				</div>
-				<Button
-					variant='ghost'
-					className='p-2'
-					onClick={() => {
-						setCurrentTag("");
-						setCurrentNote(notes[0]);
-						setTitleValue(notes[0].title);
-						setContentValue(notes[0].content);
-						setSelectedValues(
-							!notes[0].tags
-								? []
-								: notes[0].tags.map((e) => ({
-										label: e,
-										value: e,
-									}))
-						);
-					}}
-					// disabled={isLoading || error ? true : false}
-				>
-					<Delete />
-				</Button>
+				<TooltipProvider>
+					<Tooltip>
+						<TooltipTrigger asChild>
+							<Button
+								variant='ghost'
+								className='p-2'
+								onClick={() => {
+									setCurrentTag("");
+									setCurrentNote(notes[0]);
+									setTitleValue(notes[0].title);
+									setContentValue(notes[0].content);
+									setSelectedValues(
+										!notes[0].tags
+											? []
+											: notes[0].tags.map((e) => ({
+													label: e,
+													value: e,
+												}))
+									);
+								}}
+								// disabled={isLoading || error ? true : false}
+							>
+								<Delete />
+							</Button>
+						</TooltipTrigger>
+						<TooltipContent>
+							<p>Clear tag</p>
+						</TooltipContent>
+					</Tooltip>
+				</TooltipProvider>
 			</div>
 			{/* {isLoading && (
                 <div className="w-full items-center flex justify-center">
