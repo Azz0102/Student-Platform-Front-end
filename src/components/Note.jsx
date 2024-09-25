@@ -123,11 +123,13 @@ export function Note() {
 		if (!e.target.value && !contentValue) {
 			// remove first note
 			setNotes(notes.slice(1));
-			setContentValue(notes[1].content);
-			setTitleValue(notes[1].title);
-			setCurrentNote(notes[1]);
+			setContentValue(!notes[1] ? "" : notes[1].content);
+			setTitleValue(!notes[1] ? "" : notes[1].title);
+			setCurrentNote(!notes[1] ? {} : notes[1]);
 			setSelectedValues(
-				notes[1].tags.map((e) => ({ label: e, value: e }))
+				notes[1].tags.length === 0
+					? []
+					: notes[1].tags.map((e) => ({ label: e, value: e }))
 			);
 		}
 	};
@@ -199,6 +201,9 @@ export function Note() {
 						setTitleValue={setTitleValue}
 						setContentValue={setContentValue}
 						setSelectedValues={setSelectedValues}
+						setTags={setTags}
+						currentNote={currentNote}
+						setNotes={setNotes}
 					/>
 					<NoteList
 						setCurrentNote={setCurrentNote}
@@ -220,6 +225,7 @@ export function Note() {
 										note.tags.includes(currentTag)
 									)
 						}
+						setOpen={setOpen}
 						fullnotes={notes}
 					/>
 				</div>

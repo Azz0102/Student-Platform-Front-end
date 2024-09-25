@@ -7,6 +7,7 @@ import {
 	Tags,
 	Delete,
 	CopyPlus,
+	Trash2,
 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -43,9 +44,26 @@ export function NoteList({
 	setCurrentTag,
 	currentTag,
 	fullnotes,
+	setOpen,
 }) {
 	const { data, error, isLoading } = useGetListNoteQuery("2");
 	const [searchQuery, setSearchQuery] = useState("");
+
+	const handleDeleteNote = (note) => {
+		const updatedNotes = [...fullnotes];
+		updatedNotes.splice(
+			updatedNotes.findIndex((e) => e.id === note.id),
+			1
+		);
+		setNotes(updatedNotes);
+
+		if (currentNote.id === note.id) {
+			setContentValue("");
+			setTitleValue("");
+			setCurrentNote({});
+			setSelectedValues([]);
+		}
+	};
 
 	const handleAddNote = () => {
 		setNotes([
@@ -71,6 +89,14 @@ export function NoteList({
 		setContentValue("");
 		setSelectedValues([]);
 		setCurrentTag("");
+	};
+
+	const handleDuplicate = (note) => {
+		const updatedNotes = [...fullnotes];
+		const duplicateNote = { ...note };
+		duplicateNote.id = "new" + newNoteIndex;
+		updatedNotes.push(duplicateNote);
+		setNotes(updatedNotes);
 	};
 
 	return (
@@ -163,15 +189,49 @@ export function NoteList({
 												<Separator className='' />
 											</ContextMenuTrigger>
 											<ContextMenuContent className='w-52'>
-												<ContextMenuItem className='flex justify-between'>
+												<ContextMenuItem
+													className='flex justify-between'
+													onClick={() => {
+														setCurrentNote(note);
+														setContentValue(
+															note.content
+														);
+														setTitleValue(
+															note.title
+														);
+														setSelectedValues(
+															!note.tags
+																? []
+																: note.tags.map(
+																		(
+																			e
+																		) => ({
+																			label: e,
+																			value: e,
+																		})
+																	)
+														);
+														setOpen(true);
+													}}
+												>
 													Tags
 													<Tags />
 												</ContextMenuItem>
-												<ContextMenuItem className='flex justify-between'>
+												<ContextMenuItem
+													className='flex justify-between'
+													onClick={() => {
+														handleDeleteNote(note);
+													}}
+												>
 													Delete
-													<Delete />
+													<Trash2 />
 												</ContextMenuItem>
-												<ContextMenuItem className='flex justify-between'>
+												<ContextMenuItem
+													className='flex justify-between'
+													onClick={() => {
+														handleDuplicate(note);
+													}}
+												>
 													Duplicate
 													<CopyPlus />
 												</ContextMenuItem>
@@ -220,15 +280,55 @@ export function NoteList({
 													<Separator className='' />
 												</ContextMenuTrigger>
 												<ContextMenuContent className='w-52'>
-													<ContextMenuItem className='flex justify-between'>
+													<ContextMenuItem
+														className='flex justify-between'
+														onClick={() => {
+															setCurrentNote(
+																note
+															);
+															setContentValue(
+																note.content
+															);
+															setTitleValue(
+																note.title
+															);
+															setSelectedValues(
+																!note.tags
+																	? []
+																	: note.tags.map(
+																			(
+																				e
+																			) => ({
+																				label: e,
+																				value: e,
+																			})
+																		)
+															);
+															setOpen(true);
+														}}
+													>
 														Tags
 														<Tags />
 													</ContextMenuItem>
-													<ContextMenuItem className='flex justify-between'>
+													<ContextMenuItem
+														className='flex justify-between'
+														onClick={() => {
+															handleDeleteNote(
+																note
+															);
+														}}
+													>
 														Delete
-														<Delete />
+														<Trash2 />
 													</ContextMenuItem>
-													<ContextMenuItem className='flex justify-between'>
+													<ContextMenuItem
+														className='flex justify-between'
+														onClick={() => {
+															handleDuplicate(
+																note
+															);
+														}}
+													>
 														Duplicate
 														<CopyPlus />
 													</ContextMenuItem>

@@ -7,17 +7,12 @@ import { useGetListTagQuery } from "@/lib/services/tag";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { LoadingSpinner } from "./ui/loading-spinner";
 import {
-	ContextMenu,
-	ContextMenuContent,
-	ContextMenuItem,
-	ContextMenuTrigger,
-} from "@/components/ui/context-menu";
-import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { TagElement } from "./TagElement";
 
 export function TagList({
 	tags,
@@ -28,8 +23,32 @@ export function TagList({
 	setTitleValue,
 	setContentValue,
 	setSelectedValues,
+	setTags,
+	currentNote,
+	setNotes,
 }) {
 	const { data, error, isLoading } = useGetListTagQuery("2");
+
+	const removeTag = (tag) => {
+		setCurrentTag("");
+		const updatedTags = [...tags];
+		const newTags = updatedTags.filter((e) => e !== tag);
+		setTags(newTags);
+		setCurrentNote({
+			...currentNote,
+			tags: currentNote.tags.filter((e) => e !== tag),
+		});
+		let updatedNotes = [...notes];
+
+		for (let i = 0; i < updatedNotes.length; i++) {
+			const element = updatedNotes[i];
+			updatedNotes[i] = {
+				...element,
+				tags: element.tags.filter((e) => e !== tag),
+			};
+		}
+		setNotes(updatedNotes);
+	};
 
 	return (
 		<div className='flex w-1/2 flex-col items-center border-r-2 border-r-foreground'>
@@ -85,51 +104,24 @@ export function TagList({
 				// data &&
 				<ScrollArea className='h-[600px] w-full rounded-md [&>div>div[style]]:!block'>
 					<div className='p-4'>
-						{tags.map((tag) => (
-							<>
-								<ContextMenu>
-									<ContextMenuTrigger>
-										<Button
-											key={tag}
-											className={`m-0 w-full justify-start ${currentTag === tag && "bg-primary"} overflow-hidden text-sm text-foreground`}
-											variant='ghost'
-											onClick={() => {
-												setCurrentTag(tag);
-												const newNote = notes.filter(
-													(note) =>
-														note.tags.includes(tag)
-												);
-												setCurrentNote(newNote[0]);
-												setTitleValue(newNote[0].title);
-												setContentValue(
-													newNote[0].content
-												);
-												setSelectedValues(
-													newNote[0].tags.map(
-														(e) => ({
-															label: e,
-															value: e,
-														})
-													)
-												);
-											}}
-										>
-											{tag}
-										</Button>
-										<Separator className='' />
-									</ContextMenuTrigger>
-									<ContextMenuContent className='w-52'>
-										<ContextMenuItem className='flex justify-between'>
-											Rename
-											<RotateCcw />
-										</ContextMenuItem>
-										<ContextMenuItem className='flex justify-between'>
-											Remove
-											<X />
-										</ContextMenuItem>
-									</ContextMenuContent>
-								</ContextMenu>
-							</>
+						{tags.map((tag, index) => (
+							<TagElement
+								key={index}
+								tag={tag}
+								tags={tags}
+								index={index}
+								currentTag={currentTag}
+								notes={notes}
+								removeTag={removeTag}
+								setCurrentTag={setCurrentTag}
+								setCurrentNote={setCurrentNote}
+								setTitleValue={setTitleValue}
+								setContentValue={setContentValue}
+								setSelectedValues={setSelectedValues}
+								setNotes={setNotes}
+								currentNote={currentNote}
+								setTags={setTags}
+							/>
 						))}
 					</div>
 				</ScrollArea>

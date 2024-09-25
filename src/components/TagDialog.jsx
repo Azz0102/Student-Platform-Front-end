@@ -27,7 +27,7 @@ import {
 	DrawerTrigger,
 } from "@/components/ui/drawer";
 
-export function TagDialog(
+export function TagDialog({
 	open,
 	handleDialogChange,
 	setSelectedValues,
@@ -35,8 +35,8 @@ export function TagDialog(
 	selectedValues,
 	handleSelectChange,
 	handleTagChange,
-	tags
-) {
+	tags,
+}) {
 	const { width } = useWindowDimensions();
 
 	if (width > 768) {
@@ -144,12 +144,12 @@ export function TagDialog(
 					</div>
 				</div>
 			</DrawerTrigger>
-			<DrawerContent>
+			<DrawerContent className='h-96'>
 				<DrawerHeader className='text-left'>
 					<DrawerTitle>Add or remove tags</DrawerTitle>
 					<DrawerDescription></DrawerDescription>
 				</DrawerHeader>
-				<div className='flex items-center space-x-2'>
+				<div className='m-2 flex items-center space-x-2'>
 					<MultipleSelector
 						defaultOptions={(tags || []).map((tag) => ({
 							label: tag,
