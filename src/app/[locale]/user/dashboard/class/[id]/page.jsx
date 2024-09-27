@@ -14,6 +14,7 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MessageCircle, FileText, ExternalLink } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const classInfo = {
 	name: "Introduction to Computer Science",
@@ -48,11 +49,11 @@ const classInfo = {
 	],
 	relatedNotes: [
 		{
+			id: 1,
 			title: "Data Structures Overview",
-			link: "/notes/data-structures",
 		},
-		{ title: "Algorithms Basics", link: "/notes/algorithms-basics" },
-		{ title: "Object-Oriented Programming", link: "/notes/oop" },
+		{ id: 2, title: "Algorithms Basics" },
+		{ id: 3, title: "Object-Oriented Programming" },
 	],
 	notifications: [
 		{
@@ -86,7 +87,7 @@ const overallGrade = classInfo.scores.reduce(
 
 export default function Page() {
 	// This would typically come from props or a data fetch
-
+	const router = useRouter();
 	return (
 		<div className='min-h-screen bg-background p-4 sm:bg-transparent'>
 			<div className='mx-auto space-y-6'>
@@ -215,11 +216,20 @@ export default function Page() {
 								{classInfo.relatedNotes.map((note, index) => (
 									<li key={index}>
 										<Link
-											href={note.link}
+											href='/user/note'
 											className='flex items-center text-blue-600 hover:underline'
 										>
 											<FileText className='mr-2 h-4 w-4' />{" "}
-											{note.title}
+											<a
+												onClick={(e) => {
+													e.preventDefault();
+													router.push(
+														`/user/note?data=${note.id}`
+													);
+												}}
+											>
+												{note.title}
+											</a>
 										</Link>
 									</li>
 								))}

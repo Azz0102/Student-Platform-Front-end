@@ -15,6 +15,7 @@ import { NoteList } from "./NoteList";
 import { current } from "@reduxjs/toolkit";
 import { set } from "date-fns";
 import { TagDialog } from "./TagDialog";
+import { useSearchParams } from "next/navigation";
 
 const MDEditor = dynamic(
 	() => import("@uiw/react-md-editor").then((mod) => mod.default),
@@ -41,11 +42,12 @@ export function Note() {
 			tags: ["React", "Remix"],
 		},
 	]);
+
 	const [currentNote, setCurrentNote] = useState({
-		id: 1,
-		title: "Note 1",
-		content: "This is the content of note 1",
-		tags: ["Nextjs", "React"],
+		id: "",
+		title: "",
+		content: "",
+		tags: ["", ""],
 	});
 	const [currentTag, setCurrentTag] = useState(null);
 	const [newNoteIndex, setNewNoteIndex] = useState(0);

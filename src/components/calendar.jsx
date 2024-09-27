@@ -14,12 +14,14 @@ const localizer = dayjsLocalizer(dayjs);
 
 const myEventsList = [
 	{
-		title: "Meeting",
+		id: 1,
+		title: "INT-2002",
 		start: new Date(2024, 8, 28, 10, 30),
 		end: new Date(2024, 8, 28, 12, 0),
 	},
 	{
-		title: "Eat",
+		id: 2,
+		title: "INT-2001",
 		start: new Date(2024, 8, 29, 10, 30),
 		end: new Date(2024, 8, 29, 12, 0),
 	},
@@ -41,10 +43,12 @@ export function MyCalendar({ className }) {
 	const onView = useCallback((newView) => setView(newView), [setView]);
 	const { width, height } = useWindowDimensions();
 
-	const onSelectEvent = useCallback((event) => {
-		console.log("Selected Event:", event);
-		router.push("/user/dashboard/class/1");
-	}, [router]);
+	const onSelectEvent = useCallback(
+		(event) => {
+			router.push(`/user/dashboard/class/${event.id}`);
+		},
+		[router]
+	);
 
 	return (
 		<div className={`${className}`} style={{ height: `${height - 120}px` }}>
