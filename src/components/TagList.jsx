@@ -1,9 +1,7 @@
 import * as React from "react";
-import { Tags, AlertCircle, X, Delete, RotateCcw } from "lucide-react";
+import { Tags, AlertCircle, Delete } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
-import { useGetListTagQuery } from "@/lib/services/tag";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { LoadingSpinner } from "./ui/loading-spinner";
 import {
@@ -26,9 +24,9 @@ export function TagList({
 	setTags,
 	currentNote,
 	setNotes,
+	isLoading,
+	error,
 }) {
-	const { data, error, isLoading } = useGetListTagQuery("2");
-
 	const removeTag = (tag) => {
 		setCurrentTag("");
 		const updatedTags = [...tags];
@@ -88,20 +86,23 @@ export function TagList({
 					</Tooltip>
 				</TooltipProvider>
 			</div>
-			{/* {isLoading && (
-                <div className="w-full items-center flex justify-center">
-                    <LoadingSpinner />
-                </div>
-            )}
-            {error && (
-                <Alert variant="destructive" className='w-5/6'>
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertTitle>Error</AlertTitle>
-                    <AlertDescription>{error.message}</AlertDescription>
-                </Alert>
-            )} */}
-			{
-				// data &&
+			{isLoading && (
+				<div className='flex w-full items-center justify-center'>
+					<LoadingSpinner />
+				</div>
+			)}
+			{error && (
+				<Alert variant='destructive' className='w-5/6'>
+					<AlertCircle className='h-4 w-4' />
+					<AlertTitle>Error</AlertTitle>
+					<AlertDescription>Error fetching tags</AlertDescription>
+				</Alert>
+			)}
+			{tags.length === 0 && !isLoading && !error && (
+				<div>No tag available. Please create a new Tag</div>
+			)}
+
+			{tags.length !== 0 && !isLoading && !error && (
 				<ScrollArea className='h-[600px] w-full rounded-md [&>div>div[style]]:!block'>
 					<div className='p-4'>
 						{tags.map((tag, index) => (
@@ -125,7 +126,7 @@ export function TagList({
 						))}
 					</div>
 				</ScrollArea>
-			}
+			)}
 		</div>
 	);
 }

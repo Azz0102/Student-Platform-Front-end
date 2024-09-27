@@ -5,7 +5,6 @@ import {
 	Plus,
 	AlertCircle,
 	Tags,
-	Delete,
 	CopyPlus,
 	Trash2,
 } from "lucide-react";
@@ -13,7 +12,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useGetListNoteQuery } from "@/lib/services/note";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { LoadingSpinner } from "./ui/loading-spinner";
 import {
@@ -28,6 +26,7 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useCreateNoteMutation } from "@/lib/services/note";
 
 export function NoteList({
 	notes,
@@ -45,8 +44,18 @@ export function NoteList({
 	currentTag,
 	fullnotes,
 	setOpen,
+	isLoading,
+	error,
 }) {
-	const { data, error, isLoading } = useGetListNoteQuery("2");
+	const [
+		createNote,
+		{
+			isLoading: isCreateNoteLoading,
+			error: createNoteError,
+			data: createNoteData,
+		},
+	] = useCreateNoteMutation();
+
 	const [searchQuery, setSearchQuery] = useState("");
 
 	const handleDeleteNote = (note) => {
@@ -65,7 +74,7 @@ export function NoteList({
 		}
 	};
 
-	const handleAddNote = () => {
+	const handleAddNote = async () => {
 		setNotes([
 			{
 				id: "new" + newNoteIndex,
@@ -75,6 +84,17 @@ export function NoteList({
 			},
 			...fullnotes,
 		]);
+
+		try {
+			await createNote({
+				userId: 1,
+				title: "",
+				content: "",
+				tags: [],
+			});
+		} catch (error) {
+			console.error("Error creating note", error);
+		}
 
 		setNewNoteIndex(newNoteIndex + 1);
 		// focusOnContentInput();
@@ -114,7 +134,7 @@ export function NoteList({
 									variant='ghost'
 									className='p-2'
 									onClick={handleAddNote}
-									// disabled={isLoading || error ? true : false}
+									disabled={isLoading || error ? true : false}
 								>
 									<Plus />
 								</Button>
@@ -137,20 +157,22 @@ export function NoteList({
 					/>
 				</div>
 			</div>
-			{/* {isLoading && (
-                <div className="w-full items-center flex justify-center">
-                    <LoadingSpinner />
-                </div>
-            )}
-            {error && (
-                <Alert variant="destructive" className="w-5/6">
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertTitle>Error</AlertTitle>
-                    <AlertDescription>{error.message}</AlertDescription>
-                </Alert>
-            )} */}
-			{
-				// data &&
+			{isLoading && (
+				<div className='flex w-full items-center justify-center'>
+					<LoadingSpinner />
+				</div>
+			)}
+			{error && (
+				<Alert variant='destructive' className='w-5/6'>
+					<AlertCircle className='h-4 w-4' />
+					<AlertTitle>Error</AlertTitle>
+					<AlertDescription>Error fetching tags</AlertDescription>
+				</Alert>
+			)}
+			{notes.length === 0 && !isLoading && !error && (
+				<div>No note available please create new note</div>
+			)}
+			{notes.length !== 0 && !isLoading && !error && (
 				<ScrollArea className='h-[600px] w-full rounded-md [&>div>div[style]]:!block'>
 					<div className='m-4 flex flex-col'>
 						{!searchQuery
@@ -338,7 +360,7 @@ export function NoteList({
 									))}
 					</div>
 				</ScrollArea>
-			}
+			)}
 		</div>
 	);
 }

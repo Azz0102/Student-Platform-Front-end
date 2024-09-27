@@ -15,7 +15,8 @@ import { NoteList } from "./NoteList";
 import { current } from "@reduxjs/toolkit";
 import { set } from "date-fns";
 import { TagDialog } from "./TagDialog";
-import { useSearchParams } from "next/navigation";
+import { useGetListNoteQuery } from "@/lib/services/note";
+import { useGetListTagQuery } from "@/lib/services/tag";
 
 const MDEditor = dynamic(
 	() => import("@uiw/react-md-editor").then((mod) => mod.default),
@@ -23,33 +24,48 @@ const MDEditor = dynamic(
 );
 
 export function Note() {
-	const [titleValue, setTitleValue] = useState("");
-	const [contentValue, setContentValue] = useState("");
+	const {
+		data: noteList = [],
+		error: noteError,
+		isLoading: isNoteLoading,
+	} = useGetListNoteQuery("1");
+
+	const {
+		data: tagList = [],
+		error: tagError,
+		isLoading: isTagLoading,
+	} = useGetListTagQuery("1");
+
 	const { width, height } = useWindowDimensions();
 	const { theme } = useTheme();
-	const [tags, setTags] = useState(["Nextjs", "React", "Remix"]);
-	const [notes, setNotes] = useState([
-		{
-			id: 1,
-			title: "Note 1",
-			content: "This is the content of note 1",
-			tags: ["Nextjs", "React"],
-		},
-		{
-			id: 2,
-			title: "Note 2",
-			content: "This is the content of note 2",
-			tags: ["React", "Remix"],
-		},
-	]);
 
-	const [currentNote, setCurrentNote] = useState({
+	const [titleValue, setTitleValue] = useState("");
+	const [contentValue, setContentValue] = useState("");
+
+	const [tags, setTags] = useState([]); // [{id: 1, name: "Nextjs"}, {id: 2 ,name: "React"}, {id: 3, name: "Remix"}]
+	const [notes, setNotes] = useState([]);
+	/* [{
+		id: 1,
+		title: "Note 1",
+		content: "This is the content of note 1",
+		tags: ["Nextjs", "React"],
+	},
+	{
+		id: 2,
+		title: "Note 2",
+		content: "This is the content of note 2",
+		tags: ["React", "Remix"],
+	},] */
+
+	const [currentNote, setCurrentNote] = useState({});
+	/**{
 		id: "",
 		title: "",
 		content: "",
 		tags: ["", ""],
-	});
-	const [currentTag, setCurrentTag] = useState(null);
+	}
+	 */
+	const [currentTag, setCurrentTag] = useState("");
 	const [newNoteIndex, setNewNoteIndex] = useState(0);
 
 	const titleInputRef = useRef(null);
@@ -60,18 +76,32 @@ export function Note() {
 	const [open, setOpen] = useState(false);
 
 	useEffect(() => {
-		setCurrentNote({
-			id: 1,
-			title: "Note 1",
-			content: "This is the content of note 1",
-			tags: ["Nextjs", "React"],
-		});
-		setContentValue("This is the content of note 1");
-		setTitleValue("Note 1");
-		setSelectedValues(
-			["Nextjs", "React"].map((e) => ({ label: e, value: e }))
-		);
-	}, []);
+		if (noteList && noteList.length !== 0) {
+			setNotes(noteList);
+			setCurrentNote(noteList[0]);
+			setContentValue(noteList[0].content);
+			setTitleValue(noteList[0].title);
+			setSelectedValues(
+				noteList[0].tags.map((e) => ({ label: e.name, value: e.name }))
+			);
+		}
+
+		if (tagList) {
+			setTags(tagList);
+		}
+
+		// setCurrentNote({
+		// 	id: 1,
+		// 	title: "Note 1",
+		// 	content: "This is the content of note 1",
+		// 	tags: ["Nextjs", "React"],
+		// });
+		// setContentValue("This is the content of note 1");
+		// setTitleValue("Note 1");
+		// setSelectedValues(
+		// 	["Nextjs", "React"].map((e) => ({ label: e, value: e }))
+		// );
+	}, [noteList, tagList]);
 
 	const focusOnTitleInput = () => {
 		if (titleInputRef.current) {
@@ -206,6 +236,8 @@ export function Note() {
 						setTags={setTags}
 						currentNote={currentNote}
 						setNotes={setNotes}
+						isLoading={isTagLoading}
+						error={tagError}
 					/>
 					<NoteList
 						setCurrentNote={setCurrentNote}
@@ -229,47 +261,54 @@ export function Note() {
 						}
 						setOpen={setOpen}
 						fullnotes={notes}
+						isLoading={isNoteLoading}
+						error={noteError}
 					/>
 				</div>
 			</div>
-			<div className='my-4 flex w-full flex-col items-center justify-center p-0 2xl:mr-2 2xl:w-3/5'>
-				<div className='mb-2 w-full'>
-					<Input
-						placeholder="Note's title"
-						value={titleValue}
-						onChange={handleTitleChange}
-						onBlur={handleContentBlur}
-						ref={titleInputRef}
-					/>
-				</div>
-				<div className='w-full' data-color-mode={`${theme}`}>
-					<MDEditor
-						value={contentValue}
-						onChange={handleContentChange}
-						previewOptions={{
-							rehypePlugins: [[rehypeSanitize]],
-						}}
-						textareaProps={{
-							placeholder: "Please enter Markdown text",
-						}}
-						visibleDragbar={false}
-						ref={contentInputRef}
-						// height="100%"
-						// minHeight={1000}
-						height={height - 210}
-					/>
-				</div>
 
-				<TagDialog
-					open={open}
-					handleDialogChange={handleDialogChange}
-					setSelectedValues={setSelectedValues}
-					currentNote={currentNote}
-					selectedValues={selectedValues}
-					handleSelectChange={handleSelectChange}
-					handleTagChange={handleTagChange}
-					tags={tags}
-				/>
+			<div className='my-4 flex w-full flex-col items-center justify-center p-0 2xl:mr-2 2xl:w-3/5'>
+				{!isTagLoading && !isNoteLoading && notes.length !== 0 && (
+					<>
+						<div className='mb-2 w-full'>
+							<Input
+								placeholder="Note's title"
+								value={titleValue}
+								onChange={handleTitleChange}
+								onBlur={handleContentBlur}
+								ref={titleInputRef}
+							/>
+						</div>
+						<div className='w-full' data-color-mode={`${theme}`}>
+							<MDEditor
+								value={contentValue}
+								onChange={handleContentChange}
+								previewOptions={{
+									rehypePlugins: [[rehypeSanitize]],
+								}}
+								textareaProps={{
+									placeholder: "Please enter Markdown text",
+								}}
+								visibleDragbar={false}
+								ref={contentInputRef}
+								// height="100%"
+								// minHeight={1000}
+								height={height - 210}
+							/>
+						</div>
+
+						<TagDialog
+							open={open}
+							handleDialogChange={handleDialogChange}
+							setSelectedValues={setSelectedValues}
+							currentNote={currentNote}
+							selectedValues={selectedValues}
+							handleSelectChange={handleSelectChange}
+							handleTagChange={handleTagChange}
+							tags={tags}
+						/>
+					</>
+				)}
 			</div>
 		</main>
 	);
