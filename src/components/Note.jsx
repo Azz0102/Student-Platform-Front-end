@@ -16,7 +16,8 @@ import { current } from "@reduxjs/toolkit";
 import { set } from "date-fns";
 import { TagDialog } from "./TagDialog";
 import { useGetListNoteQuery } from "@/lib/services/note";
-import { useGetListTagQuery } from "@/lib/services/tag";
+import { useCreateTagMutation, useGetListTagQuery } from "@/lib/services/tag";
+import { toast } from "sonner";
 
 const MDEditor = dynamic(
 	() => import("@uiw/react-md-editor").then((mod) => mod.default),
@@ -36,6 +37,15 @@ export function Note() {
 		isLoading: isTagLoading,
 	} = useGetListTagQuery("1");
 
+	const [
+		createTag,
+		{
+			isLoading: isCreateTagLoading,
+			isError: createTagError,
+			data: createTagData,
+		},
+	] = useCreateTagMutation();
+
 	const { width, height } = useWindowDimensions();
 	const { theme } = useTheme();
 
@@ -48,13 +58,13 @@ export function Note() {
 		id: 1,
 		title: "Note 1",
 		content: "This is the content of note 1",
-		tags: ["Nextjs", "React"],
+		tags: [{id: 1, name: "Nextjs"}, {id: 2 ,name: "React"}],
 	},
 	{
 		id: 2,
 		title: "Note 2",
 		content: "This is the content of note 2",
-		tags: ["React", "Remix"],
+		tags: [{id: 2 ,name: "React"}, {id: 3, name: "Remix"}],
 	},] */
 
 	const [currentNote, setCurrentNote] = useState({});
@@ -62,10 +72,10 @@ export function Note() {
 		id: "",
 		title: "",
 		content: "",
-		tags: ["", ""],
+		tags: [],
 	}
 	 */
-	const [currentTag, setCurrentTag] = useState("");
+	const [currentTag, setCurrentTag] = useState({});
 	const [newNoteIndex, setNewNoteIndex] = useState(0);
 
 	const titleInputRef = useRef(null);
@@ -82,7 +92,11 @@ export function Note() {
 			setContentValue(noteList[0].content);
 			setTitleValue(noteList[0].title);
 			setSelectedValues(
-				noteList[0].tags.map((e) => ({ label: e.name, value: e.name }))
+				noteList[0].tags.map((e) => ({
+					id: e.id,
+					label: e.name,
+					value: e.name,
+				}))
 			);
 		}
 
@@ -159,9 +173,13 @@ export function Note() {
 			setTitleValue(!notes[1] ? "" : notes[1].title);
 			setCurrentNote(!notes[1] ? {} : notes[1]);
 			setSelectedValues(
-				notes[1].tags.length === 0
+				notes[1].tags.length === 0 || !notes[1]
 					? []
-					: notes[1].tags.map((e) => ({ label: e, value: e }))
+					: notes[1].tags.map((e) => ({
+							id: e.id,
+							label: e.name,
+							value: e.name,
+						}))
 			);
 		}
 	};
@@ -171,36 +189,60 @@ export function Note() {
 		setSelectedValues(newSelectedOptions);
 	};
 
-	const handleTagChange = () => {
+	const handleTagChange = async () => {
+		let newSelectedValue = [...selectedValues];
+
+		if (selectedValues.length !== 0) {
+			for (let i = 0; i < selectedValues.length; i++) {
+				const element = selectedValues[i];
+				if (!element.id) {
+					try {
+						const newTag = await createTag({
+							userId: 1,
+							name: element.name,
+						}).unwrap();
+
+						newSelectedValue[i] = {
+							id: newTag.id,
+							label: newTag.name,
+							value: newTag.name,
+						};
+
+						setTags([...tags, newTag]);
+					} catch (error) {
+						toast.error("Error creating tag");
+					}
+				}
+			}
+		}
+
 		const updatedNotes = [...notes];
 		updatedNotes[
 			updatedNotes.findIndex((note) => note.id === currentNote.id)
 		] = {
 			...currentNote,
 			tags:
-				selectedValues.length === 0
+				newSelectedValue.length === 0
 					? []
-					: selectedValues.map((e) => e.label),
+					: newSelectedValue.map((e) => ({
+							id: e.id,
+							name: e.label,
+						})),
 		};
 
 		setCurrentNote({
 			...currentNote,
 			tags:
-				selectedValues.length === 0
+				newSelectedValue.length === 0
 					? []
-					: selectedValues.map((e) => e.label),
+					: newSelectedValue.map((e) => ({
+							id: e.id,
+							name: e.label,
+						})),
 		});
 
-		if (selectedValues.length !== 0) {
-			for (let i = 0; i < selectedValues.length; i++) {
-				const element = selectedValues[i];
-				if (!tags.includes(element.label)) {
-					setTags([...tags, element.label]);
-				}
-			}
-		}
-
 		setNotes(updatedNotes);
+		setSelectedValues(newSelectedValue);
 	};
 
 	const handleDialogChange = (isOpen) => {
@@ -209,9 +251,12 @@ export function Note() {
 			console.log(currentNote);
 			// Add your cleanup logic here, e.g., resetting state, clearing timers, etc.
 			setSelectedValues(
-				currentNote.tags.length === 0
+				currentNote.tags.length === 0 || !currentNote.tags
 					? []
-					: currentNote.tags.map((e) => ({ label: e, value: e }))
+					: currentNote.tags.map((e) => ({
+							label: e.name,
+							value: e.name,
+						}))
 			);
 		}
 		setOpen(isOpen);

@@ -29,7 +29,7 @@ export default function RootLayout({ children, params: { locale } }) {
 						enableSystem
 						disableTransitionOnChange
 					>
-						<Toaster />
+						<Toaster closeButton />
 						{children}
 					</ThemeProvider>
 				</StoreProvider>

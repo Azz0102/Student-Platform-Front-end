@@ -26,7 +26,11 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useCreateNoteMutation } from "@/lib/services/note";
+import {
+	useCreateNoteMutation,
+	useDeleteNoteMutation,
+} from "@/lib/services/note";
+import { toast } from "sonner";
 
 export function NoteList({
 	notes,
@@ -56,67 +60,78 @@ export function NoteList({
 		},
 	] = useCreateNoteMutation();
 
+	const [
+		deleteNote,
+		{
+			isLoading: isDeleteNoteLoading,
+			error: deleteNoteError,
+			data: deleteNoteData,
+		},
+	] = useDeleteNoteMutation();
+
 	const [searchQuery, setSearchQuery] = useState("");
 
-	const handleDeleteNote = (note) => {
-		const updatedNotes = [...fullnotes];
-		updatedNotes.splice(
-			updatedNotes.findIndex((e) => e.id === note.id),
-			1
-		);
-		setNotes(updatedNotes);
+	const handleDeleteNote = async (note) => {
+		try {
+			await deleteNote({ noteId: note.id });
+			const updatedNotes = [...fullnotes];
+			updatedNotes.splice(
+				updatedNotes.findIndex((e) => e.id === note.id),
+				1
+			);
+			setNotes(updatedNotes);
 
-		if (currentNote.id === note.id) {
-			setContentValue("");
-			setTitleValue("");
-			setCurrentNote({});
-			setSelectedValues([]);
+			if (currentNote.id === note.id) {
+				setContentValue("");
+				setTitleValue("");
+				setCurrentNote({});
+				setSelectedValues([]);
+			}
+		} catch (error) {
+			toast.error("Error deleting notes");
 		}
 	};
 
 	const handleAddNote = async () => {
-		setNotes([
-			{
-				id: "new" + newNoteIndex,
-				title: "",
-				content: "",
-				tags: [],
-			},
-			...fullnotes,
-		]);
-
 		try {
-			await createNote({
+			const newNote = await createNote({
 				userId: 1,
 				title: "",
 				content: "",
 				tags: [],
 			});
-		} catch (error) {
-			console.error("Error creating note", error);
-		}
 
-		setNewNoteIndex(newNoteIndex + 1);
-		// focusOnContentInput();
-		focusOnTitleInput();
-		setCurrentNote({
-			id: "new" + newNoteIndex,
-			title: "",
-			content: "",
-			tags: [],
-		});
-		setTitleValue("");
-		setContentValue("");
-		setSelectedValues([]);
-		setCurrentTag("");
+			setNotes([newNote, ...fullnotes]);
+
+			setNewNoteIndex(newNoteIndex + 1);
+			// focusOnContentInput();
+			focusOnTitleInput();
+			setCurrentNote(newNote);
+			setTitleValue("");
+			setContentValue("");
+			setSelectedValues([]);
+			setCurrentTag({});
+		} catch (error) {
+			toast.error("Error creating note");
+		}
 	};
 
-	const handleDuplicate = (note) => {
-		const updatedNotes = [...fullnotes];
-		const duplicateNote = { ...note };
-		duplicateNote.id = "new" + newNoteIndex;
-		updatedNotes.push(duplicateNote);
-		setNotes(updatedNotes);
+	const handleDuplicate = async (note) => {
+		try {
+			const newNote = await createNote({
+				userId: 1,
+				title: note.title,
+				content: note.content,
+				tags: note.tags,
+			});
+			const updatedNotes = [...fullnotes];
+
+			// duplicateNote.id = "new" + newNoteIndex;
+			updatedNotes.push(newNote);
+			setNotes(updatedNotes);
+		} catch (error) {
+			toast.error("Error duplicate note");
+		}
 	};
 
 	return (
@@ -193,14 +208,18 @@ export function NoteList({
 															note.title
 														);
 														setSelectedValues(
-															!note.tags
+															!note.tags ||
+																note.tags
+																	.length ===
+																	0
 																? []
 																: note.tags.map(
 																		(
 																			e
 																		) => ({
-																			label: e,
-																			value: e,
+																			id: e.id,
+																			label: e.name,
+																			value: e.name,
 																		})
 																	)
 														);
@@ -222,14 +241,18 @@ export function NoteList({
 															note.title
 														);
 														setSelectedValues(
-															!note.tags
+															!note.tags ||
+																note.tags
+																	.length ===
+																	0
 																? []
 																: note.tags.map(
 																		(
 																			e
 																		) => ({
-																			label: e,
-																			value: e,
+																			id: e.id,
+																			label: e.name,
+																			value: e.name,
 																		})
 																	)
 														);
@@ -284,14 +307,18 @@ export function NoteList({
 																note.title
 															);
 															setSelectedValues(
-																!note.tags
+																!note.tags ||
+																	note.tags
+																		.length ===
+																		0
 																	? []
 																	: note.tags.map(
 																			(
 																				e
 																			) => ({
-																				label: e,
-																				value: e,
+																				id: e.id,
+																				label: e.name,
+																				value: e.name,
 																			})
 																		)
 															);
@@ -315,14 +342,18 @@ export function NoteList({
 																note.title
 															);
 															setSelectedValues(
-																!note.tags
+																!note.tags ||
+																	note.tags
+																		.length ===
+																		0
 																	? []
 																	: note.tags.map(
 																			(
 																				e
 																			) => ({
-																				label: e,
-																				value: e,
+																				id: e.id,
+																				label: e.name,
+																				value: e.name,
 																			})
 																		)
 															);

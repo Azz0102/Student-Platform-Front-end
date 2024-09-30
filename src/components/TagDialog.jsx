@@ -47,9 +47,11 @@ export function TagDialog({
 						className='mt-1 flex w-full flex-wrap items-center'
 						onClick={() => {
 							setSelectedValues(
-								currentNote.tags.length === 0
+								currentNote.tags.length === 0 ||
+									!currentNote.tags
 									? []
 									: currentNote.tags.map((e) => ({
+											id: e.id,
 											label: e,
 											value: e,
 										}))
@@ -61,8 +63,13 @@ export function TagDialog({
 						</Button>
 						{currentNote &&
 							currentNote.tags &&
+							currentNote.tags.length !== 0 &&
 							currentNote.tags
-								.map((tag) => ({ label: tag, value: tag }))
+								.map((tag) => ({
+									id: e,
+									label: tag,
+									value: tag,
+								}))
 								.map((option, index) => {
 									return (
 										<div className='m-1' key={index}>
