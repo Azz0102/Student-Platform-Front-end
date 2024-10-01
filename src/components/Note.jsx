@@ -15,9 +15,16 @@ import { NoteList } from "./NoteList";
 import { current } from "@reduxjs/toolkit";
 import { set } from "date-fns";
 import { TagDialog } from "./TagDialog";
-import { useGetListNoteQuery } from "@/lib/services/note";
+import {
+	useGetListNoteQuery,
+	useUpdateNoteMutation,
+} from "@/lib/services/note";
 import { useCreateTagMutation, useGetListTagQuery } from "@/lib/services/tag";
 import { toast } from "sonner";
+import { useAppSelector } from "@/lib/hooks";
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
+import { setListNote } from "@/lib/features/noteSlice";
 
 const MDEditor = dynamic(
 	() => import("@uiw/react-md-editor").then((mod) => mod.default),
@@ -25,6 +32,9 @@ const MDEditor = dynamic(
 );
 
 export function Note() {
+	const dispatch = useDispatch();
+	const router = useRouter();
+
 	const {
 		data: noteList = [],
 		error: noteError,
@@ -36,6 +46,14 @@ export function Note() {
 		error: tagError,
 		isLoading: isTagLoading,
 	} = useGetListTagQuery("1");
+
+	const [updateNote, { isError: updateNoteError }] = useUpdateNoteMutation();
+
+	const currentNoteIdState = useAppSelector(
+		(state) => state.note.currentNoteId
+	);
+
+	const listNote = useAppSelector((state) => state.note.listNote);
 
 	const [
 		createTag,
@@ -86,21 +104,109 @@ export function Note() {
 	const [open, setOpen] = useState(false);
 
 	useEffect(() => {
+		toast("Use Ctrl+S to save note changes");
+		// Handle Ctrl+S key press
+		const handleKeyDown = async (event) => {
+			if ((event.ctrlKey || event.metaKey) && event.key === "s") {
+				event.preventDefault();
+				// Call save logic when Ctrl+S is pressed
+				if (notes.length > 0) {
+					try {
+						for (let i = 0; i < notes.length; i++) {
+							if (
+								notes[i].title !== listNote[i].title ||
+								notes[i].content !== listNote[i].content
+							) {
+								const updatedNote = await updateNote({
+									noteId: notes[i].id,
+									title: notes[i].title,
+									content: notes[i].content,
+									tags: notes[i].tags,
+								});
+							}
+						}
+						toast.success("Save notes successfully");
+						dispatch(setListNote(notes));
+					} catch (error) {
+						toast.error("Save note failed");
+					}
+				}
+			}
+		};
+
+		// Handle beforeunload event (browser close/redirect)
+		const handleBeforeUnload = (event) => {
+			let isSaved = true; // Assume all notes are saved initially
+			if (notes.length > 0) {
+				for (let i = 0; i < notes.length; i++) {
+					if (
+						notes[i].title !== listNote[i].title ||
+						notes[i].content !== listNote[i].content
+					) {
+						isSaved = false; // Set isSaved to false if any notes are not saved
+						break; // Break the loop if any notes are not saved
+					}
+				}
+			}
+			if (!isSaved) {
+				event.preventDefault();
+				event.returnValue =
+					"You have unsaved changes. Are you sure you want to leave?"; // Display warning dialog
+			}
+		};
+
+		// Add keydown event listener for Ctrl+S
+		window.addEventListener("keydown", handleKeyDown);
+
+		// Add beforeunload event listener for unsaved data warning
+		window.addEventListener("beforeunload", handleBeforeUnload);
+
+		// Clean up listeners when component unmounts
+		return () => {
+			window.removeEventListener("keydown", handleKeyDown);
+			window.removeEventListener("beforeunload", handleBeforeUnload);
+		};
+	}, [dispatch, listNote, notes, updateNote]);
+
+	useEffect(() => {
 		if (noteList && noteList.length !== 0) {
 			setNotes(noteList);
-			setCurrentNote(noteList[0]);
-			setContentValue(noteList[0].content);
-			setTitleValue(noteList[0].title);
-			setSelectedValues(
-				noteList[0].tags.map((e) => ({
-					id: e.id,
-					label: e.name,
-					value: e.name,
-				}))
-			);
+			dispatch(setListNote([...noteList]));
+			if (currentNoteIdState) {
+				const note = noteList.find(
+					(note) => note.id === currentNoteIdState
+				);
+				if (note) {
+					setCurrentNote(note);
+					setContentValue(note.content);
+					setTitleValue(note.title);
+					setSelectedValues(
+						note.tags.map((e) => ({
+							id: e.id,
+							label: e.name,
+							value: e.name,
+						}))
+					);
+				} else {
+					toast.error("No selected note found!");
+				}
+
+				dispatch(setContentValue(null));
+			} else {
+				setCurrentNote(noteList[0]);
+				setContentValue(noteList[0].content);
+				setTitleValue(noteList[0].title);
+				setSelectedValues(
+					noteList[0].tags.map((e) => ({
+						id: e.id,
+						label: e.name,
+						value: e.name,
+					}))
+				);
+			}
 		}
 
-		if (tagList) {
+		if (tagList && tagList.length !== 0) {
 			setTags(tagList);
 		}
 
@@ -115,7 +221,40 @@ export function Note() {
 		// setSelectedValues(
 		// 	["Nextjs", "React"].map((e) => ({ label: e, value: e }))
 		// );
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [noteList, tagList]);
+
+	useEffect(() => {
+		const handleRouteChange = (url) => {
+			let isSaved = true; // Assume all notes are saved initially
+			if (notes.length > 0) {
+				for (let i = 0; i < notes.length; i++) {
+					if (
+						notes[i].title !== listNote[i].title ||
+						notes[i].content !== listNote[i].content
+					) {
+						isSaved = false; // Set isSaved to false if any notes are not saved
+						break; // Break the loop if any notes are not saved
+					}
+				}
+			}
+			if (
+				!isSaved &&
+				!window.confirm(
+					"You have unsaved changes. Are you sure you want to leave?"
+				)
+			) {
+				router.events.emit("routeChangeError");
+				throw new Error("Route change aborted due to unsaved changes"); // Prevent route change
+			}
+		};
+
+		router.events.on("routeChangeStart", handleRouteChange);
+
+		return () => {
+			router.events.off("routeChangeStart", handleRouteChange);
+		};
+	}, [listNote, notes, router.events]);
 
 	const focusOnTitleInput = () => {
 		if (titleInputRef.current) {
@@ -169,6 +308,8 @@ export function Note() {
 		if (!e.target.value && !contentValue) {
 			// remove first note
 			setNotes(notes.slice(1));
+			dispatch(setListNote(notes.slice(1)));
+
 			setContentValue(!notes[1] ? "" : notes[1].content);
 			setTitleValue(!notes[1] ? "" : notes[1].title);
 			setCurrentNote(!notes[1] ? {} : notes[1]);
@@ -242,6 +383,7 @@ export function Note() {
 		});
 
 		setNotes(updatedNotes);
+		dispatch(setListNote(updatedNotes));
 		setSelectedValues(newSelectedValue);
 	};
 
@@ -298,11 +440,17 @@ export function Note() {
 						setCurrentTag={setCurrentTag}
 						currentTag={currentTag}
 						notes={
-							!currentTag
+							!currentTag.id
 								? notes
-								: notes.filter((note) =>
-										note.tags.includes(currentTag)
-									)
+								: notes.filter((note) => {
+										if (note.tags.length > 0) {
+											for (const tag of note.tags) {
+												if (tag.id === currentTag.id) {
+													return note;
+												}
+											}
+										}
+									})
 						}
 						setOpen={setOpen}
 						fullnotes={notes}

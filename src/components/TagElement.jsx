@@ -30,6 +30,10 @@ import { Separator } from "@/components/ui/separator";
 import { X, RotateCcw } from "lucide-react";
 import { useWindowDimensions } from "@/hooks/useWindowDimension";
 import { Input } from "@/components/ui/input";
+import { useRenameTagMutation } from "@/lib/services/tag";
+import { toast } from "sonner";
+import { useDispatch } from "react-redux";
+import { setListNote } from "@/lib/features/noteSlice";
 
 export function TagElement({
 	tag,
@@ -47,9 +51,18 @@ export function TagElement({
 	currentNote,
 	setTags,
 }) {
+	const dispatch = useDispatch();
 	const { width } = useWindowDimensions();
 	const [open, setOpen] = useState(false);
-	const [renameInput, setRenameInput] = useState(tag);
+	const [renameInput, setRenameInput] = useState(tag.name);
+	const [
+		renameTag,
+		{
+			isLoading: isRenameTagLoading,
+			isError: renameTagError,
+			data: renameTagData,
+		},
+	] = useRenameTagMutation();
 
 	const handleRenameInputChange = (e) => {
 		setRenameInput(e.target.value);
@@ -62,29 +75,42 @@ export function TagElement({
 		setOpen(isOpen);
 	};
 
-	const handleSaveChange = () => {
+	const handleSaveChange = async () => {
 		if (!renameInput.trim()) {
-			setRenameInput(tag);
-		}
+			setRenameInput(tag.name);
+		} else {
+			try {
+				const renameTagData = await renameTag({
+					tagId: tag.id,
+					name: renameInput,
+				}).unwrap();
+				let updatedTags = [...tags];
+				updatedTags[index] = renameTagData;
+				setTags(updatedTags);
+				setCurrentTag({});
 
-		let updatedTags = [...tags];
-		updatedTags[index] = renameInput;
-		setTags(updatedTags);
-		setCurrentTag("");
+				let updatedNotes = [...notes];
+				updatedNotes = updatedNotes.map((note) => {
+					if (note.tags.includes(tag)) {
+						note.tags = note.tags.map((t) =>
+							t.id === tag.id ? renameTagData : t
+						);
+					}
+					return note;
+				});
+				setNotes(updatedNotes);
+				dispatch(setListNote(updatedNotes));
 
-		let updatedNotes = [...notes];
-		updatedNotes = updatedNotes.map((note) => {
-			if (note.tags.includes(tag)) {
-				note.tags = note.tags.map((t) => (t === tag ? renameInput : t));
+				setCurrentNote({
+					...currentNote,
+					tags: currentNote.tags.map((t) =>
+						t.id === tag.id ? renameTagData : t
+					),
+				});
+			} catch (error) {
+				toast.error("Error rename tag");
 			}
-			return note;
-		});
-		setNotes(updatedNotes);
-
-		setCurrentNote({
-			...currentNote,
-			tags: currentNote.tags.map((t) => (t === tag ? renameInput : t)),
-		});
+		}
 	};
 
 	if (width > 768) {
@@ -94,26 +120,39 @@ export function TagElement({
 					<ContextMenu>
 						<ContextMenuTrigger>
 							<Button
-								key={tag}
-								className={`m-0 w-full justify-start ${currentTag === tag && "bg-primary"} overflow-hidden text-sm text-foreground`}
+								key={tag.id}
+								className={`m-0 w-full justify-start ${currentTag.id === tag.id && "bg-primary"} overflow-hidden text-sm text-foreground`}
 								variant='ghost'
 								onClick={() => {
 									setCurrentTag(tag);
-									const newNote = notes.filter((note) =>
-										note.tags.includes(tag)
-									);
+									const newNote = notes.filter((note) => {
+										if (note.tags.length > 0) {
+											for (
+												let i = 0;
+												i < note.tags.length;
+												i++
+											) {
+												if (
+													note.tags[i].id === tag.id
+												) {
+													return note;
+												}
+											}
+										}
+									});
 									setCurrentNote(newNote[0]);
 									setTitleValue(newNote[0].title);
 									setContentValue(newNote[0].content);
 									setSelectedValues(
 										newNote[0].tags.map((e) => ({
-											label: e,
-											value: e,
+											id: e.id,
+											label: e.name,
+											value: e.name,
 										}))
 									);
 								}}
 							>
-								{tag}
+								{tag.name}
 							</Button>
 							<Separator className='' />
 						</ContextMenuTrigger>
@@ -122,7 +161,7 @@ export function TagElement({
 								<ContextMenuItem
 									className='flex justify-between'
 									onSelect={(e) => {
-										setRenameInput(tag);
+										setRenameInput(tag.name);
 										e.preventDefault();
 									}}
 								>
@@ -175,26 +214,37 @@ export function TagElement({
 				<ContextMenu>
 					<ContextMenuTrigger>
 						<Button
-							key={tag}
+							key={tag.id}
 							className={`m-0 w-full justify-start ${currentTag === tag && "bg-primary"} overflow-hidden text-sm text-foreground`}
 							variant='ghost'
 							onClick={() => {
 								setCurrentTag(tag);
-								const newNote = notes.filter((note) =>
-									note.tags.includes(tag)
-								);
+								const newNote = notes.filter((note) => {
+									if (note.tags.length > 0) {
+										for (
+											let i = 0;
+											i < note.tags.length;
+											i++
+										) {
+											if (note.tags[i].id === tag.id) {
+												return note;
+											}
+										}
+									}
+								});
 								setCurrentNote(newNote[0]);
 								setTitleValue(newNote[0].title);
 								setContentValue(newNote[0].content);
 								setSelectedValues(
 									newNote[0].tags.map((e) => ({
-										label: e,
-										value: e,
+										id: e.id,
+										label: e.name,
+										value: e.name,
 									}))
 								);
 							}}
 						>
-							{tag}
+							{tag.name}
 						</Button>
 						<Separator className='' />
 					</ContextMenuTrigger>
@@ -203,7 +253,7 @@ export function TagElement({
 							<ContextMenuItem
 								className='flex justify-between'
 								onSelect={(e) => {
-									setRenameInput(tag);
+									setRenameInput(tag.name);
 									e.preventDefault();
 								}}
 							>

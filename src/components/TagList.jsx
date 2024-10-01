@@ -11,6 +11,10 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { TagElement } from "./TagElement";
+import { useRemoveTagMutation } from "@/lib/services/tag";
+import { toast } from "sonner";
+import { useDispatch } from "react-redux";
+import { setListNote } from "@/lib/features/noteSlice";
 
 export function TagList({
 	tags,
@@ -27,25 +31,45 @@ export function TagList({
 	isLoading,
 	error,
 }) {
-	const removeTag = (tag) => {
-		setCurrentTag("");
-		const updatedTags = [...tags];
-		const newTags = updatedTags.filter((e) => e !== tag);
-		setTags(newTags);
-		setCurrentNote({
-			...currentNote,
-			tags: currentNote.tags.filter((e) => e !== tag),
-		});
-		let updatedNotes = [...notes];
+	const dispatch = useDispatch();
+	const [
+		removeTagMutation,
+		{
+			isLoading: isRemoveTagLoading,
+			isError: removeTagError,
+			data: removeTagData,
+		},
+	] = useRemoveTagMutation();
 
-		for (let i = 0; i < updatedNotes.length; i++) {
-			const element = updatedNotes[i];
-			updatedNotes[i] = {
-				...element,
-				tags: element.tags.filter((e) => e !== tag),
-			};
+	const removeTag = async (tag) => {
+		try {
+			const removeTagResult = await removeTagMutation({
+				tagId: tag.id,
+			}).unwrap();
+
+			setCurrentTag({});
+			const updatedTags = [...tags];
+			const newTags = updatedTags.filter((e) => e.id !== tag.id);
+			setTags(newTags);
+			setCurrentNote({
+				...currentNote,
+				tags: currentNote.tags.filter((e) => e.id !== tag.id),
+			});
+			let updatedNotes = [...notes];
+
+			for (let i = 0; i < updatedNotes.length; i++) {
+				const element = updatedNotes[i];
+				updatedNotes[i] = {
+					...element,
+					tags: element.tags.filter((e) => e.id !== tag.id),
+				};
+
+				setNotes(updatedNotes);
+				dispatch(setListNote(updatedNotes));
+			}
+		} catch (error) {
+			toast.error("Error removing tag");
 		}
-		setNotes(updatedNotes);
 	};
 
 	return (

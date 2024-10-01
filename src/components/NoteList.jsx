@@ -31,6 +31,8 @@ import {
 	useDeleteNoteMutation,
 } from "@/lib/services/note";
 import { toast } from "sonner";
+import { useDispatch } from "react-redux";
+import { setListNote } from "@/lib/features/noteSlice";
 
 export function NoteList({
 	notes,
@@ -51,6 +53,7 @@ export function NoteList({
 	isLoading,
 	error,
 }) {
+	const dispatch = useDispatch();
 	const [
 		createNote,
 		{
@@ -80,6 +83,7 @@ export function NoteList({
 				1
 			);
 			setNotes(updatedNotes);
+			dispatch(setListNote(updatedNotes));
 
 			if (currentNote.id === note.id) {
 				setContentValue("");
@@ -102,6 +106,7 @@ export function NoteList({
 			});
 
 			setNotes([newNote, ...fullnotes]);
+			dispatch(setListNote([newNote, ...fullnotes]));
 
 			setNewNoteIndex(newNoteIndex + 1);
 			// focusOnContentInput();
@@ -129,6 +134,7 @@ export function NoteList({
 			// duplicateNote.id = "new" + newNoteIndex;
 			updatedNotes.push(newNote);
 			setNotes(updatedNotes);
+			dispatch(setListNote(updatedNotes));
 		} catch (error) {
 			toast.error("Error duplicate note");
 		}

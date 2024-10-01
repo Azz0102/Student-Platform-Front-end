@@ -15,6 +15,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MessageCircle, FileText, ExternalLink } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { setCurrentNoteId } from "@/lib/features/noteSlice";
 
 const classInfo = {
 	name: "Introduction to Computer Science",
@@ -86,8 +88,10 @@ const overallGrade = classInfo.scores.reduce(
 );
 
 export default function Page() {
+	const dispatch = useDispatch();
 	// This would typically come from props or a data fetch
 	const router = useRouter();
+
 	return (
 		<div className='min-h-screen bg-background p-4 sm:bg-transparent'>
 			<div className='mx-auto space-y-6'>
@@ -223,9 +227,12 @@ export default function Page() {
 											<a
 												onClick={(e) => {
 													e.preventDefault();
-													router.push(
-														`/user/note?data=${note.id}`
+													dispatch(
+														setCurrentNoteId(
+															note.id
+														)
 													);
+													router.push(`/user/note`);
 												}}
 											>
 												{note.title}
