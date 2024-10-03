@@ -5,5 +5,5 @@
 	"trailingComma": "es5",
 	"singleQuote": false,
 	"useTabs": true,
-	"jsxSingleQuote": true
+	"jsxSingleQuote": true 
 }
