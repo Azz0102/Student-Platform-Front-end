@@ -1,18 +1,18 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { cookies } from "next/headers";
+// import { cookies } from "next/headers";
 
-const cookieStore = cookies();
+// const cookieStore = cookies();
 // Define a service using a base URL and expected endpoints
 export const tagApi = createApi({
 	reducerPath: "tagApi",
 	baseQuery: fetchBaseQuery({
 		baseUrl: "https://localhost:3001/api/",
 		prepareHeaders: async (headers) => {
-			const refreshToken = cookieStore.get("refreshToken");
+			// const refreshToken = cookieStore.get("refreshToken");
 
-			if (refreshToken) {
-				headers.set("refreshToken", `${refreshToken}`);
-			}
+			// if (refreshToken) {
+			// 	headers.set("refreshToken", `${refreshToken}`);
+			// }
 
 			return headers;
 		},
