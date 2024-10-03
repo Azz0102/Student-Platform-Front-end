@@ -24,7 +24,7 @@ import { toast } from "sonner";
 import { useAppSelector } from "@/lib/hooks";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
-import { setListNote } from "@/lib/features/noteSlice";
+import { setCurrentNoteId, setListNote } from "@/lib/features/noteSlice";
 
 const MDEditor = dynamic(
 	() => import("@uiw/react-md-editor").then((mod) => mod.default),
@@ -191,7 +191,7 @@ export function Note() {
 					toast.error("No selected note found!");
 				}
 
-				dispatch(setContentValue(null));
+				dispatch(setCurrentNoteId(null));
 			} else {
 				setCurrentNote(noteList[0]);
 				setContentValue(noteList[0].content);
@@ -221,8 +221,8 @@ export function Note() {
 		// setSelectedValues(
 		// 	["Nextjs", "React"].map((e) => ({ label: e, value: e }))
 		// );
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [noteList, tagList]);
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [dispatch, noteList, tagList]);
 
 	useEffect(() => {
 		const handleRouteChange = (url) => {
