@@ -13,7 +13,7 @@ export function middleware(request) {
 	// Check if there is a 'locale' cookie
 	const localeFromCookie = request.cookies.get("NEXT_LOCALE")?.value;
 
-	console.log("Huy");
+	console.log("Huy"); 
 
 
 	// const refreshToken = request.cookies.get("refreshToken")?.value;
