@@ -6,7 +6,7 @@ import { StoreProvider } from "@/components/store-provider";
 import i18nConfig from "@/i18nConfig";
 import { dir } from "i18next";
 import { Toaster } from "@/components/ui/sonner";
-
+import { notFound } from "next/navigation";
 const inter = Inter({ subsets: ["latin", "vietnamese"] });
 
 export const metadata = {
@@ -19,6 +19,9 @@ export function generateStaticParams() {
 }
 
 export default function RootLayout({ children, params: { locale } }) {
+	if (!i18nConfig.locales.includes(locale)) {
+		notFound();
+	}
 	return (
 		<html lang={locale} dir={dir(locale)} suppressHydrationWarning>
 			<body className={inter.className}>
@@ -29,7 +32,7 @@ export default function RootLayout({ children, params: { locale } }) {
 						enableSystem
 						disableTransitionOnChange
 					>
-						<Toaster closeButton />
+						<Toaster closeButton richColors />
 						{children}
 					</ThemeProvider>
 				</StoreProvider>

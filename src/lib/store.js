@@ -2,7 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { newsApi } from "./services/news";
 import { tagApi } from "./services/tag";
-import { loginApi } from "./services/login";
+import { authApi } from "./services/auth";
 import { noteApi } from "./services/note";
 import chatReducer from "./features/chatSlice";
 import noteReducer from "./features/noteSlice";
@@ -14,7 +14,7 @@ export const makeStore = () => {
 			[newsApi.reducerPath]: newsApi.reducer,
 			[tagApi.reducerPath]: tagApi.reducer,
 			[noteApi.reducerPath]: noteApi.reducer,
-			[loginApi.reducerPath]: loginApi.reducer,
+			[authApi.reducerPath]: authApi.reducer,
 			chat: chatReducer,
 			note: noteReducer,
 		},
@@ -23,7 +23,7 @@ export const makeStore = () => {
 				.concat(newsApi.middleware)
 				.concat(tagApi.middleware)
 				.concat(noteApi.middleware)
-				.concat(loginApi.middleware),
+				.concat(authApi.middleware),
 		devTools: true,
 	});
 };

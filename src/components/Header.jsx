@@ -22,11 +22,13 @@ import { Input } from "@/components/ui/input";
 import links from "@/constants/Links";
 import { usePathname, useRouter } from "next/navigation";
 import { filterUrl } from "@/utils/filterUrl";
+import Cookies from "js-cookie";
+import { useLogoutMutation } from "@/lib/services/auth";
 
 export function Header() {
 	const pathName = usePathname();
 	const router = useRouter();
-
+	const [logout, { isLoading, isError }] = useLogoutMutation();
 	return (
 		<header className='sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6'>
 			<Sheet>
@@ -77,12 +79,6 @@ export function Header() {
 			</Sheet>
 			<DynamicBreadcrumb />
 			<div className='relative ml-auto flex-1 md:grow-0'>
-				<Search className='absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground' />
-				<Input
-					type='search'
-					placeholder='Search...'
-					className='w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]'
-				/>
 			</div>
 			<NotiToggle />
 			<ModeToggle />
@@ -105,14 +101,26 @@ export function Header() {
 				<DropdownMenuContent align='end'>
 					<DropdownMenuLabel>My Account</DropdownMenuLabel>
 					<DropdownMenuSeparator />
-					<DropdownMenuItem onSelect={() => {
-						router.push("/user/setting");
-					}}>
+					<DropdownMenuItem
+						onSelect={() => {
+							router.push("/user/setting");
+						}}
+					>
 						Settings
 					</DropdownMenuItem>
 					<DropdownMenuItem>Support</DropdownMenuItem>
 					<DropdownMenuSeparator />
-					<DropdownMenuItem>Logout</DropdownMenuItem>
+					<DropdownMenuItem
+						onSelect={() => {
+							logout({
+								refreshToken: Cookies.get("refreshToken"),
+							});
+							Cookies.remove("refreshToken");
+							router.push("/login");
+						}}
+					>
+						Logout
+					</DropdownMenuItem>
 				</DropdownMenuContent>
 			</DropdownMenu>
 		</header>

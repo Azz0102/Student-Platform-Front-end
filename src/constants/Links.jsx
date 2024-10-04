@@ -14,7 +14,7 @@ const links = [
 	{
 		href: "/user/chat",
 		icon: <MessageCircle className='h-5 w-5' />,
-		title: "Note",
+		title: "Chat",
 	},
 ];
 
