@@ -23,22 +23,19 @@ export function middleware(request) {
 
 	const refreshToken = request.cookies.get("refreshToken")?.value;
 
-	if (pathname.endsWith("/login") || pathname === `/${locale}/login`) {
-		console.log("2");
+	// if (pathname.endsWith("/login") || pathname === `/${locale}/login`) {
+	// 	console.log("2");
 
-		return i18nRouter(request, i18nConfig);
-	}
-
-	console.log(pathname);
-	console.log("1");
+	// 	return i18nRouter(request, i18nConfig);
+	// }
 
 	// Redirect for unauthenticated users (with locale-based path handling)
 	if (!refreshToken) {
 		// Handle English locale
 		if (!pathname.endsWith("/login")) {
-			console.log("3");
-
-			return NextResponse.redirect(new URL(`/${locale}/login`, request.url));
+			return NextResponse.redirect(
+				new URL(`/${locale}/login`, request.url)
+			);
 		}
 	}
 
