@@ -18,7 +18,14 @@ import { ChatInput } from "../ui/chat/chat-input";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { setMessages, setHasInitialResponse } from "@/lib/features/chatSlice";
 
+import io from 'socket.io-client';
+
 export const BottombarIcons = [{ icon: FileImage }, { icon: Paperclip }];
+
+// Kết nối tới server socket với HTTPS và port 5000
+const socket = io('wss://localhost:5000', {
+    transports: ['websocket'],
+});
 
 export default function ChatBottombar({ isMobile }) {
     const dispatch = useAppDispatch();
@@ -26,6 +33,7 @@ export default function ChatBottombar({ isMobile }) {
     const [message, setMessage] = useState("");
     const inputRef = useRef(null);
     const messages = useAppSelector((state) => state.chat.messages);
+    const [room, setRoom] = useState('general'); // Tạo room mặc định
 
     const hasInitialResponse = useAppSelector(
         (state) => state.hasInitialResponse
@@ -38,8 +46,34 @@ export default function ChatBottombar({ isMobile }) {
     };
 
     const sendMessage = (newMessage) => {
-        dispatch(setMessages([...messages, newMessage]));
+        // dispatch(setMessages([...messages, newMessage]));
+        // console.log(messages);
     };
+
+
+    useEffect(() => {
+        // // Kết nối tới server socket với HTTPS và port 5000
+        // socket = io('https://localhost:5000', {
+        //     transports: ['websocket'],
+        // });
+
+        // Tham gia vào một room
+        socket.emit('joinRoom', room);
+
+        // Nhận tin nhắn từ server
+        socket.on('chatMessage', (msg) => {
+            console.log(msg);
+            dispatch(setMessages([...messages, msg]));
+            // console.log(messages);
+        });
+
+        // return () => {
+        //     socket.disconnect();
+        // };
+    }, [room]); // Khi room thay đổi, client sẽ tham gia room mới
+
+
+
 
     const handleThumbsUp = () => {
         const newMessage = {
@@ -49,11 +83,13 @@ export default function ChatBottombar({ isMobile }) {
             message: "👍",
         };
         sendMessage(newMessage);
+        socket.emit('chatMessage', newMessage, room);
         setMessage("");
     };
 
     const handleSend = () => {
         if (message.trim()) {
+            console.log("message:", message.trim());
             const newMessage = {
                 id: message.length + 1,
                 name: loggedInUserData.name,
@@ -61,6 +97,17 @@ export default function ChatBottombar({ isMobile }) {
                 message: message.trim(),
             };
             sendMessage(newMessage);
+            const date = new Date();
+            const options = {
+                hour: 'numeric',
+                minute: 'numeric',
+                hour12: true // Sử dụng định dạng 12 giờ (AM/PM)
+            };
+
+            const timestamp = date.toLocaleTimeString('en-US', options);
+            console.log(timestamp); // Kết quả sẽ là dạng "10:06 AM"
+
+            socket.emit('chatMessage', { ...newMessage, timestamp }, room);
             setMessage("");
 
             if (inputRef.current) {
