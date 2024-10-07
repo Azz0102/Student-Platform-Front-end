@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { jwtDecode } from "jwt-decode";
 import * as Yup from "yup";
 import { toast } from "sonner";
-import { useLoginMutation } from "@/lib/services/auth";
+import { useForgot_passwordMutation, useLoginMutation } from "@/lib/services/auth";
 import { useRouter } from "next/navigation";
 
 const SigninSchema = Yup.object().shape({
@@ -24,6 +24,7 @@ const SigninSchema = Yup.object().shape({
 export default function LoginForm() {
 	const router = useRouter();
 	const [login] = useLoginMutation();
+	const [forgot, { isLoading }] = useForgot_passwordMutation();
 	return (
 		<div className='grid gap-4'>
 			<Formik
@@ -57,11 +58,15 @@ export default function LoginForm() {
 					}
 				}}
 			>
-				{({ isValid, dirty }) => (
+				{({ isValid, dirty, values, errors, touched, isSubmitting }) => (
 					<Form>
 						<div className='mb-4 grid gap-2'>
 							<Label htmlFor='text'>Name</Label>
-							<Field name='name' as={Input} />
+							<Field name='name' >
+								{({ field }) => (
+									<Input {...field} id="name" type="text" placeholder="Enter your name" />
+								)}
+							</Field>
 							<ErrorMessage
 								name='name'
 								component='div'
@@ -78,14 +83,36 @@ export default function LoginForm() {
 							<div className='flex items-center'>
 								<Label htmlFor='password'>Password</Label>
 								<Link
-									href='/forgot-password'
-									className='ml-auto inline-block text-sm underline'
+									href='#'
+									className={`ml-auto inline-block text-sm underline ${!touched.name || errors.name || isLoading ? 'pointer-events-none text-gray-400' : ''}`}
+									onClick={async (e) => {
+										// Kiểm tra nếu tên hợp lệ
+
+
+										// Nếu hợp lệ, thực hiện fetch API cho quên mật khẩu
+										e.preventDefault();
+										try {
+											const response = await forgot({ name: values.name }).unwrap()
+
+											// Xử lý phản hồi từ API
+											if (response.ok) {
+												console.log("Forgot password request successful");
+											}
+										} catch (error) {
+											console.error("Error:", error);
+										}
+									}}
 								>
 									Forgot your password?
 								</Link>
+
 							</div>
 
-							<Field name='password' as={Input} />
+							<Field name='password' >
+								{({ field }) => (
+									<Input {...field} id="password" type="password" placeholder="Enter your password" />
+								)}
+							</Field>
 							<ErrorMessage
 								name='password'
 								component='div'
@@ -96,7 +123,7 @@ export default function LoginForm() {
 						<Button
 							type='submit'
 							className='w-full'
-							disabled={!isValid || !dirty}
+							disabled={!isValid || !dirty || isSubmitting}
 						>
 							Login
 						</Button>
