@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { buttonVariants } from "../ui/button";
 import { ExpandableChatHeader } from "../ui/chat/expandable-chat";
 
-export const TopbarIcons = [{ icon: Phone }, { icon: Video }, { icon: Info }];
+// export const TopbarIcons = [{ icon: Phone }, { icon: Video }, { icon: Info }];
 
 export default function ChatTopbar({ selectedUser }) {
     return (
@@ -29,7 +29,7 @@ export default function ChatTopbar({ selectedUser }) {
             </div>
 
             <div className="flex gap-1">
-                {TopbarIcons.map((icon, index) => (
+                {/* {TopbarIcons.map((icon, index) => (
                     <Link
                         key={index}
                         href="#"
@@ -43,7 +43,7 @@ export default function ChatTopbar({ selectedUser }) {
                             className="text-muted-foreground"
                         />
                     </Link>
-                ))}
+                ))} */}
             </div>
         </ExpandableChatHeader>
     );
