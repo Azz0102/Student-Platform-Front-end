@@ -52,6 +52,10 @@ export function ChatList({ messages, selectedUser, sendMessage, isMobile }) {
                                 className="flex flex-col gap-2 p-4"
                             >
                                 {/* Usage of ChatBubble component */}
+                                <div className={`text-foreground ${variant === 'sent' ? 'self-end mr-14': 'ml-14'}`}>
+                                    20020646
+                                </div>
+                                
                                 <ChatBubble variant={variant}>
                                     <ChatBubbleAvatar src={message.avatar} />
                                     <ChatBubbleMessage

@@ -20,11 +20,12 @@ import { setMessages, setHasInitialResponse } from "@/lib/features/chatSlice";
 
 import io from "socket.io-client";
 
-export const BottombarIcons = [{ icon: FileImage }, { icon: Paperclip }];
+export const BottombarIcons = [{ icon: Paperclip }];
 
 // Kết nối tới server socket với HTTPS và port 5000
 const socket = io("wss://localhost:5000", {
 	transports: ["websocket"],
+	maxHttpBufferSize: 1e7 // 10MB, bạn có thể thay đổi giá trị này
 });
 
 export default function ChatBottombar({ isMobile }) {
@@ -61,19 +62,24 @@ export default function ChatBottombar({ isMobile }) {
 
 		// Nhận tin nhắn từ server
 		socket.on("chatMessage", (msg) => {
-			console.log(msg);
 			dispatch(setMessages([...messages, msg]));
 			// console.log(messages);
+		});
+
+		// Nhận tin nhắn file
+		socket.on("fileReceived", (fileMessage) => {
+			console.log("Received file message:", fileMessage);
+
+			dispatch(setMessages([...messages, fileMessage]));
 		});
 
 		// return () => {
 		//     socket.disconnect();
 		// };
-	}, [dispatch, messages, room]); // Khi room thay đổi, client sẽ tham gia room mới
+	}, [dispatch, message, messages, room]); // Khi room thay đổi, client sẽ tham gia room mới
 
 	const handleThumbsUp = () => {
 		const newMessage = {
-			id: message.length + 1,
 			name: loggedInUserData.name,
 			avatar: loggedInUserData.avatar,
 			message: "👍",
@@ -85,9 +91,7 @@ export default function ChatBottombar({ isMobile }) {
 
 	const handleSend = () => {
 		if (message.trim()) {
-			console.log("message:", message.trim());
 			const newMessage = {
-				id: message.length + 1,
 				name: loggedInUserData.name,
 				avatar: loggedInUserData.avatar,
 				message: message.trim(),
@@ -101,7 +105,6 @@ export default function ChatBottombar({ isMobile }) {
 			};
 
 			const timestamp = date.toLocaleTimeString("en-US", options);
-			console.log(timestamp); // Kết quả sẽ là dạng "10:06 AM"
 
 			socket.emit("chatMessage", { ...newMessage, timestamp }, room);
 			setMessage("");
@@ -154,108 +157,76 @@ export default function ChatBottombar({ isMobile }) {
 		}
 	};
 
+	const handleFileUpload = (event) => {
+
+		console.log("Up File");
+		const file = event.target.files[0];
+
+		if (!file) return;
+
+		const reader = new FileReader();
+		reader.onload = () => {
+			console.log("1");
+
+			const base64String = reader.result.split(",")[1]; // Lấy phần Base64 của tệp
+			const date = new Date();
+			const options = {
+				hour: "numeric",
+				minute: "numeric",
+				hour12: true, // Sử dụng định dạng 12 giờ (AM/PM)
+			};
+			const timestamp = date.toLocaleTimeString("en-US", options);
+
+			console.log("2");
+
+			const newMessage = {
+				name: loggedInUserData.name,
+				avatar: loggedInUserData.avatar,
+				message: base64String,
+				fileName: file.name,
+				fileType: file.type,
+				timestamp
+			};
+			console.log(base64String);
+			socket.emit("fileMessage", newMessage, room); // Gửi tệp qua socket
+			console.log("3");
+			event.target.value = null;
+		};
+		reader.readAsDataURL(file); // Đọc tệp dưới dạng Base64
+	};
+
+	
+
+
 	return (
 		<div className='flex w-full items-center justify-between gap-2 px-2 py-4'>
 			<div className='flex'>
-				<Popover>
-					<PopoverTrigger asChild>
-						<Link
-							href='#'
-							className={cn(
-								buttonVariants({
-									variant: "ghost",
-									size: "icon",
-								}),
-								"h-9 w-9",
-								"shrink-0"
-							)}
-						>
-							<PlusCircle
-								size={22}
-								className='text-muted-foreground'
-							/>
-						</Link>
-					</PopoverTrigger>
-					<PopoverContent side='top' className='w-full p-2'>
-						{message.trim() || isMobile ? (
-							<div className='flex gap-2'>
-								<Link
-									href='#'
-									className={cn(
-										buttonVariants({
-											variant: "ghost",
-											size: "icon",
-										}),
-										"h-9 w-9",
-										"shrink-0"
-									)}
-								>
-									<Mic
-										size={22}
-										className='text-muted-foreground'
-									/>
-								</Link>
-								{BottombarIcons.map((icon, index) => (
-									<Link
-										key={index}
-										href='#'
-										className={cn(
-											buttonVariants({
-												variant: "ghost",
-												size: "icon",
-											}),
-											"h-9 w-9",
-											"shrink-0"
-										)}
-									>
-										<icon.icon
-											size={22}
-											className='text-muted-foreground'
-										/>
-									</Link>
-								))}
-							</div>
-						) : (
-							<Link
-								href='#'
-								className={cn(
-									buttonVariants({
-										variant: "ghost",
-										size: "icon",
-									}),
-									"h-9 w-9",
-									"shrink-0"
-								)}
-							>
-								<Mic
-									size={22}
-									className='text-muted-foreground'
-								/>
-							</Link>
-						)}
-					</PopoverContent>
-				</Popover>
 				{!message.trim() && !isMobile && (
 					<div className='flex'>
 						{BottombarIcons.map((icon, index) => (
-							<Link
-								key={index}
-								href='#'
-								className={cn(
+							<div key={index} className='relative'>
+								{/* Thẻ input ẩn */}
+								<input
+									type="file"
+									id={`file-input-${index}`} // Đặt ID duy nhất cho mỗi input
+									style={{ display: "none" }} // Ẩn thẻ input
+									accept=".jpg,.jpeg,.png,.pdf,.doc,.docx,.xls,.xlsx"
+									onChange={handleFileUpload} // Kích hoạt hàm xử lý tải lên tệp
+								/>
+
+								{/* Thẻ label cho phép người dùng nhấp vào biểu tượng */}
+								<label htmlFor={`file-input-${index}`} className={cn(
 									buttonVariants({
 										variant: "ghost",
 										size: "icon",
 									}),
-									"h-9 w-9",
-									"shrink-0"
-								)}
-							>
-								<icon.icon
-									size={22}
-									className='text-muted-foreground'
-								/>
-							</Link>
+									"h-9 w-9 shrink-0 cursor-pointer" // Thêm cursor-pointer để người dùng biết có thể nhấp
+								)}>
+									<icon.icon size={22} className='text-muted-foreground' />
+								</label>
+							</div>
 						))}
+
 					</div>
 				)}
 			</div>
