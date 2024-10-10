@@ -1,9 +1,9 @@
-import Chat from "@/components/UserChat";
+import UserChat from "@/components/UserChat";
 
 export default function Page() {
     return (
         <div>
-            <Chat />
+            <UserChat />
         </div>
     );
 }

@@ -33,11 +33,13 @@ export default function ChatBottombar({ isMobile }) {
 
 	const [message, setMessage] = useState("");
 	const inputRef = useRef(null);
-	const messages = useAppSelector((state) => state.chat.messages);
 	const [room, setRoom] = useState("general"); // Tạo room mặc định
 
-	const hasInitialResponse = useAppSelector(
-		(state) => state.hasInitialResponse
+	const messages = useAppSelector(
+		(state) => state.messages
+	);
+	const selectedChat = useAppSelector(
+		(state) => state.selectedChat
 	);
 
 	const [isLoading, setisLoading] = useState(false);
@@ -62,7 +64,13 @@ export default function ChatBottombar({ isMobile }) {
 
 		// Nhận tin nhắn từ server
 		socket.on("chatMessage", (msg) => {
-			dispatch(setMessages([...messages, msg]));
+
+			let newMessages = messages;
+			let updatedMessage = newMessages.filter((message)=> message.enrollmentId === msg.enrollmentId)
+
+			updatedMessage = [msg,...updatedMessage];
+
+			dispatch(setMessages(newMessages));
 			// console.log(messages);
 		});
 
@@ -70,7 +78,12 @@ export default function ChatBottombar({ isMobile }) {
 		socket.on("fileReceived", (fileMessage) => {
 			console.log("Received file message:", fileMessage);
 
-			dispatch(setMessages([...messages, fileMessage]));
+			let newMessages = messages;
+			let updatedMessage = newMessages.filter((message)=> message.enrollmentId === msg.enrollmentId)
+
+			updatedMessage = [fileMessage,...updatedMessage];
+
+			dispatch(setMessages(newMessages));
 		});
 
 		// return () => {
@@ -90,11 +103,13 @@ export default function ChatBottombar({ isMobile }) {
 	};
 
 	const handleSend = () => {
+
+		const temp = messages.filter(message => message.classSession.id ===selectedChat)		
 		if (message.trim()) {
 			const newMessage = {
-				name: loggedInUserData.name,
-				avatar: loggedInUserData.avatar,
+				enrollmentId: temp.enrollment.id,
 				message: message.trim(),
+				file:false
 			};
 			sendMessage(newMessage);
 			const date = new Date();
@@ -106,7 +121,7 @@ export default function ChatBottombar({ isMobile }) {
 
 			const timestamp = date.toLocaleTimeString("en-US", options);
 
-			socket.emit("chatMessage", { ...newMessage, timestamp }, room);
+			socket.emit("chatMessage", newMessage);
 			setMessage("");
 
 			if (inputRef.current) {
@@ -126,24 +141,7 @@ export default function ChatBottombar({ isMobile }) {
 			inputRef.current.focus();
 		}
 
-		if (!hasInitialResponse) {
-			setisLoading(true);
-			setTimeout(() => {
-				setMessages([
-					...messages,
-					{
-						id: messages.length + 1,
-						avatar: "https://images.freeimages.com/images/large-previews/971/basic-shape-avatar-1632968.jpg?fmt=webp&h=350",
-						name: "Jane Doe",
-						message: "Awesome! I am just chilling outside.",
-						timestamp: formattedTime,
-					},
-				]);
-				setisLoading(false);
-				dispatch(setHasInitialResponse(true));
-			}, 2500);
-		}
-	}, [dispatch, formattedTime, hasInitialResponse, messages]);
+	}, []);
 
 	const handleKeyPress = (event) => {
 		if (event.key === "Enter" && !event.shiftKey) {
@@ -178,10 +176,9 @@ export default function ChatBottombar({ isMobile }) {
 			const timestamp = date.toLocaleTimeString("en-US", options);
 
 			console.log("2");
-
+			const temp = messages.filter(message => message.classSession.id ===selectedChat)
 			const newMessage = {
-				name: loggedInUserData.name,
-				avatar: loggedInUserData.avatar,
+				enrollmentId: temp.enrollment.id,
 				message: base64String,
 				fileName: file.name,
 				fileType: file.type,
