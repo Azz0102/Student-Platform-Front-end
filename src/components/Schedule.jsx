@@ -94,20 +94,27 @@ const Schedule = () => {
 					}}
 				/>
 			</div>
-			<div className='flex'>
-				<Card>
+			<div
+				className='m-2 flex items-center justify-center lg:w-1/5'
+				style={{
+					height: `${height - 100}px`,
+				}}
+			>
+				<Card className='w-full h-full'>
 					<CardHeader>
 						<CardTitle>Card Title</CardTitle>
 						<CardDescription>Card Description</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<p>Card Content</p>
+						<div className='w-full'>
+							<p>Card Content</p>
+						</div>
 					</CardContent>
 					<CardFooter>
 						<p>Card Footer</p>
 					</CardFooter>
 				</Card>
-				<Dialog>
+				{/* <Dialog>
 					<DialogTrigger asChild>
 						<Button
 							className='rounded-full shadow'
@@ -129,7 +136,7 @@ const Schedule = () => {
 							<ImageUpload />
 						</div>
 					</DialogContent>
-				</Dialog>
+				</Dialog> */}
 			</div>
 		</div>
 	);
