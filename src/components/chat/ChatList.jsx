@@ -1,8 +1,9 @@
 import { Message, UserData } from "@/app/data";
 import { cn } from "@/lib/utils";
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import ChatBottombar from "./ChatBottomBar";
 import { AnimatePresence, motion } from "framer-motion";
+import Cookies from "js-cookie";
 import {
     ChatBubbleAvatar,
     ChatBubbleMessage,
@@ -10,11 +11,28 @@ import {
     ChatBubble,
 } from "../ui/chat/chat-bubble";
 import { ChatMessageList } from "../ui/chat/chat-message-list";
+import { useGetFileQuery } from "@/lib/services/file";
+import axios from "axios";
+
+// import earth from '../../../public/'
 
 const getMessageVariant = (messageName, selectedUserName) =>
     messageName !== selectedUserName ? "sent" : "received";
 
-export function ChatList({ messages, selectedUser, sendMessage, isMobile }) {
+const checkTypeFile = (filePath)=>{
+    const ImageType = ['jpeg','png','jpg'];
+
+    for (let i = 0; i < ImageType.length; i++) {
+        const element = ImageType[i];
+        if(filePath.includes(element))
+            return true;
+    }
+
+    return false;
+
+}
+
+export function ChatList({ messages, selectedUser, isMobile }) {
     const messagesContainerRef = useRef(null);
 
     useEffect(() => {
@@ -28,11 +46,20 @@ export function ChatList({ messages, selectedUser, sendMessage, isMobile }) {
         <div className="w-full overflow-y-auto h-full flex flex-col">
             <ChatMessageList ref={messagesContainerRef}>
                 <AnimatePresence>
-                    {messages.map((message, index) => {
+                    {messages.map(async (message, index) => {
                         const variant = getMessageVariant(
-                            message.name,
-                            selectedUser.name
+                            message.enrollmentId,
+                            selectedUser
                         );
+                        if (message.file && checkTypeFile(message.message)){
+                        const file = await axios.get(`https://localhost:3001/api/message/file/${message.id}`, {
+                            headers: {
+                                refreshToken: Cookies.get("refreshToken")
+                            }
+                        })
+
+                    console.log(file)
+                    }
                         return (
                             <motion.div
                                 key={index}
@@ -57,12 +84,17 @@ export function ChatList({ messages, selectedUser, sendMessage, isMobile }) {
                                 </div>
                                 
                                 <ChatBubble variant={variant}>
-                                    <ChatBubbleAvatar src={message.avatar} />
+                            
+                                    <ChatBubbleAvatar src={require('../../../public/android-chrome-512x512.png')} />
+                                    
                                     <ChatBubbleMessage
                                         variant={variant}
-                                        isLoading={message.isLoading}
+                                        isLoading={false}
                                     >
-                                        {message.message}
+                                        {/* {message.file && checkTypeFile(message.message)} */}
+                                        {
+                                        // !message.file && 
+                                        message.message}
                                         {message.timestamp && (
                                             <ChatBubbleTimestamp
                                                 timestamp={message.timestamp}

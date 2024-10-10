@@ -5,24 +5,24 @@ import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { setMessages } from "@/lib/features/chatSlice";
 
-export function Chat({ messages, selectedUser, isMobile }) {
+export function Chat({  selectedChat, isMobile }) {
     const dispatch = useAppDispatch();
     const messagesState = useAppSelector((state) => state.chat.messages);
 
-    const sendMessage = (newMessage) => {
-        dispatch(setMessages([...messagesState, newMessage]));
-    };
+    const a= messagesState.filter(message => message.classSession === selectedChat) ;
 
+    console.log("a",a);
+    
     return (
-        <div className="flex flex-col justify-between w-full h-full">
-            <ChatTopBar selectedUser={selectedUser} />
 
-            <ChatList
-                messages={messagesState}
-                selectedUser={selectedUser}
-                sendMessage={sendMessage}
+        <div className="flex flex-col justify-between w-full h-full">
+            <ChatTopBar selectedUser={selectedChat} />
+{a&& <ChatList
+                messages={a.messages}
+                selectedUser={a.enrollment.id}
                 isMobile={isMobile}
-            />
+            />}
+            
         </div>
     );
 }

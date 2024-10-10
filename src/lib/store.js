@@ -6,6 +6,7 @@ import { authApi } from "./services/auth";
 import { noteApi } from "./services/note";
 import chatReducer from "./features/chatSlice";
 import noteReducer from "./features/noteSlice";
+import { chatApi } from "./services/chat";
 
 
 export const makeStore = () => {
@@ -15,6 +16,7 @@ export const makeStore = () => {
 			[tagApi.reducerPath]: tagApi.reducer,
 			[noteApi.reducerPath]: noteApi.reducer,
 			[authApi.reducerPath]: authApi.reducer,
+			[chatApi.reducerPath]: chatApi.reducer,
 			chat: chatReducer,
 			note: noteReducer,
 		},
@@ -23,7 +25,8 @@ export const makeStore = () => {
 				.concat(newsApi.middleware)
 				.concat(tagApi.middleware)
 				.concat(noteApi.middleware)
-				.concat(authApi.middleware),
+				.concat(authApi.middleware)
+				.concat(chatApi.middleware),
 		devTools: true,
 	});
 };

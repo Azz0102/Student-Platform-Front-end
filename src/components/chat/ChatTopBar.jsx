@@ -15,8 +15,8 @@ export default function ChatTopbar({ selectedUser }) {
             <div className="flex items-center gap-2">
                 <Avatar className="flex justify-center items-center">
                     <AvatarImage
-                        src={selectedUser.avatar}
-                        alt={selectedUser.name}
+                        src={require('../../../public/android-chrome-512x512.png')}
+                        alt={require('../../../public/android-chrome-512x512.png')}
                         width={6}
                         height={6}
                         className="w-10 h-10 "

@@ -12,8 +12,13 @@ import {
 } from "@/components/ui/tooltip";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { Message } from "@/app/data";
+import { useDispatch } from "react-redux";
+import { setSelectedChat } from "@/lib/features/chatSlice";
 
 export function Sidebar({ chats, isCollapsed, isMobile }) {
+
+    const dispatch = useDispatch();
+
     return (
         <div
             data-collapsed={isCollapsed}
@@ -72,11 +77,18 @@ export function Sidebar({ chats, isCollapsed, isMobile }) {
                                             chat.variant === "secondary" &&
                                                 "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white"
                                         )}
+
+                                        onClick={(e)=>{
+                                            e.preventDefault();
+                                            dispatch(setSelectedChat(chat.id))
+                                        }} 
+                                        
                                     >
+
                                         <Avatar className="flex justify-center items-center">
                                             <AvatarImage
-                                                src={chat.avatar}
-                                                alt={chat.avatar}
+                                                src={require('../../public/android-chrome-512x512.png')}
+                                                alt={require('../../public/android-chrome-512x512.png')}
                                                 width={6}
                                                 height={6}
                                                 className="w-10 h-10 "
@@ -108,11 +120,15 @@ export function Sidebar({ chats, isCollapsed, isMobile }) {
                                     "dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white shrink",
                                 "justify-start gap-4 px-5 h-16"
                             )}
+                            onClick={(e)=>{
+                                e.preventDefault();
+                                dispatch(setSelectedChat(chat.id))
+                            }}  
                         >
                             <Avatar className="flex justify-center items-center">
                                 <AvatarImage
-                                    src={chat.avatar}
-                                    alt={chat.avatar}
+                                    src={require('../../public/android-chrome-512x512.png')}
+                                    alt={require('../../public/android-chrome-512x512.png')}
                                     width={6}
                                     height={6}
                                     className="w-10 h-10 "
@@ -128,10 +144,8 @@ export function Sidebar({ chats, isCollapsed, isMobile }) {
                                             ].name.split(" ")[0]
                                         }
                                         :{" "}
-                                        {chat.messages[chat.messages.length - 1]
-                                            .isLoading
-                                            ? "Typing..."
-                                            : chat.messages[
+                                        {
+                                             chat.messages[
                                                   chat.messages.length - 1
                                               ].message}
                                     </span>
