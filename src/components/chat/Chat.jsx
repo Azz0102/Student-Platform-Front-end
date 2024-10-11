@@ -25,8 +25,8 @@ export function Chat({ selectedChat, isMobile, messagesState, setMessages }) {
 					<ChatList
 						selectedChat={selectedChat}
 						messagesState={messagesState}
-						messages={message.messages}
-						selectedUser={message.enrollment.id}
+						messages={message.newmessages}
+						selectedUser={message.classSession.id}
 						isMobile={isMobile}
 						setMessages={setMessages}
 					/>

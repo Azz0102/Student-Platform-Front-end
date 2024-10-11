@@ -57,7 +57,7 @@ export function ChatLayout({
 
 		if (listChat) {
 			// Only update state if the messages have changed
-			setMessages(listChat.metadata.enrolledSessions);
+			setMessages(listChat.metadata.data);
 		}
 	}, [listChat]);
 
@@ -143,7 +143,7 @@ export function ChatLayout({
 							? messages.map((chat) => ({
 									id: chat.classSession?.id,
 									name: chat.classSession?.name,
-									messages: chat.messages ?? [],
+									messages: chat.newmessages ?? [],
 									avatar: "",
 									variant:
 										selected === chat.classSession?.id

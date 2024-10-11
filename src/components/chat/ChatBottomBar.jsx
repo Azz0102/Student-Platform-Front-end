@@ -39,7 +39,7 @@ export default function ChatBottombar({
 
 	const [message, setMessage] = useState("");
 	const inputRef = useRef(null);
-	const [room, setRoom] = useState("general"); // Tạo room mặc định
+	const [room, setRoom] = useState(selectedChat); // Tạo room mặc định
 
 	// const messages = useAppSelector(
 	// 	(state) => state.chat.messages
@@ -59,6 +59,63 @@ export default function ChatBottombar({
 		// console.log(messages);
 	};
 
+	useEffect(() => {
+		// Nhận tin nhắn từ server
+		socket.on("chatMessage", (msg) => {
+			console.log("onMessage", msg);
+
+			setMessages((prevSessions) =>
+				prevSessions.map((session) => {
+					// Check if this is the session to update by matching enrollmentId
+					if (
+						session.classSession.enrollmentId === msg.enrollmentId
+					) {
+						// Return a new object with updated messages
+						session.newmessages.map((e) => {
+							if (e.id === msg.id) return session;
+						});
+						return {
+							...session,
+							newmessages: [...session.newmessages, msg],
+						};
+					}
+					return session; // For other sessions, return unchanged
+				})
+			);
+			// console.log(messages);
+		});
+
+		// Nhận tin nhắn file
+		socket.on("fileReceived", (fileMessage) => {
+			console.log("Received file message:", fileMessage);
+
+			setMessages((prevSessions) =>
+				prevSessions.map((session) => {
+					// Check if this is the session to update by matching enrollmentId
+					if (
+						session.classSession.enrollmentId ===
+						fileMessage.enrollmentId
+					) {
+						// Return a new object with updated messages
+						session.newmessages.map((e) => {
+							if (e.id === msg.id) return session;
+						});
+						return {
+							...session,
+							newmessages: [...session.newmessages, fileMessage],
+						};
+					}
+					return session; // For other sessions, return unchanged
+				})
+			);
+		});
+
+		return () => {
+			socket.off("chatMessage");
+			socket.off("fileReceived");
+		};
+	}, []);
+
 	useDeepCompareEffect(() => {
 		// // Kết nối tới server socket với HTTPS và port 5000
 		// socket = io('https://localhost:5000', {
@@ -67,49 +124,48 @@ export default function ChatBottombar({
 		console.log("ue3");
 
 		// Tham gia vào một room
-		socket.emit("joinRoom", room);
-
-		// Nhận tin nhắn từ server
-		socket.on("chatMessage", (msg) => {
-			let newMessages = messages;
-			let updatedMessage = newMessages.filter(
-				(message) => message.enrollmentId === msg.enrollmentId
-			);
-
-			updatedMessage = [msg, ...updatedMessage];
-
-			setMessages(newMessages);
-			// console.log(messages);
-		});
-
-		// Nhận tin nhắn file
-		socket.on("fileReceived", (fileMessage) => {
-			console.log("Received file message:", fileMessage);
-
-			let newMessages = messages;
-			let updatedMessage = newMessages.filter(
-				(message) => message.enrollmentId === msg.enrollmentId
-			);
-
-			updatedMessage = [fileMessage, ...updatedMessage];
-
-			setMessages(newMessages);
-		});
+		socket.emit("joinRoom", selectedChat);
 
 		// return () => {
-		//     socket.disconnect();
+		// 	socket.disconnect();
 		// };
-	}, [messages, room, setMessages]); // messages, room, setMessages
+	}, [setMessages, selectedChat]); // messages, room, setMessages
 
 	const handleThumbsUp = () => {
+		const temp = messages.filter(
+			(message) => message.classSession.id === selectedChat
+		);
+
 		const newMessage = {
-			name: loggedInUserData.name,
-			avatar: loggedInUserData.avatar,
+			enrollmentId: temp[0].classSession.enrollmentId,
 			message: "👍",
+			file: false,
 		};
 		sendMessage(newMessage);
-		socket.emit("chatMessage", newMessage, room);
+		const date = new Date();
+		const options = {
+			hour: "numeric",
+			minute: "numeric",
+			hour12: true, // Sử dụng định dạng 12 giờ (AM/PM)
+		};
+
+		const timestamp = date.toLocaleTimeString("en-US", options);
+
+		socket.emit("chatMessage", newMessage, selectedChat);
 		setMessage("");
+
+		if (inputRef.current) {
+			inputRef.current.focus();
+		}
+
+		// const newMessage = {
+		// 	name: loggedInUserData.name,
+		// 	avatar: loggedInUserData.avatar,
+		// 	message: "👍",
+		// };
+		// sendMessage(newMessage);
+		// socket.emit("chatMessage", newMessage, room);
+		// setMessage("");
 	};
 
 	const handleSend = () => {
@@ -118,7 +174,7 @@ export default function ChatBottombar({
 		);
 		if (message.trim()) {
 			const newMessage = {
-				enrollmentId: temp[0].enrollment.id,
+				enrollmentId: temp[0].classSession.enrollmentId,
 				message: message.trim(),
 				file: false,
 			};
@@ -132,7 +188,7 @@ export default function ChatBottombar({
 
 			const timestamp = date.toLocaleTimeString("en-US", options);
 
-			socket.emit("chatMessage", newMessage);
+			socket.emit("chatMessage", newMessage, selectedChat);
 			setMessage("");
 
 			if (inputRef.current) {
@@ -189,14 +245,13 @@ export default function ChatBottombar({
 				(message) => message.classSession.id === selectedChat
 			);
 			const newMessage = {
-				enrollmentId: temp.enrollment.id,
+				enrollmentId: temp[0].classSession.enrollmentId,
 				message: base64String,
 				fileName: file.name,
 				fileType: file.type,
-				timestamp,
 			};
 			console.log(base64String);
-			socket.emit("fileMessage", newMessage, room); // Gửi tệp qua socket
+			socket.emit("fileMessage", newMessage, selectedChat); // Gửi tệp qua socket
 			console.log("3");
 			event.target.value = null;
 		};

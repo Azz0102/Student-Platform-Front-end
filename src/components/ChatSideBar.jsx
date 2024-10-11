@@ -60,7 +60,7 @@ export function Sidebar({ chats, isCollapsed, isMobile, setSelected }) {
 									>
 										<Avatar className='flex items-center justify-center'>
 											<AvatarImage
-												src={'/public/android-chrome-512x512.png'}
+												src={'/message.png'}
 												alt={'logo'}
 												width={6}
 												height={6}
@@ -102,7 +102,7 @@ export function Sidebar({ chats, isCollapsed, isMobile, setSelected }) {
 						>
 							<Avatar className='flex items-center justify-center'>
 								<AvatarImage
-									src={'/public/android-chrome-512x512.png'}
+									src={'/message.png'}
 									alt={'logo'}
 									width={6}
 									height={6}
@@ -116,13 +116,13 @@ export function Sidebar({ chats, isCollapsed, isMobile, setSelected }) {
 										{
 											chat.messages[
 												chat.messages.length - 1
-											].content.split(" ")[0]
+											].name
 										}
-										:{" "}
+										:{"  "}
 										{
 											chat.messages[
 												chat.messages.length - 1
-											].content
+											].message
 										}
 									</span>
 								)}

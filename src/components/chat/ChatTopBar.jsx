@@ -6,31 +6,30 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "../ui/button";
 import { ExpandableChatHeader } from "../ui/chat/expandable-chat";
-import Earth from '/public/android-chrome-192x192.png'
+import Earth from "/public/android-chrome-192x192.png";
 
 // export const TopbarIcons = [{ icon: Phone }, { icon: Video }, { icon: Info }];
 
 export default function ChatTopbar({ selectedUser }) {
-    return (
-        <ExpandableChatHeader>
-            <div className="flex items-center gap-2">
-                <Avatar className="flex justify-center items-center">
-                    <AvatarImage
-                        src={Earth}
-                        alt={Earth}
-                        width={6}
-                        height={6}
-                        className="w-10 h-10 "
-                    />
-                </Avatar>
-                <div className="flex flex-col">
-                    <span className="font-medium">{selectedUser.name}</span>
-                    <span className="text-xs">Active 2 mins ago</span>
-                </div>
-            </div>
+	return (
+		<ExpandableChatHeader>
+			<div className='flex items-center gap-2'>
+				<Avatar className='flex items-center justify-center'>
+					<AvatarImage
+						src={"/message.png"}
+						alt={"logo"}
+						width={6}
+						height={6}
+						className='h-10 w-10'
+					/>
+				</Avatar>
+				<div className='flex flex-col'>
+					<span className='font-medium'>{selectedUser.name}</span>
+				</div>
+			</div>
 
-            <div className="flex gap-1">
-                {/* {TopbarIcons.map((icon, index) => (
+			<div className='flex gap-1'>
+				{/* {TopbarIcons.map((icon, index) => (
                     <Link
                         key={index}
                         href="#"
@@ -45,7 +44,7 @@ export default function ChatTopbar({ selectedUser }) {
                         />
                     </Link>
                 ))} */}
-            </div>
-        </ExpandableChatHeader>
-    );
+			</div>
+		</ExpandableChatHeader>
+	);
 }
