@@ -6,6 +6,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "../ui/button";
 import { ExpandableChatHeader } from "../ui/chat/expandable-chat";
+import Earth from '/public/android-chrome-192x192.png'
 
 // export const TopbarIcons = [{ icon: Phone }, { icon: Video }, { icon: Info }];
 
@@ -15,8 +16,8 @@ export default function ChatTopbar({ selectedUser }) {
             <div className="flex items-center gap-2">
                 <Avatar className="flex justify-center items-center">
                     <AvatarImage
-                        src={require('../../../public/android-chrome-512x512.png')}
-                        alt={require('../../../public/android-chrome-512x512.png')}
+                        src={Earth}
+                        alt={Earth}
                         width={6}
                         height={6}
                         className="w-10 h-10 "
