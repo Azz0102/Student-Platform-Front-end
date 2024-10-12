@@ -19,15 +19,8 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { setMessages, setHasInitialResponse } from "@/lib/features/chatSlice";
 import { useDeepCompareEffect } from "use-deep-compare";
 
-import io from "socket.io-client";
-
+import { socket } from "../Header";
 export const BottombarIcons = [{ icon: Paperclip }];
-
-// Kết nối tới server socket với HTTPS và port 5000
-const socket = io("wss://localhost:5000", {
-	transports: ["websocket"],
-	maxHttpBufferSize: 1e7, // 10MB, bạn có thể thay đổi giá trị này
-});
 
 export default function ChatBottombar({
 	messages,

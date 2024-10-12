@@ -23,12 +23,20 @@ import links from "@/constants/Links";
 import { usePathname, useRouter } from "next/navigation";
 import { filterUrl } from "@/utils/filterUrl";
 import Cookies from "js-cookie";
+import io from "socket.io-client";
 import { useLogoutMutation } from "@/lib/services/auth";
+
+// Kết nối tới server socket với HTTPS và port 5000
+export const socket = io("wss://localhost:5000", {
+	transports: ["websocket"],
+	maxHttpBufferSize: 1e7, // 10MB, bạn có thể thay đổi giá trị này
+});
 
 export function Header() {
 	const pathName = usePathname();
 	const router = useRouter();
 	const [logout, { isLoading, isError }] = useLogoutMutation();
+
 	return (
 		<header className='sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6'>
 			<Sheet>
@@ -78,8 +86,7 @@ export function Header() {
 				</SheetContent>
 			</Sheet>
 			<DynamicBreadcrumb />
-			<div className='relative ml-auto flex-1 md:grow-0'>
-			</div>
+			<div className='relative ml-auto flex-1 md:grow-0'></div>
 			<NotiToggle />
 			<ModeToggle />
 			<DropdownMenu>
