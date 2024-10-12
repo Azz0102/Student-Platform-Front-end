@@ -31,6 +31,8 @@ export function TagList({
 	isLoading,
 	error,
 }) {
+
+	console.log('tags',tags);
 	const dispatch = useDispatch();
 	const [
 		removeTagMutation,
@@ -68,7 +70,7 @@ export function TagList({
 				dispatch(setListNote(updatedNotes));
 			}
 		} catch (error) {
-			toast.error("Error removing tag");
+			// toast.error("Error removing tag");
 		}
 	};
 

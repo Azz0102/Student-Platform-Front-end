@@ -52,8 +52,8 @@ export function TagDialog({
 									? []
 									: currentNote.tags.map((e) => ({
 											id: e.id,
-											label: e,
-											value: e,
+											label: e.name,
+											value: e.name,
 										}))
 							);
 						}}
@@ -66,9 +66,9 @@ export function TagDialog({
 							currentNote.tags.length !== 0 &&
 							currentNote.tags
 								.map((tag) => ({
-									id: e,
-									label: tag,
-									value: tag,
+									id: tag.id,
+									label: tag.name,
+									value: tag.name,
 								}))
 								.map((option, index) => {
 									return (
@@ -90,8 +90,9 @@ export function TagDialog({
 					<div className='flex items-center space-x-2'>
 						<MultipleSelector
 							defaultOptions={(tags || []).map((tag) => ({
-								label: tag,
-								value: tag,
+								id: tag.id,
+								label: tag.name,
+								value: tag.name,
 							}))}
 							placeholder='Type something that does not exist in dropdowns...'
 							creatable
@@ -123,11 +124,13 @@ export function TagDialog({
 					className='mt-1 flex w-full flex-wrap items-center'
 					onClick={() => {
 						setSelectedValues(
-							currentNote.tags.length === 0
+							currentNote.tags.length === 0 ||
+								!currentNote.tags
 								? []
 								: currentNote.tags.map((e) => ({
-										label: e,
-										value: e,
+										id: e.id,
+										label: e.name,
+										value: e.name,
 									}))
 						);
 					}}
@@ -138,7 +141,7 @@ export function TagDialog({
 					{currentNote &&
 						currentNote.tags &&
 						currentNote.tags
-							.map((tag) => ({ label: tag, value: tag }))
+							.map((tag) => ({ id:tag.id,label: tag.name, value: tag.name }))
 							.map((option, index) => {
 								return (
 									<div className='m-1' key={index}>
@@ -159,8 +162,9 @@ export function TagDialog({
 				<div className='m-2 flex items-center space-x-2'>
 					<MultipleSelector
 						defaultOptions={(tags || []).map((tag) => ({
-							label: tag,
-							value: tag,
+							id:tag.id,
+							label: tag.name,
+							value: tag.name,
 						}))}
 						placeholder='Type something that does not exist in dropdowns...'
 						creatable

@@ -23,8 +23,13 @@ import { useCreateTagMutation, useGetListTagQuery } from "@/lib/services/tag";
 import { toast } from "sonner";
 import { useAppSelector } from "@/lib/hooks";
 import { useDispatch } from "react-redux";
+import { usePathname, useSearchParams } from 'next/navigation';
 import { useRouter } from "next/navigation";
+
 import { setCurrentNoteId, setListNote } from "@/lib/features/noteSlice";
+import { jwtDecode } from "jwt-decode";
+import Cookies from "js-cookie";
+import { useDeepCompareEffect } from "use-deep-compare";
 
 const MDEditor = dynamic(
 	() => import("@uiw/react-md-editor").then((mod) => mod.default),
@@ -33,19 +38,30 @@ const MDEditor = dynamic(
 
 export function Note() {
 	const dispatch = useDispatch();
-	const router = useRouter();
+
+	const pathname = usePathname();
+	const searchParams = useSearchParams();
+	// const router = useRouter();
+
+	const refreshToken = Cookies.get("refreshToken");
+	const userId = jwtDecode(refreshToken);
 
 	const {
 		data: noteList = [],
 		error: noteError,
 		isLoading: isNoteLoading,
-	} = useGetListNoteQuery("1");
+	} = useGetListNoteQuery(2);
+
+	console.log("noteList",noteList);
+
 
 	const {
 		data: tagList = [],
 		error: tagError,
 		isLoading: isTagLoading,
-	} = useGetListTagQuery("1");
+	} = useGetListTagQuery(2);
+
+	console.log("tagList",tagList);
 
 	const [updateNote, { isError: updateNoteError }] = useUpdateNoteMutation();
 
@@ -67,20 +83,20 @@ export function Note() {
 	const { width, height } = useWindowDimensions();
 	const { theme } = useTheme();
 
-	const [titleValue, setTitleValue] = useState("");
+	const [nameValue, setnameValue] = useState("");
 	const [contentValue, setContentValue] = useState("");
 
 	const [tags, setTags] = useState([]); // [{id: 1, name: "Nextjs"}, {id: 2 ,name: "React"}, {id: 3, name: "Remix"}]
 	const [notes, setNotes] = useState([]);
 	/* [{
 		id: 1,
-		title: "Note 1",
+		name: "Note 1",
 		content: "This is the content of note 1",
 		tags: [{id: 1, name: "Nextjs"}, {id: 2 ,name: "React"}],
 	},
 	{
 		id: 2,
-		title: "Note 2",
+		name: "Note 2",
 		content: "This is the content of note 2",
 		tags: [{id: 2 ,name: "React"}, {id: 3, name: "Remix"}],
 	},] */
@@ -88,7 +104,7 @@ export function Note() {
 	const [currentNote, setCurrentNote] = useState({});
 	/**{
 		id: "",
-		title: "",
+		name: "",
 		content: "",
 		tags: [],
 	}
@@ -96,7 +112,7 @@ export function Note() {
 	const [currentTag, setCurrentTag] = useState({});
 	const [newNoteIndex, setNewNoteIndex] = useState(0);
 
-	const titleInputRef = useRef(null);
+	const nameInputRef = useRef(null);
 	const contentInputRef = useRef(null);
 
 	// State to hold selected values
@@ -104,7 +120,7 @@ export function Note() {
 	const [open, setOpen] = useState(false);
 
 	useEffect(() => {
-		toast("Use Ctrl+S to save note changes");
+		// toast("Use Ctrl+S to save note changes");
 		// Handle Ctrl+S key press
 		const handleKeyDown = async (event) => {
 			if ((event.ctrlKey || event.metaKey) && event.key === "s") {
@@ -114,12 +130,12 @@ export function Note() {
 					try {
 						for (let i = 0; i < notes.length; i++) {
 							if (
-								notes[i].title !== listNote[i].title ||
+								notes[i].name !== listNote[i].name ||
 								notes[i].content !== listNote[i].content
 							) {
 								const updatedNote = await updateNote({
 									noteId: notes[i].id,
-									title: notes[i].title,
+									name: notes[i].name,
 									content: notes[i].content,
 									tags: notes[i].tags,
 								});
@@ -140,7 +156,7 @@ export function Note() {
 			if (notes.length > 0) {
 				for (let i = 0; i < notes.length; i++) {
 					if (
-						notes[i].title !== listNote[i].title ||
+						notes[i].name !== listNote[i].name ||
 						notes[i].content !== listNote[i].content
 					) {
 						isSaved = false; // Set isSaved to false if any notes are not saved
@@ -168,18 +184,22 @@ export function Note() {
 		};
 	}, [dispatch, listNote, notes, updateNote]);
 
-	useEffect(() => {
-		if (noteList && noteList.length !== 0) {
-			setNotes(noteList);
-			dispatch(setListNote([...noteList]));
+	useEffect(()=>{
+		toast("Use Ctrl+S to save note changes");
+	},[]);
+
+	useDeepCompareEffect(() => {
+		if (noteList.metadata && noteList.metadata.length !== 0) {
+			setNotes(noteList.metadata);
+			dispatch(setListNote([...noteList.metadata]));
 			if (currentNoteIdState) {
-				const note = noteList.find(
+				const note = noteList.metadata.find(
 					(note) => note.id === currentNoteIdState
 				);
 				if (note) {
 					setCurrentNote(note);
 					setContentValue(note.content);
-					setTitleValue(note.title);
+					setnameValue(note.name);
 					setSelectedValues(
 						note.tags.map((e) => ({
 							id: e.id,
@@ -193,11 +213,11 @@ export function Note() {
 
 				dispatch(setCurrentNoteId(null));
 			} else {
-				setCurrentNote(noteList[0]);
-				setContentValue(noteList[0].content);
-				setTitleValue(noteList[0].title);
+				setCurrentNote(noteList.metadata[0]);
+				setContentValue(noteList.metadata[0].content);
+				setnameValue(noteList.metadata[0].name);
 				setSelectedValues(
-					noteList[0].tags.map((e) => ({
+					noteList.metadata[0].tags.map((e) => ({
 						id: e.id,
 						label: e.name,
 						value: e.name,
@@ -206,59 +226,27 @@ export function Note() {
 			}
 		}
 
-		if (tagList && tagList.length !== 0) {
-			setTags(tagList);
+		if (tagList.metadata && tagList.metadata.length !== 0) {
+			setTags(tagList.metadata);
 		}
 
 		// setCurrentNote({
 		// 	id: 1,
-		// 	title: "Note 1",
+		// 	name: "Note 1",
 		// 	content: "This is the content of note 1",
 		// 	tags: ["Nextjs", "React"],
 		// });
 		// setContentValue("This is the content of note 1");
-		// setTitleValue("Note 1");
+		// setnameValue("Note 1");
 		// setSelectedValues(
 		// 	["Nextjs", "React"].map((e) => ({ label: e, value: e }))
 		// );
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [dispatch, noteList, tagList]);
 
-	useEffect(() => {
-		const handleRouteChange = (url) => {
-			let isSaved = true; // Assume all notes are saved initially
-			if (notes.length > 0) {
-				for (let i = 0; i < notes.length; i++) {
-					if (
-						notes[i].title !== listNote[i].title ||
-						notes[i].content !== listNote[i].content
-					) {
-						isSaved = false; // Set isSaved to false if any notes are not saved
-						break; // Break the loop if any notes are not saved
-					}
-				}
-			}
-			if (
-				!isSaved &&
-				!window.confirm(
-					"You have unsaved changes. Are you sure you want to leave?"
-				)
-			) {
-				router.events.emit("routeChangeError");
-				throw new Error("Route change aborted due to unsaved changes"); // Prevent route change
-			}
-		};
-
-		router.events.on("routeChangeStart", handleRouteChange);
-
-		return () => {
-			router.events.off("routeChangeStart", handleRouteChange);
-		};
-	}, [listNote, notes, router.events]);
-
-	const focusOnTitleInput = () => {
-		if (titleInputRef.current) {
-			titleInputRef.current.focus(); // Focus the input
+	const focusOnnameInput = () => {
+		if (nameInputRef.current) {
+			nameInputRef.current.focus(); // Focus the input
 		}
 	};
 
@@ -272,20 +260,20 @@ export function Note() {
 		}
 	};
 
-	const handleTitleChange = (e) => {
+	const handlenameChange = (e) => {
 		const updatedNotes = [...notes];
 		updatedNotes[
 			updatedNotes.findIndex((note) => note.id === currentNote.id)
 		] = {
 			...currentNote,
-			title: e.target.value,
+			name: e.target.value,
 		};
 		setNotes(updatedNotes);
 		setCurrentNote({
 			...currentNote,
-			title: e.target.value,
+			name: e.target.value,
 		});
-		setTitleValue(e.target.value);
+		setnameValue(e.target.value);
 	};
 
 	const handleContentChange = (newContent) => {
@@ -311,7 +299,7 @@ export function Note() {
 			dispatch(setListNote(notes.slice(1)));
 
 			setContentValue(!notes[1] ? "" : notes[1].content);
-			setTitleValue(!notes[1] ? "" : notes[1].title);
+			setnameValue(!notes[1] ? "" : notes[1].name);
 			setCurrentNote(!notes[1] ? {} : notes[1]);
 			setSelectedValues(
 				notes[1].tags.length === 0 || !notes[1]
@@ -333,23 +321,29 @@ export function Note() {
 	const handleTagChange = async () => {
 		let newSelectedValue = [...selectedValues];
 
+		console.log("newSelectedValue",newSelectedValue);
+
 		if (selectedValues.length !== 0) {
 			for (let i = 0; i < selectedValues.length; i++) {
 				const element = selectedValues[i];
 				if (!element.id) {
 					try {
+						console.log("newTag");
 						const newTag = await createTag({
-							userId: 1,
-							name: element.name,
+							userId: 2,
+							name: element.value,
 						}).unwrap();
 
+						console.log("newTag",newTag);
+
 						newSelectedValue[i] = {
-							id: newTag.id,
-							label: newTag.name,
-							value: newTag.name,
+							id: newTag.metadata.id,
+							label: newTag.metadata.name,
+							value: newTag.metadata.name,
 						};
 
-						setTags([...tags, newTag]);
+
+						setTags([...tags, {id: newTag.metadata.id,name: newTag.metadata.name,}]);
 					} catch (error) {
 						toast.error("Error creating tag");
 					}
@@ -417,7 +411,7 @@ export function Note() {
 						currentTag={currentTag}
 						setCurrentNote={setCurrentNote}
 						notes={notes}
-						setTitleValue={setTitleValue}
+						setTitleValue={setnameValue}
 						setContentValue={setContentValue}
 						setSelectedValues={setSelectedValues}
 						setTags={setTags}
@@ -429,13 +423,13 @@ export function Note() {
 					<NoteList
 						setCurrentNote={setCurrentNote}
 						currentNote={currentNote}
-						setTitleValue={setTitleValue}
+						setTitleValue={setnameValue}
 						setContentValue={setContentValue}
 						setNotes={setNotes}
 						newNoteIndex={newNoteIndex}
 						setNewNoteIndex={setNewNoteIndex}
 						focusOnContentInput={focusOnContentInput}
-						focusOnTitleInput={focusOnTitleInput}
+						focusOnTitleInput={focusOnnameInput}
 						setSelectedValues={setSelectedValues}
 						setCurrentTag={setCurrentTag}
 						currentTag={currentTag}
@@ -465,11 +459,11 @@ export function Note() {
 					<>
 						<div className='mb-2 w-full'>
 							<Input
-								placeholder="Note's title"
-								value={titleValue}
-								onChange={handleTitleChange}
+								placeholder="Note's name"
+								value={nameValue}
+								onChange={handlenameChange}
 								onBlur={handleContentBlur}
-								ref={titleInputRef}
+								ref={nameInputRef}
 							/>
 						</div>
 						<div className='w-full' data-color-mode={`${theme}`}>

@@ -99,19 +99,21 @@ export function NoteList({
 	const handleAddNote = async () => {
 		try {
 			const newNote = await createNote({
-				userId: 1,
-				title: "",
+				userId: 2,
+				name: "",
 				content: "",
 				tags: [],
 			});
 
-			setNotes([newNote, ...fullnotes]);
-			dispatch(setListNote([newNote, ...fullnotes]));
+			console.log("newNote",newNote);
+
+			setNotes([newNote.data.metadata, ...fullnotes]);
+			dispatch(setListNote([newNote.data.metadata, ...fullnotes]));
 
 			setNewNoteIndex(newNoteIndex + 1);
 			// focusOnContentInput();
 			focusOnTitleInput();
-			setCurrentNote(newNote);
+			setCurrentNote(newNote.data.metadata);
 			setTitleValue("");
 			setContentValue("");
 			setSelectedValues([]);
@@ -124,15 +126,15 @@ export function NoteList({
 	const handleDuplicate = async (note) => {
 		try {
 			const newNote = await createNote({
-				userId: 1,
-				title: note.title,
+				userId: 2,
+				name: note.name,
 				content: note.content,
 				tags: note.tags,
 			});
 			const updatedNotes = [...fullnotes];
 
 			// duplicateNote.id = "new" + newNoteIndex;
-			updatedNotes.push(newNote);
+			updatedNotes.push(newNote.data.metadata);
 			setNotes(updatedNotes);
 			dispatch(setListNote(updatedNotes));
 		} catch (error) {
@@ -155,6 +157,7 @@ export function NoteList({
 									variant='ghost'
 									className='p-2'
 									onClick={handleAddNote}
+									// onClick={handleDeleteNote}
 									disabled={isLoading || error ? true : false}
 								>
 									<Plus />
@@ -211,7 +214,7 @@ export function NoteList({
 															note.content
 														);
 														setTitleValue(
-															note.title
+															note.name
 														);
 														setSelectedValues(
 															!note.tags ||
@@ -231,7 +234,7 @@ export function NoteList({
 														);
 													}}
 												>
-													{note.title}
+													{note.name}
 												</Button>
 												<Separator className='' />
 											</ContextMenuTrigger>
@@ -244,7 +247,7 @@ export function NoteList({
 															note.content
 														);
 														setTitleValue(
-															note.title
+															note.name
 														);
 														setSelectedValues(
 															!note.tags ||
@@ -292,7 +295,7 @@ export function NoteList({
 								))
 							: notes
 									.filter((note) =>
-										note.title.includes(searchQuery)
+										note.name.includes(searchQuery)
 									)
 									.map((note, index) => (
 										<>
@@ -310,7 +313,7 @@ export function NoteList({
 																note.content
 															);
 															setTitleValue(
-																note.title
+																note.name
 															);
 															setSelectedValues(
 																!note.tags ||
@@ -330,7 +333,7 @@ export function NoteList({
 															);
 														}}
 													>
-														{note.title}
+														{note.name}
 													</Button>
 													<Separator className='' />
 												</ContextMenuTrigger>
@@ -345,7 +348,7 @@ export function NoteList({
 																note.content
 															);
 															setTitleValue(
-																note.title
+																note.name
 															);
 															setSelectedValues(
 																!note.tags ||

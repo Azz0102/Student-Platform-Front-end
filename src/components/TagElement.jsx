@@ -80,10 +80,20 @@ export function TagElement({
 			setRenameInput(tag.name);
 		} else {
 			try {
-				const renameTagData = await renameTag({
+				const newT = await renameTag({
 					tagId: tag.id,
 					name: renameInput,
 				}).unwrap();
+
+				const renameTagData = {
+					id: newT.metadata.id,
+					name: newT.metadata.name
+				}
+
+				console.log('renameTagData',renameTagData);
+
+
+
 				let updatedTags = [...tags];
 				updatedTags[index] = renameTagData;
 				setTags(updatedTags);
@@ -140,16 +150,18 @@ export function TagElement({
 											}
 										}
 									});
-									setCurrentNote(newNote[0]);
-									setTitleValue(newNote[0].title);
-									setContentValue(newNote[0].content);
-									setSelectedValues(
-										newNote[0].tags.map((e) => ({
-											id: e.id,
-											label: e.name,
-											value: e.name,
-										}))
-									);
+									if (newNote.length > 0 && newNote[0] !== undefined) {
+										setCurrentNote(newNote[0]);
+										setTitleValue(newNote[0].name);
+										setContentValue(newNote[0].content);
+										setSelectedValues(
+											newNote[0].tags.map((e) => ({
+												id: e.id,
+												label: e.name,
+												value: e.name,
+											}))
+										);
+									}
 								}}
 							>
 								{tag.name}
@@ -233,7 +245,7 @@ export function TagElement({
 									}
 								});
 								setCurrentNote(newNote[0]);
-								setTitleValue(newNote[0].title);
+								setTitleValue(newNote[0].name);
 								setContentValue(newNote[0].content);
 								setSelectedValues(
 									newNote[0].tags.map((e) => ({
