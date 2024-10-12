@@ -22,17 +22,17 @@ export const noteApi = createApi({
 			query: (userId) => `note/${userId}`,
 		}),
 		createNote: builder.mutation({
-			query: ({ userId, title, content, tags }) => ({
+			query: ({ userId, name, content, tags }) => ({
 				url: "note",
 				method: "POST",
-				body: { userId, title, content, tags },
+				body: { userId, name, content, tags },
 			}),
 		}),
 		updateNote: builder.mutation({
-			query: ({ noteId, title, content, tags }) => ({
+			query: ({ noteId, name, content, tags }) => ({
 				url: "note",
 				method: "PATCH",
-				body: { noteId, title, content, tags },
+				body: { noteId, name, content, tags },
 			}),
 		}),
 		deleteNote: builder.mutation({
