@@ -54,7 +54,7 @@ export function Sidebar({ chats, isCollapsed, isMobile, setSelected }) {
 										)}
 										onClick={(e) => {
 											e.preventDefault();
-                                            console.log(chat.id)
+                                            console.log("touch", chat.id)
 											setSelected(chat.id)
 										}}
 									>
@@ -96,7 +96,7 @@ export function Sidebar({ chats, isCollapsed, isMobile, setSelected }) {
 							onClick={(e) => {
 								e.preventDefault();
 								setSelected(chat.id);
-                                console.log(chat.id)
+                                console.log("touch2",chat.id)
 
 							}}
 						>
