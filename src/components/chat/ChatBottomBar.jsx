@@ -19,8 +19,14 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { setMessages, setHasInitialResponse } from "@/lib/features/chatSlice";
 import { useDeepCompareEffect } from "use-deep-compare";
 
-import { socket } from "../Header";
+// import { socket } from "../Header";
+// export const BottombarIcons = [{ icon: Paperclip }];
+
+import io from "socket.io-client";
+import { socket } from "./ChatLayout";
+
 export const BottombarIcons = [{ icon: Paperclip }];
+
 
 export default function ChatBottombar({
 	messages,
@@ -52,80 +58,6 @@ export default function ChatBottombar({
 		// console.log(messages);
 	};
 
-	useEffect(() => {
-		// Nhận tin nhắn từ server
-		socket.on("chatMessage", (msg) => {
-			console.log("onMessage", msg);
-
-			setMessages((prevSessions) =>
-				prevSessions.map((session) => {
-					// Check if this is the session to update by matching enrollmentId
-
-					console.log("check",session.classSession.id, selectedChat);
-
-					if (
-						session.classSession.id === selectedChat
-
-					) {
-						// Return a new object with updated messages
-						session.newmessages.map((e) => {
-							if (e.id === msg.id) return session;
-						});
-						return {
-							...session,
-							newmessages: [...session.newmessages, msg],
-						};
-					}
-					return session; // For other sessions, return unchanged
-				})
-			);
-			// console.log(messages);
-		});
-
-		// Nhận tin nhắn file
-		socket.on("fileReceived", (fileMessage) => {
-			console.log("Received file message:", fileMessage);
-
-			setMessages((prevSessions) =>
-				prevSessions.map((session) => {
-					// Check if this is the session to update by matching enrollmentId
-					if (
-						session.classSession.id === selectedChat
-					) {
-						// Return a new object with updated messages
-						session.newmessages.map((e) => {
-							if (e.id === fileMessage.id) return session;
-						});
-						return {
-							...session,
-							newmessages: [...session.newmessages, fileMessage],
-						};
-					}
-					return session; // For other sessions, return unchanged
-				})
-			);
-		});
-
-		return () => {
-			socket.off("chatMessage");
-			socket.off("fileReceived");
-		};
-	}, []);
-
-	useDeepCompareEffect(() => {
-		// // Kết nối tới server socket với HTTPS và port 5000
-		// socket = io('https://localhost:5000', {
-		//     transports: ['websocket'],
-		// });
-		console.log("ue3");
-
-		// Tham gia vào một room
-		socket.emit("joinRoom", selectedChat);
-
-		// return () => {
-		// 	socket.disconnect();
-		// };
-	}, [setMessages, selectedChat]); // messages, room, setMessages
 
 	const handleThumbsUp = () => {
 		const temp = messages.filter(

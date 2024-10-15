@@ -120,9 +120,14 @@ export function Sidebar({ chats, isCollapsed, isMobile, setSelected }) {
 										}
 										:{"  "}
 										{
-											chat.messages[
-												chat.messages.length - 1
-											].message
+										chat.messages[chat.messages.length - 1].message.split(
+											"\\"
+										)[
+											chat.messages[chat.messages.length - 1].message.split(
+												"\\"
+											).length - 1
+										]
+									
 										}
 									</span>
 								)}
