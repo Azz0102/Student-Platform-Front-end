@@ -21,6 +21,14 @@ import { AlertCircle } from "lucide-react";
 import { jwtDecode } from "jwt-decode";
 import _ from "lodash";
 import { useDeepCompareEffect } from "use-deep-compare";
+import io from "socket.io-client";
+
+
+// Kết nối tới server socket với HTTPS và port 5000
+export const socket = io("wss://localhost:5000", {
+	transports: ["websocket"],
+	maxHttpBufferSize: 1e7, // 10MB, bạn có thể thay đổi giá trị này
+});
 
 export function ChatLayout({
 	defaultLayout = [320, 480],
@@ -48,6 +56,82 @@ export function ChatLayout({
 
 	const [messages, setMessages] = useState([]);
 	const [selected, setSelected] = useState(0);
+
+	useEffect(() => {
+		// Nhận tin nhắn từ server
+		socket.on("chatMessage", (msg,room) => {
+			console.log("onMessage", room);
+
+			setMessages((prevSessions) =>
+				prevSessions.map((session) => {
+					// Check if this is the session to update by matching enrollmentId
+
+					console.log("check",session.classSession.id, selected);
+
+					if (
+						session.classSession.id === room
+					) {
+						// Return a new object with updated messages
+						session.newmessages.map((e) => {
+							if (e.id === msg.id) return session;
+						});
+						return {
+							...session,
+							newmessages: [...session.newmessages, msg],
+						};
+					}
+					return session; // For other sessions, return unchanged
+				})
+			);
+			// console.log(messages);
+		});
+
+		// Nhận tin nhắn file
+		socket.on("fileReceived", (fileMessage,room) => {
+			console.log("Received file message:", fileMessage);
+
+			setMessages((prevSessions) =>
+				prevSessions.map((session) => {
+					// Check if this is the session to update by matching enrollmentId
+					if (
+						session.classSession.id === room
+					) {
+						// Return a new object with updated messages
+						session.newmessages.map((e) => {
+							if (e.id === fileMessage.id) return session;
+						});
+						return {
+							...session,
+							newmessages: [...session.newmessages, fileMessage],
+						};
+					}
+					return session; // For other sessions, return unchanged
+				})
+			);
+		});
+
+		return () => {
+			socket.off("chatMessage");
+			socket.off("fileReceived");
+		};
+	}, [selected]);
+
+	useDeepCompareEffect(() => {
+		console.log("ue3");
+
+		if(messages.length > 0){
+			for (let i = 0; i < messages.length; i++) {
+				socket.emit("joinRoom", messages[i].classSession.id);
+			}
+		}
+
+		// Tham gia vào một room
+		// socket.emit("joinRoom", selectedChat);
+
+		// return () => {
+		// 	socket.disconnect();
+		// };
+	}, [messages]); // messages, room, setMessages
 
 	useDeepCompareEffect(() => {
 		console.log("ue1");

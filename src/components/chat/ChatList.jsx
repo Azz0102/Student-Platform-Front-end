@@ -19,6 +19,7 @@ import Link from "next/link";
 import { jwtDecode } from "jwt-decode";
 import Image from "next/image";
 import isEqual from 'lodash/isEqual';
+import { File } from "lucide-react";
 
 // import earth from '../../../public/'
 
@@ -82,6 +83,18 @@ export function ChatList({
 					}
 				);
 
+				const contentDisposition = imgdata.headers['content-disposition'];
+
+				let fileName = '';
+				if (contentDisposition && contentDisposition.includes('filename=')) {
+					// Tách tên file từ header
+					fileName = contentDisposition.split('filename=')[1].trim();
+					// Xóa dấu ngoặc kép nếu có
+					fileName = fileName.replace(/['"]/g, '');
+				}
+
+				console.log('fileName',fileName);
+
 				const file = Buffer.from(imgdata.data, 'binary').toString('base64');
 
 
@@ -95,6 +108,7 @@ export function ChatList({
 							id: element.id,
 							data: imageSrc,
 							type: `image/${checkTypeFile(element.message)}`,
+							fileName
 						},
 					];
 				});
@@ -139,13 +153,25 @@ export function ChatList({
                 }
             );
 
+			const contentDisposition = response.headers['content-disposition'];
+
+			console.log('contentDisposition',response);
+
+			let fileName = '';
+			if (contentDisposition && contentDisposition.includes('filename=')) {
+				// Tách tên file từ header
+				fileName = contentDisposition.split('filename=')[1].trim();
+				// Xóa dấu ngoặc kép nếu có
+				fileName = fileName.replace(/['"]/g, '');
+			}
+
             // Tạo URL từ blob
             const url = window.URL.createObjectURL(new Blob([response.data]));
 
             // Tạo một thẻ <a> để kích hoạt tải xuống
             const a = document.createElement('a');
             a.href = url;
-            a.download = message.message.split("/").pop(); // Lấy tên tệp từ message
+            a.download = fileName;
             document.body.appendChild(a);
             a.click();
 
@@ -204,33 +230,41 @@ export function ChatList({
 									>
 										{message.file &&
 											!checkTypeFile(message.message) && (
-												<Link
-													href={"#"}
-													onClick={(e) => handleDownload(e, message)}
-												>
-													{
-														message.message.split(
-															"/"
-														)[
+												<div className="flex flex-row items-center" >
+													<div className="bg-background text-foreground rounded-full p-2">
+														<File />
+													</div>
+													<Link
+														href={"#"}
+														onClick={(e) => handleDownload(e, message)}
+														className="m-2"
+													>
+														{
 															message.message.split(
-																"/"
-															).length - 1
-														]
-													}
-												</Link>
+																"\\"
+															)[
+																message.message.split(
+																	"\\"
+																).length - 1
+															]
+														}
+													</Link>
+												</div>
 											)}
 										{message.file &&
 											checkTypeFile(message.message) &&
 											imageArray.map((img, index) => {
 												if (img.id === message.id)
 													return (
-														<Image
-															key={index}
-															alt={img.data}
-															src={img.data}
-															width={300} // Thay đổi kích thước nếu cần
-        													height={200}
-														></Image>
+														<a href={img.data} download={img.fileName} key={index}>
+															<Image
+																key={index}
+																alt={img.data}
+																src={img.data}
+																width={300} // Thay đổi kích thước nếu cần
+																height={200}
+															></Image>
+														</a>
 													);
 											})}
 										{!message.file && message.message}
