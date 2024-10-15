@@ -17,6 +17,8 @@ import Earth from "/public/android-chrome-192x192.png";
 import { useDeepCompareEffect } from "use-deep-compare";
 import Link from "next/link";
 import { jwtDecode } from "jwt-decode";
+import Image from "next/image";
+import isEqual from 'lodash/isEqual';
 
 // import earth from '../../../public/'
 
@@ -36,7 +38,7 @@ const checkTypeFile = (filePath) => {
 
 export function ChatList({
 	messages,
-	selectedUser,
+	// selectedUser,
 	isMobile,
 	messagesState,
 	selectedChat,
@@ -44,7 +46,14 @@ export function ChatList({
 }) {
 	const messagesContainerRef = useRef(null);
 
+	const prevMessagesRef = useRef(null);
+
 	const [imageArray, setImageArray] = useState([]);
+
+	let imageSrc;
+
+	const refreshToken = Cookies.get("refreshToken");
+	const { userId } = jwtDecode(refreshToken);
 
 	const doSth = async () => {
 		console.log("ue4");
@@ -54,26 +63,37 @@ export function ChatList({
 				messagesContainerRef.current.scrollHeight;
 		}
 
+		if(messages.length<0) {
+			return ;
+		}
+
 		for (let i = 0; i < messages.length; i++) {
 			const element = messages[i];
 
-			console.log(element);
 			if (element.file && checkTypeFile(element.message)) {
-				const file = await axios.get(
+				console.log("element");
+				const imgdata = await axios.get(
 					`https://localhost:3001/api/message/file/${element.id}`,
 					{
 						headers: {
 							refreshToken: Cookies.get("refreshToken"),
 						},
+						responseType: 'arraybuffer',
 					}
 				);
-				console.log("file", file);
+
+				const file = Buffer.from(imgdata.data, 'binary').toString('base64');
+
+
+				imageSrc=`data:image/${checkTypeFile(element.message)};base64,${file}`
+
+				
 				setImageArray((array) => {
 					return [
 						...array,
 						{
 							id: element.id,
-							data: file.data,
+							data: imageSrc,
 							type: `image/${checkTypeFile(element.message)}`,
 						},
 					];
@@ -83,18 +103,68 @@ export function ChatList({
 	};
 
 	useDeepCompareEffect(() => {
-		doSth();
-	}, [messages]); //
+		console.log("fetch img", messages);
+		const fetch = async ()=>{
+			await doSth();
+		}
+
+		if (!isEqual(messages, prevMessagesRef.current)) {
+            console.log("Messages have changed");
+            prevMessagesRef.current = messages; // Cập nhật lại tham chiếu
+            // Thực hiện logic của bạn ở đây
+			fetch();
+        }
+		// fetch();
+
+		return () => {
+            setImageArray([]);
+            console.log('Cleaning up...');
+        };
+	}, [messages]); 
 
 	// useDeepCompareEffect(() => {}, []);
+
+	
+	const handleDownload = async (e,message) => {
+        e.preventDefault(); // Ngăn chặn hành vi mặc định của thẻ <Link>
+
+        try {
+            const response = await axios.get(
+                `https://localhost:3001/api/message/file/${message.id}`,
+                {
+                    headers: {
+                        refreshToken: Cookies.get("refreshToken"),
+                    },
+                    responseType: 'blob', // Đặt responseType là 'blob' để nhận tệp
+                }
+            );
+
+            // Tạo URL từ blob
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+
+            // Tạo một thẻ <a> để kích hoạt tải xuống
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = message.message.split("/").pop(); // Lấy tên tệp từ message
+            document.body.appendChild(a);
+            a.click();
+
+            // Dọn dẹp
+            a.remove();
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error('Error downloading file:', error);
+        }
+    };
+	
 
 	return (
 		<div className='flex h-full w-full flex-col overflow-y-auto'>
 			<ChatMessageList ref={messagesContainerRef}>
 				<AnimatePresence>
 					{messages.map((message, index) => {
-						const refreshToken = Cookies.get("refreshToken");
-						const { userId } = jwtDecode(refreshToken);
+						// const refreshToken = Cookies.get("refreshToken");
+						// const { userId } = jwtDecode(refreshToken);
 						console.log('Huy',message,'-',userId)
 						const variant = getMessageVariant(
 							message.usedId,
@@ -136,21 +206,7 @@ export function ChatList({
 											!checkTypeFile(message.message) && (
 												<Link
 													href={"#"}
-													onClick={async (e) => {
-														e.preventDefault();
-														const file =
-															await axios.get(
-																`https://localhost:3001/api/message/file/${message.id}`,
-																{
-																	headers: {
-																		refreshToken:
-																			Cookies.get(
-																				"refreshToken"
-																			),
-																	},
-																}
-															);
-													}}
+													onClick={(e) => handleDownload(e, message)}
 												>
 													{
 														message.message.split(
@@ -168,10 +224,13 @@ export function ChatList({
 											imageArray.map((img, index) => {
 												if (img.id === message.id)
 													return (
-														<img
+														<Image
 															key={index}
-															src={`data:${img.type};base64,${img.data.toString("base64")}`}
-														></img>
+															alt={img.data}
+															src={img.data}
+															width={300} // Thay đổi kích thước nếu cần
+        													height={200}
+														></Image>
 													);
 											})}
 										{!message.file && message.message}

@@ -60,8 +60,12 @@ export default function ChatBottombar({
 			setMessages((prevSessions) =>
 				prevSessions.map((session) => {
 					// Check if this is the session to update by matching enrollmentId
+
+					console.log("check",session.classSession.id, selectedChat);
+
 					if (
-						session.classSession.enrollmentId === msg.enrollmentId
+						session.classSession.id === selectedChat
+
 					) {
 						// Return a new object with updated messages
 						session.newmessages.map((e) => {
@@ -86,12 +90,11 @@ export default function ChatBottombar({
 				prevSessions.map((session) => {
 					// Check if this is the session to update by matching enrollmentId
 					if (
-						session.classSession.enrollmentId ===
-						fileMessage.enrollmentId
+						session.classSession.id === selectedChat
 					) {
 						// Return a new object with updated messages
 						session.newmessages.map((e) => {
-							if (e.id === msg.id) return session;
+							if (e.id === fileMessage.id) return session;
 						});
 						return {
 							...session,

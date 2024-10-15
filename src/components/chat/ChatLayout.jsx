@@ -43,15 +43,12 @@ export function ChatLayout({
 		isSuccess,
 	} = useGetChatListQuery({ userId: decoded.userId });
 
-	const selectedChat = useSelector((state) => state.chat.selectedChat);
+	// const selectedChat = useSelector((state) => state.chat.selectedChat);
 	// const messages = useSelector((state) => state.chat.messages);
 
 	const [messages, setMessages] = useState([]);
 	const [selected, setSelected] = useState(0);
 
-	console.log("data", listChat);
-
-	console.log("messages", messages);
 	useDeepCompareEffect(() => {
 		console.log("ue1");
 
@@ -158,12 +155,13 @@ export function ChatLayout({
 			</ResizablePanel>
 			<ResizableHandle withHandle />
 			<ResizablePanel defaultSize={defaultLayout[1]} minSize={30}>
+				{selected>0 &&
 				<Chat
 					selectedChat={selected}
 					isMobile={isMobile}
 					messagesState={messages}
 					setMessages={setMessages}
-				/>
+				/>}
 			</ResizablePanel>
 		</ResizablePanelGroup>
 	);
