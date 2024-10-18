@@ -10,7 +10,7 @@ import { chatApi } from "./services/chat";
 import { notiApi } from "./services/noti";
 import { calenderApi } from "./services/calender";
 import { classInfoApi } from "./services/classInfo";
-
+import { subscriptionApi } from "./services/subscription";
 
 export const makeStore = () => {
 	return configureStore({
@@ -23,6 +23,7 @@ export const makeStore = () => {
 			[notiApi.reducerPath]: notiApi.reducer,
 			[calenderApi.reducerPath]: calenderApi.reducer,
 			[classInfoApi.reducerPath]: classInfoApi.reducer,
+			[subscriptionApi.reducerPath]: subscriptionApi.reducer,
 			chat: chatReducer,
 			note: noteReducer,
 		},
@@ -35,7 +36,8 @@ export const makeStore = () => {
 				.concat(chatApi.middleware)
 				.concat(notiApi.middleware)
 				.concat(calenderApi.middleware)
-				.concat(classInfoApi.middleware),
+				.concat(classInfoApi.middleware)
+				.concat(subscriptionApi.middleware),
 		devTools: true,
 	});
 };

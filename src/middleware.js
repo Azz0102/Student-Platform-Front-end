@@ -38,8 +38,6 @@ export function middleware(request) {
 	}
 
 	if (refreshToken) {
-		console.log("4");
-
 		const roleId = jwtDecode(refreshToken).roleId;
 
 		if (pathname === "/login") {
