@@ -9,6 +9,7 @@ import noteReducer from "./features/noteSlice";
 import { chatApi } from "./services/chat";
 import { notiApi } from "./services/noti";
 import { calenderApi } from "./services/calender";
+import { classInfoApi } from "./services/classInfo";
 
 
 export const makeStore = () => {
@@ -21,6 +22,7 @@ export const makeStore = () => {
 			[chatApi.reducerPath]: chatApi.reducer,
 			[notiApi.reducerPath]: notiApi.reducer,
 			[calenderApi.reducerPath]: calenderApi.reducer,
+			[classInfoApi.reducerPath]: classInfoApi.reducer,
 			chat: chatReducer,
 			note: noteReducer,
 		},
@@ -32,7 +34,8 @@ export const makeStore = () => {
 				.concat(authApi.middleware)
 				.concat(chatApi.middleware)
 				.concat(notiApi.middleware)
-				.concat(calenderApi.middleware),
+				.concat(calenderApi.middleware)
+				.concat(classInfoApi.middleware),
 		devTools: true,
 	});
 };

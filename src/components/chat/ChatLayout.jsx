@@ -51,11 +51,11 @@ export function ChatLayout({
 		isSuccess,
 	} = useGetChatListQuery({ userId: decoded.userId });
 
-	// const selectedChat = useSelector((state) => state.chat.selectedChat);
+	const selectedChat = useSelector((state) => state.chat.selectedChat);
 	// const messages = useSelector((state) => state.chat.messages);
 
 	const [messages, setMessages] = useState([]);
-	const [selected, setSelected] = useState(0);
+	const [selected, setSelected] = useState(selectedChat ? selectedChat : 0);
 
 	useEffect(() => {
 		// Nhận tin nhắn từ server

@@ -29,10 +29,10 @@ export const noteApi = createApi({
 			}),
 		}),
 		updateNote: builder.mutation({
-			query: ({ noteId, name, content, tags }) => ({
+			query: ({ noteId, name, content, tagIds }) => ({
 				url: "note",
 				method: "PATCH",
-				body: { noteId, name, content, tags },
+				body: { noteId, name, content, tagIds },
 			}),
 		}),
 		deleteNote: builder.mutation({
