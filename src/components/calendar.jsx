@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 import { useGetcalenderQuery } from "@/lib/services/calender";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
-import { useDeepCompareEffect } from "use-deep-compare";
+import { useDeepCompareEffect, useDeepCompareLayoutEffect } from "use-deep-compare";
 
 const localizer = dayjsLocalizer(dayjs);
 
@@ -52,7 +52,7 @@ export function MyCalendar({ className }) {
 
 	
 
-	useEffect(() => {
+	useDeepCompareEffect(() => {
 
 		if (listEvents) {
 			console.log('listEvents2',listEvents);
@@ -82,7 +82,7 @@ export function MyCalendar({ className }) {
 
 	const onSelectEvent = useCallback(
 		(event) => {
-			router.push(`/user/dashboard/class/${event.id}`);
+			router.push(`/user/dashboard/class/${event.classSessionId}`);
 		},
 		[router]
 	);

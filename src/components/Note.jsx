@@ -44,13 +44,15 @@ export function Note() {
 	// const router = useRouter();
 
 	const refreshToken = Cookies.get("refreshToken");
-	const userId = jwtDecode(refreshToken);
+	const {userId} = jwtDecode(refreshToken);
+
+	console.log('userId',userId);
 
 	const {
 		data: noteList = [],
 		error: noteError,
 		isLoading: isNoteLoading,
-	} = useGetListNoteQuery(2);
+	} = useGetListNoteQuery(userId);
 
 	console.log("noteList",noteList);
 
@@ -59,7 +61,7 @@ export function Note() {
 		data: tagList = [],
 		error: tagError,
 		isLoading: isTagLoading,
-	} = useGetListTagQuery(2);
+	} = useGetListTagQuery(userId);
 
 	console.log("tagList",tagList);
 
@@ -101,7 +103,7 @@ export function Note() {
 		tags: [{id: 2 ,name: "React"}, {id: 3, name: "Remix"}],
 	},] */
 
-	const [currentNote, setCurrentNote] = useState({});
+	const [currentNote, setCurrentNote] = useState(currentNoteIdState ? notes.filter((item)=>item.id===currentNoteIdState)[0]: {});
 	/**{
 		id: "",
 		name: "",
@@ -137,7 +139,7 @@ export function Note() {
 									noteId: notes[i].id,
 									name: notes[i].name,
 									content: notes[i].content,
-									tags: notes[i].tags,
+									tagIds: notes[i].tags.map((e)=>e.id),
 								});
 							}
 						}
@@ -330,7 +332,7 @@ export function Note() {
 					try {
 						console.log("newTag");
 						const newTag = await createTag({
-							userId: 2,
+							userId: userId,
 							name: element.value,
 						}).unwrap();
 
@@ -364,6 +366,22 @@ export function Note() {
 							name: e.label,
 						})),
 		};
+
+		console.log('noesss', {
+			noteId: currentNote.id, content:currentNote.content, name: currentNote.name,
+			tagIds:
+				newSelectedValue.length === 0
+					? []
+					: newSelectedValue.map((e) => e.id),
+		})
+
+		const updatedNote = await updateNote( {
+			noteId: currentNote.id, content:currentNote.content, name: currentNote.name,
+			tagIds:
+				newSelectedValue.length === 0
+					? []
+					: newSelectedValue.map((e) => e.id),
+		});
 
 		setCurrentNote({
 			...currentNote,

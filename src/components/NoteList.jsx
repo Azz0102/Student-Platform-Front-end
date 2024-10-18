@@ -33,6 +33,8 @@ import {
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
 import { setListNote } from "@/lib/features/noteSlice";
+import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
 
 export function NoteList({
 	notes,
@@ -54,6 +56,10 @@ export function NoteList({
 	error,
 }) {
 	const dispatch = useDispatch();
+
+	const refreshToken = Cookies.get("refreshToken");
+	const {userId} = jwtDecode(refreshToken);
+
 	const [
 		createNote,
 		{
@@ -99,7 +105,7 @@ export function NoteList({
 	const handleAddNote = async () => {
 		try {
 			const newNote = await createNote({
-				userId: 2,
+				userId: userId,
 				name: "",
 				content: "",
 				tags: [],

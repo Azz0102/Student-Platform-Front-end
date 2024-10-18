@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { Users, ChatBotMessages, userData } from "@/app/data";
 
 const initialState = {
-    selectedChat: '',
+    selectedChat: null,
 
     input: "",
 
