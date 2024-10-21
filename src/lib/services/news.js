@@ -20,9 +20,12 @@ export const newsApi = createApi({
 		getListNewsByUser: builder.query({
 			query: (id) => `news/${id}`,
 		}),
+		getUserRelatedNews: builder.query({
+			query: ({ userId }) => `/news/user/${userId}`,
+		}),
 	}),
 });
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useGetListNewsByUserQuery } = newsApi;
+export const { useGetListNewsByUserQuery, useGetUserRelatedNewsQuery } = newsApi;
