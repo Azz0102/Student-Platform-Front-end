@@ -87,12 +87,10 @@ export function TagElement({
 
 				const renameTagData = {
 					id: newT.metadata.id,
-					name: newT.metadata.name
-				}
+					name: newT.metadata.name,
+				};
 
-				console.log('renameTagData',renameTagData);
-
-
+				console.log("renameTagData", renameTagData);
 
 				let updatedTags = [...tags];
 				updatedTags[index] = renameTagData;
@@ -101,7 +99,7 @@ export function TagElement({
 
 				let updatedNotes = [...notes];
 				updatedNotes = updatedNotes.map((note) => {
-					if (note.tags.includes(tag)) {
+					if (note.tags.some((item) => item.id === tag.id)) {
 						note.tags = note.tags.map((t) =>
 							t.id === tag.id ? renameTagData : t
 						);
@@ -150,7 +148,10 @@ export function TagElement({
 											}
 										}
 									});
-									if (newNote.length > 0 && newNote[0] !== undefined) {
+									if (
+										newNote.length > 0 &&
+										newNote[0] !== undefined
+									) {
 										setCurrentNote(newNote[0]);
 										setTitleValue(newNote[0].name);
 										setContentValue(newNote[0].content);

@@ -83,7 +83,7 @@ export function NoteList({
 	const handleDeleteNote = async (note) => {
 		try {
 			await deleteNote({ noteId: note.id });
-			const updatedNotes = [...fullnotes];
+			let updatedNotes = [...fullnotes];
 			updatedNotes.splice(
 				updatedNotes.findIndex((e) => e.id === note.id),
 				1
@@ -137,7 +137,7 @@ export function NoteList({
 				content: note.content,
 				tags: note.tags,
 			});
-			const updatedNotes = [...fullnotes];
+			let updatedNotes = [...fullnotes];
 
 			// duplicateNote.id = "new" + newNoteIndex;
 			updatedNotes.push(newNote.data.metadata);

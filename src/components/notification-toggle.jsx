@@ -34,19 +34,27 @@ export function NotiToggle() {
 	const [notiList, setNotiList] = useState([]);
 	const router = useRouter();
 
-	useDeepCompareEffect(() => {
+	useEffect(() => {
 		socket.on("NewsNoti", (msg) => {
 			console.log("onNoti", msg);
+			const temp = {
+				...msg.newNoti,
+				NotiUsers: [
+					msg.notiUser.find((noti) => noti.userId === userId),
+				],
+			};
+			setNotiList([temp, ...notiList]);
 		});
 
 		return () => {
 			socket.off("NewsNoti");
 		};
-	}, []);
+	}, [notiList, userId]);
 
 	useEffect(() => {
 		if (data) {
 			console.log("data", data);
+
 			setNotiList(data.metadata);
 		}
 	}, [data]);
