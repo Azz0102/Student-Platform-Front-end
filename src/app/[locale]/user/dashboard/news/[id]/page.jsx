@@ -35,18 +35,18 @@ export default function Page() {
 					<CardTitle>{mainNews && mainNews.title}</CardTitle>
 					<CardDescription>
 						<div className='flex flex-wrap gap-2'>
-							{/* {mainNews.time && (
+							{mainNews && mainNews.time && (
 								<span className='flex items-center text-sm text-muted-foreground'>
 									<CalendarIcon className='mr-1 h-4 w-4' />
 									{new Date(mainNews.time).toLocaleString()}
 								</span>
 							)}
-							{mainNews.location && (
+							{mainNews && mainNews.location && (
 								<span className='flex items-center text-sm text-muted-foreground'>
 									<MapPinIcon className='mr-1 h-4 w-4' />
 									{mainNews.location}
 								</span>
-							)} */}
+							)}
 						</div>
 					</CardDescription>
 				</CardHeader>
