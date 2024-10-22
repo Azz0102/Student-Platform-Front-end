@@ -22,13 +22,7 @@ import { jwtDecode } from "jwt-decode";
 import _ from "lodash";
 import { useDeepCompareEffect } from "use-deep-compare";
 import io from "socket.io-client";
-
-
-// Kết nối tới server socket với HTTPS và port 5000
-export const socket = io("wss://localhost:5000", {
-	transports: ["websocket"],
-	maxHttpBufferSize: 1e7, // 10MB, bạn có thể thay đổi giá trị này
-});
+import {socket} from "../../components/Header";
 
 export function ChatLayout({
 	defaultLayout = [320, 480],
