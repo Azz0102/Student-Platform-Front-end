@@ -6,6 +6,7 @@ import { authApi } from "./services/auth";
 import { noteApi } from "./services/note";
 import chatReducer from "./features/chatSlice";
 import noteReducer from "./features/noteSlice";
+import newsReducer from "./features/newsSlice";
 import { chatApi } from "./services/chat";
 import { notiApi } from "./services/noti";
 import { calenderApi } from "./services/calender";
@@ -26,6 +27,7 @@ export const makeStore = () => {
 			[subscriptionApi.reducerPath]: subscriptionApi.reducer,
 			chat: chatReducer,
 			note: noteReducer,
+			news: newsReducer,
 		},
 		middleware: (getDefaultMiddleware) =>
 			getDefaultMiddleware()

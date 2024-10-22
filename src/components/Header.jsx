@@ -27,7 +27,7 @@ import io from "socket.io-client";
 import { useLogoutMutation } from "@/lib/services/auth";
 
 // Kết nối tới server socket với HTTPS và port 5000
-export const socket = io("wss://localhost:5000", {
+export const socket = io("wss://localhost:3001", {
 	transports: ["websocket"],
 	maxHttpBufferSize: 1e7, // 10MB, bạn có thể thay đổi giá trị này
 });

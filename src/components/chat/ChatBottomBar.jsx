@@ -23,7 +23,7 @@ import { useDeepCompareEffect } from "use-deep-compare";
 // export const BottombarIcons = [{ icon: Paperclip }];
 
 import io from "socket.io-client";
-import { socket } from "./ChatLayout";
+import { socket } from "@/components/Header";
 
 export const BottombarIcons = [{ icon: Paperclip }];
 
