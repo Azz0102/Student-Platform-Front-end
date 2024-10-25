@@ -79,7 +79,7 @@ export function NewsCard() {
 		isLoading,
 		isError,
 		isSuccess,
-	} = useGetUserRelatedNewsQuery({ userId: 3 });
+	} = useGetUserRelatedNewsQuery({ userId: decoded.userId });
 
 	let newsItems=null;
 	useDeepCompareEffect(() => {

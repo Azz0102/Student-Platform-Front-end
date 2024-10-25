@@ -37,7 +37,6 @@ export function ChatLayout({
 
 	const refreshToken = Cookies.get("refreshToken");
 	const decoded = jwtDecode(refreshToken);
-	console.log("decoded", decoded);
 	const {
 		data: listChat,
 		isLoading,
