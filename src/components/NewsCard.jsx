@@ -79,14 +79,15 @@ export function NewsCard() {
 		isLoading,
 		isError,
 		isSuccess,
-	} = useGetUserRelatedNewsQuery({ userId: 3 });
+	} = useGetUserRelatedNewsQuery({ userId: decoded.userId });
 
-	let newsItems=null;
-	useDeepCompareEffect(() => {
-		if (news) {
-			dispatch(setListNews(newsItems.metadata));
+	const [newsItems, setNewsItems] = useState(null);
+
+	useEffect(()=>{
+		if(news){
+			setNewsItems(_.cloneDeep(news));
 		}
-	}, [news]);
+	},[news])
 
 	const { width, height } = useWindowDimensions();
 	const router = useRouter();
@@ -99,8 +100,7 @@ export function NewsCard() {
         return <div>Error loading events</div>;
     }
 
-	if (isSuccess){
-		newsItems = _.cloneDeep(news);
+	if (isSuccess && newsItems ){
 		return (
 			<Card className='mx-auto w-full max-w-2xl bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800'>
 				<CardHeader className='ml-6 space-y-1'>
