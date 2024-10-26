@@ -15,6 +15,7 @@ import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 import { useGetUserRelatedNewsQuery } from "@/lib/services/news";
 import _ from 'lodash';
+import { useEffect, useState } from "react";
 
 export default function Page({ params }) {
 
@@ -27,7 +28,36 @@ export default function Page({ params }) {
 		isSuccess,
 	} = useGetUserRelatedNewsQuery({ userId: decoded.userId });
 
-	let newsItems=null;
+	const [newsItems, setNewsItems] = useState(null);
+	const [mainNews, setMainNews] = useState(null);
+	const [relatedNews, setRelatedNews] = useState(null);
+
+	useEffect(()=>{
+		if(news){
+			setNewsItems(_.cloneDeep(news.metadata));
+		}
+	},[news])
+
+	useEffect(()=>{
+		if(newsItems){
+			const mainNew = newsItems.find((item)=>{
+				return item.id == params.id
+			})
+			setMainNews(mainNew);
+			const listRelate = newsItems;
+	
+			const array =listRelate.map(item => ({
+				id: item.id,
+				title: item.title,
+				relatedTo: item.relatedTo.map(related => related.name) // Chỉ lấy tên từ mảng relatedTo
+			}));
+	
+			const filteredNews = array.filter(item => item.id !== mainNew.id);
+			
+			const relatedNew = filteredNews.slice(-3).reverse();
+			setRelatedNews(relatedNew);
+		}
+	},[newsItems])
 
 	if (isLoading) {
         return <div>Loading...</div>;
@@ -37,25 +67,7 @@ export default function Page({ params }) {
         return <div>Error loading events</div>;
     }
 
-	if (isSuccess){
-		newsItems = _.cloneDeep(news.metadata);
-		const mainNews = newsItems.find((item)=>{
-			return item.id == params.id
-		})
-
-		const listRelate = newsItems;
-
-		const array =listRelate.map(item => ({
-			id: item.id,
-			title: item.title,
-			relatedTo: item.relatedTo.map(related => related.name) // Chỉ lấy tên từ mảng relatedTo
-		}));
-
-		const filteredNews = array.filter(item => item.id !== mainNews.id);
-		
-		const relatedNews = filteredNews.slice(-3).reverse();
-
-
+	if (isSuccess && newsItems && mainNews && relatedNews){
 		return (
 			<div className='mx-auto w-full px-4 py-8'>
 				<Card className='mb-8'>
@@ -114,7 +126,7 @@ export default function Page({ params }) {
 												key={idx}
 												className='whitespace-nowrap'
 											>
-												{item.name}
+												{item}
 											</Badge>
 										))}
 									</div>
