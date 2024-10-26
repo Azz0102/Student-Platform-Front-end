@@ -3,7 +3,9 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 // Define a service using a base URL and expected endpoints
 export const authApi = createApi({
 	reducerPath: "authApi",
-	baseQuery: fetchBaseQuery({ baseUrl: "https://localhost:3001/api/" }),
+	baseQuery: fetchBaseQuery({
+		baseUrl: `https://${process.env.NEXT_PUBLIC_BASE_URL}/api/`,
+	}),
 	endpoints: (builder) => ({
 		login: builder.mutation({
 			query: ({ name, password }) => ({
@@ -33,10 +35,14 @@ export const authApi = createApi({
 				body: { resetToken, newPassword },
 			}),
 		}),
-
 	}),
 });
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useLoginMutation, useLogoutMutation, useForgot_passwordMutation, useReset_passwordMutation } = authApi;
+export const {
+	useLoginMutation,
+	useLogoutMutation,
+	useForgot_passwordMutation,
+	useReset_passwordMutation,
+} = authApi;

@@ -22,7 +22,7 @@ import { jwtDecode } from "jwt-decode";
 import _ from "lodash";
 import { useDeepCompareEffect } from "use-deep-compare";
 import io from "socket.io-client";
-import {socket} from "../../components/Header";
+import { socket } from "../../components/Header";
 
 export function ChatLayout({
 	defaultLayout = [320, 480],
@@ -53,21 +53,19 @@ export function ChatLayout({
 
 	useEffect(() => {
 		// Nhận tin nhắn từ server
-		socket.on("chatMessage", (msg,room) => {
+		socket.on("chatMessaged", (msg, room) => {
 			console.log("onMessage", room);
 
 			setMessages((prevSessions) =>
 				prevSessions.map((session) => {
 					// Check if this is the session to update by matching enrollmentId
 
-					console.log("check",session.classSession.id, selected);
+					console.log("check", session.classSession.id, selected);
 
-					if (
-						session.classSession.id === room
-					) {
+					if (session.classSession.id == room) {
 						// Return a new object with updated messages
 						session.newmessages.map((e) => {
-							if (e.id === msg.id) return session;
+							if (e.id == msg.id) return session;
 						});
 						return {
 							...session,
@@ -81,18 +79,16 @@ export function ChatLayout({
 		});
 
 		// Nhận tin nhắn file
-		socket.on("fileReceived", (fileMessage,room) => {
+		socket.on("fileReceived", (fileMessage, room) => {
 			console.log("Received file message:", fileMessage);
 
 			setMessages((prevSessions) =>
 				prevSessions.map((session) => {
 					// Check if this is the session to update by matching enrollmentId
-					if (
-						session.classSession.id === room
-					) {
+					if (session.classSession.id == room) {
 						// Return a new object with updated messages
 						session.newmessages.map((e) => {
-							if (e.id === fileMessage.id) return session;
+							if (e.id == fileMessage.id) return session;
 						});
 						return {
 							...session,
@@ -105,15 +101,15 @@ export function ChatLayout({
 		});
 
 		return () => {
-			socket.off("chatMessage");
+			socket.off("chatMessaged");
 			socket.off("fileReceived");
 		};
-	}, [selected]);
+	}, [selected, messages]);
 
 	useDeepCompareEffect(() => {
 		console.log("ue3");
 
-		if(messages.length > 0){
+		if (messages.length > 0) {
 			for (let i = 0; i < messages.length; i++) {
 				socket.emit("joinRoom", messages[i].classSession.id);
 			}
@@ -125,7 +121,7 @@ export function ChatLayout({
 		// return () => {
 		// 	socket.disconnect();
 		// };
-	}, [messages]); // messages, room, setMessages
+	}, [selected, messages]); // messages, room, setMessages
 
 	useDeepCompareEffect(() => {
 		console.log("ue1");
@@ -233,13 +229,14 @@ export function ChatLayout({
 			</ResizablePanel>
 			<ResizableHandle withHandle />
 			<ResizablePanel defaultSize={defaultLayout[1]} minSize={30}>
-				{selected>0 &&
-				<Chat
-					selectedChat={selected}
-					isMobile={isMobile}
-					messagesState={messages}
-					setMessages={setMessages}
-				/>}
+				{selected > 0 && (
+					<Chat
+						selectedChat={selected}
+						isMobile={isMobile}
+						messagesState={messages}
+						setMessages={setMessages}
+					/>
+				)}
 			</ResizablePanel>
 		</ResizablePanelGroup>
 	);

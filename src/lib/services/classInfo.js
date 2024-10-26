@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 export const classInfoApi = createApi({
     reducerPath: "classInfoApi",
     baseQuery: fetchBaseQuery({
-        baseUrl: "https://localhost:3001/api/",
+        baseUrl: `https://${process.env.NEXT_PUBLIC_BASE_URL}/api/`,
         prepareHeaders: async (headers) => {
             const refreshToken = Cookies.get("refreshToken");
 

@@ -57,7 +57,6 @@ export function ChatList({
 	const { userId } = jwtDecode(refreshToken);
 
 	const doSth = async () => {
-		console.log("ue4");
 
 		if (messagesContainerRef.current) {
 			messagesContainerRef.current.scrollTop =
@@ -72,7 +71,6 @@ export function ChatList({
 			const element = messages[i];
 
 			if (element.file && checkTypeFile(element.message)) {
-				console.log("element");
 				const imgdata = await axios.get(
 					`https://localhost:3001/api/message/file/${element.id}`,
 					{
@@ -92,8 +90,6 @@ export function ChatList({
 					// Xóa dấu ngoặc kép nếu có
 					fileName = fileName.replace(/['"]/g, '');
 				}
-
-				console.log('fileName',fileName);
 
 				const file = Buffer.from(imgdata.data, 'binary').toString('base64');
 
@@ -117,13 +113,11 @@ export function ChatList({
 	};
 
 	useDeepCompareEffect(() => {
-		console.log("fetch img", messages);
 		const fetch = async ()=>{
 			await doSth();
 		}
 
 		if (!isEqual(messages, prevMessagesRef.current)) {
-            console.log("Messages have changed");
             prevMessagesRef.current = messages; // Cập nhật lại tham chiếu
             // Thực hiện logic của bạn ở đây
 			fetch();
@@ -154,8 +148,6 @@ export function ChatList({
             );
 
 			const contentDisposition = response.headers['content-disposition'];
-
-			console.log('contentDisposition',response);
 
 			let fileName = '';
 			if (contentDisposition && contentDisposition.includes('filename=')) {
@@ -191,7 +183,7 @@ export function ChatList({
 					{messages.map((message, index) => {
 						// const refreshToken = Cookies.get("refreshToken");
 						// const { userId } = jwtDecode(refreshToken);
-						console.log('Huy',message,'-',userId)
+						// console.log('Huy',message,'-',userId)
 						const variant = getMessageVariant(
 							message.usedId,
 							userId
