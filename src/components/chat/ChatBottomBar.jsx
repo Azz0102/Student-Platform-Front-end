@@ -116,7 +116,7 @@ export default function ChatBottombar({
 
 			const timestamp = date.toLocaleTimeString("en-US", options);
 
-			socket.emit("chatMessage", newMessage, selectedChat);
+			socket.emit("chatMessage", newMessage, selectedChat.toString());
 			setMessage("");
 
 			if (inputRef.current) {
@@ -179,7 +179,7 @@ export default function ChatBottombar({
 				fileType: file.type,
 			};
 			console.log(base64String);
-			socket.emit("fileMessage", newMessage, selectedChat); // Gửi tệp qua socket
+			socket.emit("fileMessage", newMessage, selectedChat.toString()); // Gửi tệp qua socket
 			console.log("3");
 			event.target.value = null;
 		};

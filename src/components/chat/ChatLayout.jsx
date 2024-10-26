@@ -51,6 +51,7 @@ export function ChatLayout({
 	const [selected, setSelected] = useState(selectedChat ? selectedChat : 0);
 
 	useEffect(() => {
+		console.log('111')
 		// Nhận tin nhắn từ server
 		socket.on("chatMessaged", (msg, room) => {
 			console.log("onMessage", room);
@@ -100,6 +101,7 @@ export function ChatLayout({
 		});
 
 		return () => {
+			console.log('offchat')
 			socket.off("chatMessaged");
 			socket.off("fileReceived");
 		};
@@ -110,7 +112,7 @@ export function ChatLayout({
 
 		if (messages.length > 0) {
 			for (let i = 0; i < messages.length; i++) {
-				socket.emit("joinRoom", messages[i].classSession.id);
+				socket.emit("joinRoom", messages[i].classSession.id.toString());
 			}
 		}
 
