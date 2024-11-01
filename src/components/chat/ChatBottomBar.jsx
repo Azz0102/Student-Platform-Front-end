@@ -24,9 +24,9 @@ import { useDeepCompareEffect } from "use-deep-compare";
 
 import io from "socket.io-client";
 import { socket } from "@/components/Header";
+import { useTranslation } from "react-i18next";
 
 export const BottombarIcons = [{ icon: Paperclip }];
-
 
 export default function ChatBottombar({
 	messages,
@@ -48,7 +48,7 @@ export default function ChatBottombar({
 	// );
 
 	const [isLoading, setisLoading] = useState(false);
-
+	const { t } = useTranslation();
 	const handleInputChange = (event) => {
 		setMessage(event.target.value);
 	};
@@ -57,7 +57,6 @@ export default function ChatBottombar({
 		// dispatch(setMessages([...messages, newMessage]));
 		// console.log(messages);
 	};
-
 
 	const handleThumbsUp = () => {
 		const temp = messages.filter(
@@ -245,7 +244,7 @@ export default function ChatBottombar({
 						ref={inputRef}
 						onKeyDown={handleKeyPress}
 						onChange={handleInputChange}
-						placeholder='Type a message...'
+						placeholder={t("typeAMessage")}
 						className='rounded-full'
 					/>
 					<div className='absolute bottom-2 right-4'>

@@ -35,6 +35,7 @@ import { useDispatch } from "react-redux";
 import { setListNote } from "@/lib/features/noteSlice";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
+import { useTranslation } from "react-i18next";
 
 export function NoteList({
 	notes,
@@ -58,8 +59,8 @@ export function NoteList({
 	const dispatch = useDispatch();
 
 	const refreshToken = Cookies.get("refreshToken");
-	const {userId} = jwtDecode(refreshToken);
-
+	const { userId } = jwtDecode(refreshToken);
+	const { t } = useTranslation();
 	const [
 		createNote,
 		{
@@ -98,7 +99,7 @@ export function NoteList({
 				setSelectedValues([]);
 			}
 		} catch (error) {
-			toast.error("Error deleting notes");
+			toast.error(t("noteList.errorDeletingNotes"));
 		}
 	};
 
@@ -110,8 +111,6 @@ export function NoteList({
 				content: "",
 				tags: [],
 			});
-
-			console.log("newNote",newNote);
 
 			setNotes([newNote.data.metadata, ...fullnotes]);
 			dispatch(setListNote([newNote.data.metadata, ...fullnotes]));
@@ -125,7 +124,7 @@ export function NoteList({
 			setSelectedValues([]);
 			setCurrentTag({});
 		} catch (error) {
-			toast.error("Error creating note");
+			toast.error(t("noteList.errorCreatingNote"));
 		}
 	};
 
@@ -139,12 +138,11 @@ export function NoteList({
 			});
 			let updatedNotes = [...fullnotes];
 
-			// duplicateNote.id = "new" + newNoteIndex;
 			updatedNotes.push(newNote.data.metadata);
 			setNotes(updatedNotes);
 			dispatch(setListNote(updatedNotes));
 		} catch (error) {
-			toast.error("Error duplicate note");
+			toast.error(t("noteList.errorDuplicateNote"));
 		}
 	};
 
@@ -153,7 +151,7 @@ export function NoteList({
 			<div className='flex w-full justify-between p-4 pb-2'>
 				<div className='flex items-center'>
 					<Notebook />
-					<h3 className='pl-2'>Note</h3>
+					<h3 className='pl-2'>{t("noteList.note")}</h3>
 				</div>
 				<div className='flex'>
 					<TooltipProvider>
@@ -170,7 +168,7 @@ export function NoteList({
 								</Button>
 							</TooltipTrigger>
 							<TooltipContent>
-								<p>Add note</p>
+								<p>{t("noteList.addNote")}</p>
 							</TooltipContent>
 						</Tooltip>
 					</TooltipProvider>
@@ -182,7 +180,7 @@ export function NoteList({
 					<Input
 						onChange={(e) => setSearchQuery(e.target.value)}
 						type='search'
-						placeholder='Search...'
+						placeholder={t("noteList.search")}
 						className='w-full rounded-lg bg-background pl-8'
 					/>
 				</div>
@@ -195,12 +193,14 @@ export function NoteList({
 			{error && (
 				<Alert variant='destructive' className='w-5/6'>
 					<AlertCircle className='h-4 w-4' />
-					<AlertTitle>Error</AlertTitle>
-					<AlertDescription>Error fetching tags</AlertDescription>
+					<AlertTitle>{t("noteList.error")}</AlertTitle>
+					<AlertDescription>
+						{t("noteList.errorFetchingNotes")}
+					</AlertDescription>
 				</Alert>
 			)}
 			{notes.length === 0 && !isLoading && !error && (
-				<div>No note available please create new note</div>
+				<div>{t("noteList.noNoteAvailablePleaseCreateNewNote")}</div>
 			)}
 			{notes.length !== 0 && !isLoading && !error && (
 				<ScrollArea className='h-[600px] w-full rounded-md [&>div>div[style]]:!block'>
@@ -274,7 +274,7 @@ export function NoteList({
 														setOpen(true);
 													}}
 												>
-													Tags
+													{t("noteList.tags")}
 													<Tags />
 												</ContextMenuItem>
 												<ContextMenuItem
@@ -283,7 +283,7 @@ export function NoteList({
 														handleDeleteNote(note);
 													}}
 												>
-													Delete
+													{t("noteList.delete")}
 													<Trash2 />
 												</ContextMenuItem>
 												<ContextMenuItem
@@ -292,7 +292,7 @@ export function NoteList({
 														handleDuplicate(note);
 													}}
 												>
-													Duplicate
+													{t("noteList.duplicate")}
 													<CopyPlus />
 												</ContextMenuItem>
 											</ContextMenuContent>
@@ -375,7 +375,7 @@ export function NoteList({
 															setOpen(true);
 														}}
 													>
-														Tags
+														{t("noteList.tags")}
 														<Tags />
 													</ContextMenuItem>
 													<ContextMenuItem
@@ -386,7 +386,7 @@ export function NoteList({
 															);
 														}}
 													>
-														Delete
+														{t("noteList.delete")}
 														<Trash2 />
 													</ContextMenuItem>
 													<ContextMenuItem
@@ -397,7 +397,9 @@ export function NoteList({
 															);
 														}}
 													>
-														Duplicate
+														{t(
+															"noteList.duplicate"
+														)}
 														<CopyPlus />
 													</ContextMenuItem>
 												</ContextMenuContent>

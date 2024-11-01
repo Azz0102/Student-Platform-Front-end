@@ -34,6 +34,7 @@ import { useRenameTagMutation } from "@/lib/services/tag";
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
 import { setListNote } from "@/lib/features/noteSlice";
+import { useTranslation } from "react-i18next";
 
 export function TagElement({
 	tag,
@@ -55,6 +56,7 @@ export function TagElement({
 	const { width } = useWindowDimensions();
 	const [open, setOpen] = useState(false);
 	const [renameInput, setRenameInput] = useState(tag.name);
+	const { t } = useTranslation();
 	const [
 		renameTag,
 		{
@@ -90,8 +92,6 @@ export function TagElement({
 					name: newT.metadata.name,
 				};
 
-				console.log("renameTagData", renameTagData);
-
 				let updatedTags = [...tags];
 				updatedTags[index] = renameTagData;
 				setTags(updatedTags);
@@ -116,7 +116,7 @@ export function TagElement({
 					),
 				});
 			} catch (error) {
-				toast.error("Error rename tag");
+				toast.error(t("tagList.errorRenameTag"));
 			}
 		}
 	};
@@ -178,13 +178,15 @@ export function TagElement({
 										e.preventDefault();
 									}}
 								>
-									Rename
+									{t("tagList.rename")}
 									<RotateCcw />
 								</ContextMenuItem>
 							</DialogTrigger>
 							<DialogContent className='sm:max-w-md'>
 								<DialogHeader>
-									<DialogTitle>Rename tags</DialogTitle>
+									<DialogTitle>
+										{t("tagList.renameTags")}
+									</DialogTitle>
 									<DialogDescription></DialogDescription>
 								</DialogHeader>
 								<div className='flex items-center space-x-2'>
@@ -199,7 +201,7 @@ export function TagElement({
 											type='submit'
 											onClick={handleSaveChange}
 										>
-											Save changes
+											{t("tagList.saveChanges")}
 										</Button>
 									</DialogClose>
 								</DialogFooter>
@@ -211,7 +213,7 @@ export function TagElement({
 									removeTag(tag);
 								}}
 							>
-								Remove
+								{t("tagList.remove")}
 								<X />
 							</ContextMenuItem>
 						</ContextMenuContent>
@@ -270,13 +272,15 @@ export function TagElement({
 									e.preventDefault();
 								}}
 							>
-								Rename
+								{t("tagList.rename")}
 								<RotateCcw />
 							</ContextMenuItem>
 						</DrawerTrigger>
 						<DrawerContent className='h-96'>
 							<DrawerHeader className='text-left'>
-								<DrawerTitle>Add or remove tags</DrawerTitle>
+								<DrawerTitle>
+									{t("tagList.renameTags")}
+								</DrawerTitle>
 								<DrawerDescription></DrawerDescription>
 							</DrawerHeader>
 							<div className='m-4 flex items-center space-x-2'>
@@ -291,7 +295,7 @@ export function TagElement({
 										type='submit'
 										onClick={handleSaveChange}
 									>
-										Save changes
+										{t("tagList.saveChanges")}
 									</Button>
 								</DrawerClose>
 							</DrawerFooter>
@@ -303,7 +307,7 @@ export function TagElement({
 								removeTag(tag);
 							}}
 						>
-							Remove
+							{t("tagList.remove")}
 							<X />
 						</ContextMenuItem>
 					</ContextMenuContent>

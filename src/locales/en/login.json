@@ -1,0 +1,12 @@
+{
+	"loginError": "Login Error",
+	"name": "Name",
+	"enterYourName": "Enter your name",
+	"nameMustBeExactly8Digits": "Name must be exactly 8 digits",
+	"required": "Required",
+	"mustBeMoreThan6Digits": "Must be more than 6 digits",
+	"password": "Password",
+	"forgotYourPassword": "Forgot your password?",
+	"enterYourPassword": "Enter your password",
+	"login": "Login"
+}

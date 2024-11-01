@@ -23,16 +23,23 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
 
 // Extend dayjs with the relativeTime plugin
 dayjs.extend(relativeTime);
 
 export function NotiToggle() {
-	const { userId } = jwtDecode(Cookies.get("refreshToken"));
+	const refreshToken = Cookies.get("refreshToken");
+	let userId = "";
+	if (refreshToken) {
+		userId = jwtDecode(Cookies.get("refreshToken")).userId;
+	}
+
 	const { data, isLoading, isError } = useGetListNotiQuery(userId);
 	const [updateNotiUser, {}] = useUpdateNotiUserMutation();
 	const [notiList, setNotiList] = useState([]);
 	const router = useRouter();
+	const { t } = useTranslation();
 
 	useEffect(() => {
 		socket.on("NewsNoti", (msg) => {
@@ -87,7 +94,7 @@ export function NotiToggle() {
 
 			router.push(`/user/dashboard/news/${notiUserId}`);
 		} catch {
-			toast.error("Update Notification Error");
+			toast.error(t("updateNotificationError"));
 		}
 	};
 
@@ -126,7 +133,9 @@ export function NotiToggle() {
 				</Button>
 			</PopoverTrigger>
 			<PopoverContent align='end' className='w-80'>
-				<h3 className='mb-2 text-lg font-semibold'>Notifications</h3>
+				<h3 className='mb-2 text-lg font-semibold'>
+					{t("notifications")}
+				</h3>
 				<ScrollArea className='h-60'>
 					<div className='space-y-4'>
 						{notiList.length > 0 &&
@@ -152,7 +161,7 @@ export function NotiToggle() {
 										<div className='flex w-full items-start justify-between'>
 											<h4 className='text-sm font-semibold'>
 												{notification.noti_type ===
-													"NEWS-001" && "News"}
+													"NEWS-001" && t("news")}
 											</h4>
 											<span className='text-xs text-muted-foreground'>
 												{(() => {
@@ -179,13 +188,13 @@ export function NotiToggle() {
 														);
 
 													if (diffInMinutes < 60) {
-														return `${diffInMinutes} mins ago`;
+														return `${diffInMinutes} ${t("minsAgo")}`;
 													} else if (
 														diffInHours < 24
 													) {
-														return `${diffInHours} hours ago`;
+														return `${diffInHours} ${t("hoursAgo")}`;
 													} else {
-														return `${diffInDays} days ago`;
+														return `${diffInDays} ${t("daysAgo")}`;
 													}
 												})()}
 											</span>
@@ -203,7 +212,7 @@ export function NotiToggle() {
 						className='m-0 w-full p-0'
 						onClick={handleMarkAllAsRead}
 					>
-						Mark all as read
+						{t("markAllAsRead")}
 					</Button>
 				</div>
 			</PopoverContent>

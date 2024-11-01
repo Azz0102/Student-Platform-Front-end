@@ -10,9 +10,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { filterUrl } from "@/utils/filterUrl";
 import links from "@/constants/Links";
+import { useTranslation } from "react-i18next";
 
 export function NavBar() {
 	const pathName = usePathname();
+	const { t } = useTranslation();
 	return (
 		<TooltipProvider>
 			<aside className='fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex'>
@@ -38,12 +40,12 @@ export function NavBar() {
 									>
 										{link.icon}
 										<span className='sr-only'>
-											Dashboard
+											{t("dashboard")}
 										</span>
 									</Link>
 								</TooltipTrigger>
 								<TooltipContent side='right'>
-									{link.title}
+									{t(`${link.title}`)}
 								</TooltipContent>
 							</Tooltip>
 						);
@@ -61,10 +63,12 @@ export function NavBar() {
 								} transition-colors hover:text-foreground md:h-8 md:w-8`}
 							>
 								<Settings className='h-5 w-5' />
-								<span className='sr-only'>Settings</span>
+								<span className='sr-only'>{t("settings")}</span>
 							</Link>
 						</TooltipTrigger>
-						<TooltipContent side='right'>Settings</TooltipContent>
+						<TooltipContent side='right'>
+							{t("settings")}
+						</TooltipContent>
 					</Tooltip>
 				</nav>
 			</aside>

@@ -1,26 +1,21 @@
-"use client";
 import { Dashboard } from "@/components/dashboard";
-import useFcmToken from "@/hooks/useFcmToken";
-import { useSubSubscriptionMutation } from "@/lib/services/subscription";
-import { useEffect } from "react";
-import { toast } from "sonner";
+import TranslationsProvider from "@/components/TranslationsProvider";
+import initTranslations from "@/app/i18n";
 
-export default function Page() {
-	const { token, notificationPermissionStatus } = useFcmToken();
-	const [subScription, {}] = useSubSubscriptionMutation();
-	useEffect(() => {
-		if (notificationPermissionStatus === "granted") {
-			try {
-				subScription({ endpoint: token });
-			} catch (error) {
-				toast.error("Notification error");
-			}
-		}
-	}, [notificationPermissionStatus, subScription, token]);
+const i18nNamespaces = ["home"];
+
+export default async function Page({ params: { locale } }) {
+	const { resources } = await initTranslations(locale, i18nNamespaces);
 
 	return (
-		<div>
-			<Dashboard />
-		</div>
+		<TranslationsProvider
+			namespaces={i18nNamespaces}
+			locale={locale}
+			resources={resources}
+		>
+			<div>
+				<Dashboard />
+			</div>
+		</TranslationsProvider>
 	);
 }

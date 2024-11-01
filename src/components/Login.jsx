@@ -4,12 +4,15 @@ import Image from "next/image";
 
 import { useWindowDimensions } from "@/hooks/useWindowDimension";
 import vercel from "/public/android-chrome-512x512.png";
-import { ModeToggle } from "@/components/mode-toggle";
+import ModeToggle from "@/components/mode-toggle";
 import LoginForm from "@/components/LoginForm";
 import LanguageToggle from "@/components/LanguageToggle";
+import { useTranslation } from "react-i18next";
 
 export default function Login() {
 	const { height } = useWindowDimensions();
+	const { t } = useTranslation();
+
 	return (
 		<div
 			className='flex w-full items-center justify-center'
@@ -19,12 +22,14 @@ export default function Login() {
 				className='flex w-full flex-col items-center justify-center lg:w-1/2'
 				style={{ height: `${height}px` }}
 			>
-				<div className='m-2 flex w-1/2 self-end lg:w-full sm:justify-end'>
+				<div className='m-2 flex w-1/2 self-end sm:justify-end lg:w-full'>
 					<LanguageToggle />
 				</div>
 				<div className='m-4 flex w-3/4 grow flex-col justify-center lg:w-[350px]'>
 					<div className='grid gap-2 text-center'>
-						<h1 className='text-3xl font-bold'>Login</h1>
+						<h1 className='text-3xl font-bold'>
+							{t("login:login")}
+						</h1>
 					</div>
 					<LoginForm />
 				</div>

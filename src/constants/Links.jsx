@@ -4,17 +4,17 @@ const links = [
 	{
 		href: "/user/dashboard",
 		icon: <Home className='h-5 w-5' />,
-		title: "Dashboard",
+		title: "dashboard",
 	},
 	{
 		href: "/user/note",
 		icon: <NotebookPen className='h-5 w-5' />,
-		title: "Note",
+		title: "note",
 	},
 	{
 		href: "/user/chat",
 		icon: <MessageCircle className='h-5 w-5' />,
-		title: "Chat",
+		title: "chat",
 	},
 ];
 

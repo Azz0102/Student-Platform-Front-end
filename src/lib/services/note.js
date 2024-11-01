@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import Cookies from 'js-cookie'
+import Cookies from "js-cookie";
 
 // const cookieStore = cookies();
 // Define a service using a base URL and expected endpoints
@@ -41,6 +41,15 @@ export const noteApi = createApi({
 				method: "DELETE",
 			}),
 		}),
+		uploadFile: builder.mutation({
+			query: ({ file }) => {
+				return {
+					url: `note/upload`,
+					method: "POST",
+					body: file,
+				};
+			},
+		}),
 	}),
 });
 
@@ -51,4 +60,5 @@ export const {
 	useCreateNoteMutation,
 	useDeleteNoteMutation,
 	useUpdateNoteMutation,
+	useUploadFileMutation,
 } = noteApi;

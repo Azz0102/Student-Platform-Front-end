@@ -16,8 +16,11 @@ import { useDispatch } from "react-redux";
 import { setSelectedChat } from "@/lib/features/chatSlice";
 
 import Earth from "/public/android-chrome-192x192.png";
+import { useTranslation } from "react-i18next";
 
 export function Sidebar({ chats, isCollapsed, isMobile, setSelected }) {
+	const { t } = useTranslation();
+
 	return (
 		<div
 			data-collapsed={isCollapsed}
@@ -26,13 +29,11 @@ export function Sidebar({ chats, isCollapsed, isMobile, setSelected }) {
 			{!isCollapsed && (
 				<div className='flex items-center justify-between p-2'>
 					<div className='flex items-center gap-2 text-2xl'>
-						<p className='font-medium'>Chats</p>
+						<p className='font-medium'>{t("chats")}</p>
 						<span className='text-zinc-300'>({chats.length})</span>
 					</div>
 
-					<div>
-						
-					</div>
+					<div></div>
 				</div>
 			)}
 			<nav className='grid gap-1 px-2 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2'>
@@ -54,14 +55,13 @@ export function Sidebar({ chats, isCollapsed, isMobile, setSelected }) {
 										)}
 										onClick={(e) => {
 											e.preventDefault();
-                                            console.log("touch", chat.id)
-											setSelected(chat.id)
+											setSelected(chat.id);
 										}}
 									>
 										<Avatar className='flex items-center justify-center'>
 											<AvatarImage
-												src={'/message.png'}
-												alt={'logo'}
+												src={"/message.png"}
+												alt={"logo"}
 												width={6}
 												height={6}
 												className='h-10 w-10'
@@ -96,14 +96,13 @@ export function Sidebar({ chats, isCollapsed, isMobile, setSelected }) {
 							onClick={(e) => {
 								e.preventDefault();
 								setSelected(chat.id);
-                                console.log("touch2",chat.id)
-
+								console.log("touch2", chat.id);
 							}}
 						>
 							<Avatar className='flex items-center justify-center'>
 								<AvatarImage
-									src={'/message.png'}
-									alt={'logo'}
+									src={"/message.png"}
+									alt={"logo"}
 									width={6}
 									height={6}
 									className='h-10 w-10'
@@ -120,14 +119,13 @@ export function Sidebar({ chats, isCollapsed, isMobile, setSelected }) {
 										}
 										:{"  "}
 										{
-										chat.messages[chat.messages.length - 1].message.split(
-											"\\"
-										)[
-											chat.messages[chat.messages.length - 1].message.split(
-												"\\"
-											).length - 1
-										]
-									
+											chat.messages[
+												chat.messages.length - 1
+											].message.split("\\")[
+												chat.messages[
+													chat.messages.length - 1
+												].message.split("\\").length - 1
+											]
 										}
 									</span>
 								)}

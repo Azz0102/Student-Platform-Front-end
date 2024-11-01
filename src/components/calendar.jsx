@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useCallback, useMemo, useState,useEffect } from "react";
+import { useCallback, useMemo, useState, useEffect } from "react";
 import { Calendar, dayjsLocalizer, Views } from "react-big-calendar";
 import dayjs from "dayjs";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -12,7 +12,16 @@ import { useRouter } from "next/navigation";
 import { useGetcalenderQuery } from "@/lib/services/calender";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
-import { useDeepCompareEffect, useDeepCompareLayoutEffect } from "use-deep-compare";
+import {
+	useDeepCompareEffect,
+	useDeepCompareLayoutEffect,
+} from "use-deep-compare";
+import "dayjs/locale/vi"; // Import Vietnamese locale
+import "dayjs/locale/en"; // Ensure English is also available
+import { useTranslation } from "react-i18next";
+import { LoadingSpinner } from "./ui/loading-spinner";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 
 const localizer = dayjsLocalizer(dayjs);
 
@@ -32,7 +41,7 @@ const localizer = dayjsLocalizer(dayjs);
 // ];
 
 export function MyCalendar({ className }) {
-
+	const { t, i18n } = useTranslation(); // Access i18n to get current language
 	const refreshToken = Cookies.get("refreshToken");
 	const decoded = jwtDecode(refreshToken);
 	const {
@@ -50,22 +59,26 @@ export function MyCalendar({ className }) {
 
 	// console.log('listEvents',listEvents);
 
-	
+	useEffect(() => {
+		// Update dayjs locale whenever i18n.language changes
+		const locale = i18n.language === "vn" ? "vi" : "en";
+		dayjs.locale(locale);
+	}, [i18n.language]);
 
 	useDeepCompareEffect(() => {
-
 		if (listEvents) {
-			console.log('listEvents2',listEvents);
-
+			console.log("listEvents2", listEvents);
 
 			// Only update state if the messages have changed
-			setMyEventsList(listEvents.metadata.map((item,index) => {
-				return {
-					...item,
-					start: new Date(item.start),
-					end: new Date(item.end),
-				}
-			}));
+			setMyEventsList(
+				listEvents.metadata.map((item, index) => {
+					return {
+						...item,
+						start: new Date(item.start),
+						end: new Date(item.end),
+					};
+				})
+			);
 		}
 	}, [listEvents]);
 
@@ -87,14 +100,27 @@ export function MyCalendar({ className }) {
 		[router]
 	);
 
-
 	if (isLoading) {
-        return <div>Loading...</div>;
-    }
+		return (
+			<div className='flex w-full items-center justify-center'>
+				<LoadingSpinner />
+			</div>
+		);
+	}
 
-    if (isError) {
-        return <div>Error loading events</div>;
-    }
+	if (isError) {
+		return (
+			<div className='mx-auto w-full max-w-2xl'>
+				<Alert variant='destructive' className='w-5/6'>
+					<AlertCircle className='h-4 w-4' />
+					<AlertTitle>{t("error")}</AlertTitle>
+					<AlertDescription>
+						{t("errorFetchingEvents")}
+					</AlertDescription>
+				</Alert>
+			</div>
+		);
+	}
 	return (
 		<div className={`${className}`} style={{ height: `${height - 120}px` }}>
 			<Calendar

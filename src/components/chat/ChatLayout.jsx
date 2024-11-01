@@ -23,6 +23,7 @@ import _ from "lodash";
 import { useDeepCompareEffect } from "use-deep-compare";
 import io from "socket.io-client";
 import { socket } from "../../components/Header";
+import { useTranslation } from "react-i18next";
 
 export function ChatLayout({
 	defaultLayout = [320, 480],
@@ -34,6 +35,7 @@ export function ChatLayout({
 	const [isMobile, setIsMobile] = useState(false);
 	const { width, height } = useWindowDimensions();
 	const dispatch = useDispatch();
+	const { t } = useTranslation();
 
 	const refreshToken = Cookies.get("refreshToken");
 	const decoded = jwtDecode(refreshToken);
@@ -51,7 +53,6 @@ export function ChatLayout({
 	const [selected, setSelected] = useState(selectedChat ? selectedChat : 0);
 
 	useEffect(() => {
-		console.log('111')
 		// Nhận tin nhắn từ server
 		socket.on("chatMessaged", (msg, room) => {
 			console.log("onMessage", room);
@@ -59,8 +60,6 @@ export function ChatLayout({
 			setMessages((prevSessions) =>
 				prevSessions.map((session) => {
 					// Check if this is the session to update by matching enrollmentId
-
-					console.log("check", session.classSession.id, selected);
 
 					if (session.classSession.id == room) {
 						// Return a new object with updated messages
@@ -80,8 +79,6 @@ export function ChatLayout({
 
 		// Nhận tin nhắn file
 		socket.on("fileReceived", (fileMessage, room) => {
-			console.log("Received file message:", fileMessage);
-
 			setMessages((prevSessions) =>
 				prevSessions.map((session) => {
 					// Check if this is the session to update by matching enrollmentId
@@ -101,15 +98,12 @@ export function ChatLayout({
 		});
 
 		return () => {
-			console.log('offchat')
 			socket.off("chatMessaged");
 			socket.off("fileReceived");
 		};
 	}, [selected, messages]);
 
 	useDeepCompareEffect(() => {
-		console.log("ue3");
-
 		if (messages.length > 0) {
 			for (let i = 0; i < messages.length; i++) {
 				socket.emit("joinRoom", messages[i].classSession.id.toString());
@@ -125,8 +119,6 @@ export function ChatLayout({
 	}, [selected, messages]); // messages, room, setMessages
 
 	useDeepCompareEffect(() => {
-		console.log("ue1");
-
 		if (listChat) {
 			// Only update state if the messages have changed
 			setMessages(listChat.metadata.data);
@@ -134,8 +126,6 @@ export function ChatLayout({
 	}, [listChat]);
 
 	useEffect(() => {
-		console.log("ue2");
-
 		const checkScreenWidth = () => {
 			setIsMobile(window.innerWidth <= 768);
 		};
@@ -158,8 +148,8 @@ export function ChatLayout({
 		return (
 			<Alert variant='destructive' className='w-5/6'>
 				<AlertCircle className='h-4 w-4' />
-				<AlertTitle>Error</AlertTitle>
-				<AlertDescription>Error fetching tags</AlertDescription>
+				<AlertTitle>{t("error")}</AlertTitle>
+				<AlertDescription>{t("errorFetchingChat")}</AlertDescription>
 			</Alert>
 		);
 
@@ -167,8 +157,8 @@ export function ChatLayout({
 		return (
 			<Alert variant='destructive' className='w-5/6'>
 				<AlertCircle className='h-4 w-4' />
-				<AlertTitle>Error</AlertTitle>
-				<AlertDescription>Error fetching tags</AlertDescription>
+				<AlertTitle>{t("error")}</AlertTitle>
+				<AlertDescription>{t("errorFetchingChat")}</AlertDescription>
 			</Alert>
 		);
 

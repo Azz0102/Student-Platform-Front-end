@@ -1,4 +1,27 @@
 {
 	"english": "Tiếng Anh",
-	"vietnamese": "Tiếng Việt"
+	"vietnamese": "Tiếng Việt",
+	"toggleTheme": "Chuyển đổi chủ đề",
+	"light": "Sáng",
+	"dark": "Tối",
+	"system": "Hệ thống",
+	"toggleMenu": "Chuyển đổi menu",
+	"dashboard": "Trang chủ",
+	"note": "Ghi chú",
+	"chat": "Trò chuyện",
+	"settings": "Cài đặt",
+	"support": "Hỗ Trợ",
+	"logout": "Đăng xuất",
+	"updateNotificationError": "Lỗi thông báo cập nhật",
+	"notifications": "Thông báo",
+	"news": "Tin tức",
+	"minsAgo": "phút trước",
+	"hoursAgo": "giờ trước",
+	"daysAgo": "ngày trước",
+	"markAllAsRead": "Đánh dấu tất cả là đã đọc",
+	"user": "Người dùng",
+	"setting": "Cài đặt",
+	"language": "Ngôn ngữ",
+	"chooseYourPreferredLanguageForTheInterface": "Chọn ngôn ngữ ưa thích của bạn cho giao diện",
+	"thisSettingWillChangeTheLanguageOfTheUserInterface": "Cài đặt này sẽ thay đổi ngôn ngữ của giao diện người dùng. "
 }

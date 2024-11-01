@@ -1,3 +1,40 @@
 {
-    "header": "Nội dung"
+	"notificationError": "Lỗi thông báo",
+	"today": "Hôm nay",
+	"back": "Quay lại",
+	"next": "Kế tiếp",
+	"month": "Tháng",
+	"week": "Tuần",
+	"day": "Ngày",
+	"agenda": "Lịch biểu",
+	"news": "Tin tức",
+	"stayInformedWithTheLatestBreakingNews": "Luôn cập nhật những tin tức mới nhất",
+	"error": "Lỗi",
+	"errorFetchingNews": "Lỗi khi tìm nạp Tin tức",
+	"errorFetchingEvents": "Lỗi khi tìm nạp Sự kiện",
+	"classId": {
+		"teacherInformation": "Thông tin giáo viên",
+		"errorFetchingInfo": "Lỗi khi tìm nạp thông tin",
+		"error": "Lỗi",
+		"name": "Tên:",
+		"classSessions": "Buổi học",
+		"day": "Ngày",
+		"time": "Thời gian",
+		"location": "Vị trí",
+		"scores": "Điểm số",
+		"assessment": "Đánh giá",
+		"score": "Điểm",
+		"weight": "Cân nặng",
+		"overallGrade": "Điểm tổng thể",
+		"openClassChat": "Mở trò chuyện trong lớp",
+		"relatedNotes": "Ghi chú liên quan",
+		"classNotificationsAndNews": "Thông báo và tin tức lớp học",
+		"date": "Ngày",
+		"title": "Tiêu đề",
+		"type": "Kiểu",
+		"link": "liên kết"
+	},
+	"newsId": {
+		"relatedNews": "Tin tức liên quan"
+	}
 }

@@ -1,3 +1,40 @@
 {
-    "header": "Content"
+	"notificationError": "Notification error",
+	"today": "Today",
+	"back": "Back",
+	"next": "Next",
+	"month": "Month",
+	"week": "Week",
+	"day": "Day",
+	"agenda": "Agenda",
+	"news": "News",
+	"stayInformedWithTheLatestBreakingNews": "Stay informed with the latest breaking news",
+	"error": "Error",
+	"errorFetchingNews": "Error fetching News",
+	"errorFetchingEvents": "Error fetching Events",
+	"classId": {
+		"teacherInformation": "Teacher Information",
+		"errorFetchingInfo": "Error fetching Info",
+		"error": "Error",
+		"name": "Name:",
+		"classSessions": "Class Sessions",
+		"day": "Day",
+		"time": "Time",
+		"location": "Location",
+		"scores": "Scores",
+		"assessment": "Assessment",
+		"score": "Score",
+		"weight": "Weight",
+		"overallGrade": "Overall Grade",
+		"openClassChat": "Open Class Chat",
+		"relatedNotes": "Related Notes",
+		"classNotificationsAndNews": "Class Notifications and News",
+		"date": "Date",
+		"title": "Title",
+		"type": "Type",
+		"link": "Link"
+	},
+	"newsId": {
+		"relatedNews": "Related News"
+	}
 }
