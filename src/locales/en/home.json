@@ -35,6 +35,7 @@
 		"link": "Link"
 	},
 	"newsId": {
-		"relatedNews": "Related News"
+		"relatedNews": "Related News",
+		"attachment": "Attachment"
 	}
 }

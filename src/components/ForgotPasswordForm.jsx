@@ -9,24 +9,31 @@ import { Label } from "@/components/ui/label";
 import { jwtDecode } from "jwt-decode";
 import * as Yup from "yup";
 import { toast } from "sonner";
-import { useLoginMutation, useReset_passwordMutation } from "@/lib/services/auth";
+import {
+	useLoginMutation,
+	useReset_passwordMutation,
+} from "@/lib/services/auth";
 import { useRouter, usePathname } from "next/navigation";
-
-
-const SigninSchema = Yup.object().shape({
-	newPassword: Yup.string()
-		.min(6, "Must be more than 6 digits")
-		.required("Required"),
-	confirmPassword: Yup.string()
-		.oneOf([Yup.ref('newPassword'), null], "Passwords must match")
-		.required("Required"),
-});
-
+import { useTranslation } from "react-i18next";
 
 export default function ForgotPasswordForm() {
 	const router = useRouter();
-	const pathName = usePathname()
+	const pathName = usePathname();
 	const [reset] = useReset_passwordMutation();
+	const { t } = useTranslation();
+
+	const SigninSchema = Yup.object().shape({
+		newPassword: Yup.string()
+			.min(6, t("forgot-password:mustBeMoreThan6Digits"))
+			.required(t("forgot-password:required")),
+		confirmPassword: Yup.string()
+			.oneOf(
+				[Yup.ref("newPassword"), null],
+				t("forgot-password:passwordsMustMatch")
+			)
+			.required(t("forgot-password:required")),
+	});
+
 	return (
 		<div className='grid gap-4'>
 			<Formik
@@ -42,21 +49,33 @@ export default function ForgotPasswordForm() {
 					try {
 						const segments = pathName.split("/").filter(Boolean); // Filter out empty strings
 						let resetToken = segments[segments.length - 1];
-						const response = await reset({ resetToken, newPassword: values.confirmPassword }).unwrap();
+						const response = await reset({
+							resetToken,
+							newPassword: values.confirmPassword,
+						}).unwrap();
 
 						router.push("/login");
 					} catch (error) {
-						toast.error("Login Error");
+						toast.error(t("forgot-password:resetPasswordError"));
 					}
 				}}
 			>
 				{({ isValid, dirty, isSubmitting }) => (
 					<Form>
 						<div className='mb-4 grid gap-2'>
-							<Label htmlFor='password'>NewPassword</Label>
+							<Label htmlFor='password'>
+								{t("forgot-password:newPassword")}
+							</Label>
 							<Field name='newPassword'>
 								{({ field }) => (
-									<Input {...field} id="newPassword" type="password" placeholder="Enter your newPassword" />
+									<Input
+										{...field}
+										id='newPassword'
+										type='password'
+										placeholder={t(
+											"forgot-password:enterYourNewPassword"
+										)}
+									/>
 								)}
 							</Field>
 							<ErrorMessage
@@ -73,13 +92,21 @@ export default function ForgotPasswordForm() {
 						</div>
 						<div className='mb-4 grid gap-2'>
 							<div className='flex items-center'>
-								<Label htmlFor='password'>ConfirmPassword</Label>
-
+								<Label htmlFor='password'>
+									{t("forgot-password:confirmPassword")}
+								</Label>
 							</div>
 
 							<Field name='confirmPassword'>
 								{({ field }) => (
-									<Input {...field} id="confirmPassword" type="password" placeholder="Enter your confirmPassword" />
+									<Input
+										{...field}
+										id='confirmPassword'
+										type='password'
+										placeholder={t(
+											"forgot-password:enterYourConfirmPassword"
+										)}
+									/>
 								)}
 							</Field>
 							<ErrorMessage
@@ -94,7 +121,7 @@ export default function ForgotPasswordForm() {
 							className='w-full'
 							disabled={!isValid || !dirty || isSubmitting}
 						>
-							Submit
+							{t("forgot-password:submit")}
 						</Button>
 					</Form>
 				)}

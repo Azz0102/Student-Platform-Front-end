@@ -16,11 +16,11 @@ export default function ChatTopbar({ selectedUser }) {
 			<div className='flex items-center gap-2'>
 				<Avatar className='flex items-center justify-center'>
 					<AvatarImage
-						src={"/message.png"}
+						src={"/chat.png"}
 						alt={"logo"}
-						width={6}
-						height={6}
-						className='h-10 w-10'
+						width={8}
+						height={8}
+						className='h-8 w-8'
 					/>
 				</Avatar>
 				<div className='flex flex-col'>

@@ -18,7 +18,7 @@ import { useDeepCompareEffect } from "use-deep-compare";
 import Link from "next/link";
 import { jwtDecode } from "jwt-decode";
 import Image from "next/image";
-import isEqual from 'lodash/isEqual';
+import isEqual from "lodash/isEqual";
 import { File } from "lucide-react";
 
 // import earth from '../../../public/'
@@ -57,14 +57,13 @@ export function ChatList({
 	const { userId } = jwtDecode(refreshToken);
 
 	const doSth = async () => {
-
 		if (messagesContainerRef.current) {
 			messagesContainerRef.current.scrollTop =
 				messagesContainerRef.current.scrollHeight;
 		}
 
-		if(messages.length<0) {
-			return ;
+		if (messages.length < 0) {
+			return;
 		}
 
 		for (let i = 0; i < messages.length; i++) {
@@ -77,26 +76,30 @@ export function ChatList({
 						headers: {
 							refreshToken: Cookies.get("refreshToken"),
 						},
-						responseType: 'arraybuffer',
+						responseType: "arraybuffer",
 					}
 				);
 
-				const contentDisposition = imgdata.headers['content-disposition'];
+				const contentDisposition =
+					imgdata.headers["content-disposition"];
 
-				let fileName = '';
-				if (contentDisposition && contentDisposition.includes('filename=')) {
+				let fileName = "";
+				if (
+					contentDisposition &&
+					contentDisposition.includes("filename=")
+				) {
 					// Tách tên file từ header
-					fileName = contentDisposition.split('filename=')[1].trim();
+					fileName = contentDisposition.split("filename=")[1].trim();
 					// Xóa dấu ngoặc kép nếu có
-					fileName = fileName.replace(/['"]/g, '');
+					fileName = fileName.replace(/['"]/g, "");
 				}
 
-				const file = Buffer.from(imgdata.data, 'binary').toString('base64');
+				const file = Buffer.from(imgdata.data, "binary").toString(
+					"base64"
+				);
 
+				imageSrc = `data:image/${checkTypeFile(element.message)};base64,${file}`;
 
-				imageSrc=`data:image/${checkTypeFile(element.message)};base64,${file}`
-
-				
 				setImageArray((array) => {
 					return [
 						...array,
@@ -104,7 +107,7 @@ export function ChatList({
 							id: element.id,
 							data: imageSrc,
 							type: `image/${checkTypeFile(element.message)}`,
-							fileName
+							fileName,
 						},
 					];
 				});
@@ -113,68 +116,69 @@ export function ChatList({
 	};
 
 	useDeepCompareEffect(() => {
-		const fetch = async ()=>{
+		const fetch = async () => {
 			await doSth();
-		}
+		};
 
 		if (!isEqual(messages, prevMessagesRef.current)) {
-            prevMessagesRef.current = messages; // Cập nhật lại tham chiếu
-            // Thực hiện logic của bạn ở đây
+			prevMessagesRef.current = messages; // Cập nhật lại tham chiếu
+			// Thực hiện logic của bạn ở đây
 			fetch();
-        }
+		}
 		// fetch();
 
 		return () => {
-            setImageArray([]);
-            console.log('Cleaning up...');
-        };
-	}, [messages]); 
+			setImageArray([]);
+			console.log("Cleaning up...");
+		};
+	}, [messages]);
 
 	// useDeepCompareEffect(() => {}, []);
 
-	
-	const handleDownload = async (e,message) => {
-        e.preventDefault(); // Ngăn chặn hành vi mặc định của thẻ <Link>
+	const handleDownload = async (e, message) => {
+		e.preventDefault(); // Ngăn chặn hành vi mặc định của thẻ <Link>
 
-        try {
-            const response = await axios.get(
-                `https://localhost:3001/api/message/file/${message.id}`,
-                {
-                    headers: {
-                        refreshToken: Cookies.get("refreshToken"),
-                    },
-                    responseType: 'blob', // Đặt responseType là 'blob' để nhận tệp
-                }
-            );
+		try {
+			const response = await axios.get(
+				`https://${process.env.NEXT_PUBLIC_BASE_URL}/api/message/file/${message.id}`,
+				{
+					headers: {
+						refreshToken: Cookies.get("refreshToken"),
+					},
+					responseType: "blob", // Đặt responseType là 'blob' để nhận tệp
+				}
+			);
 
-			const contentDisposition = response.headers['content-disposition'];
+			const contentDisposition = response.headers["content-disposition"];
 
-			let fileName = '';
-			if (contentDisposition && contentDisposition.includes('filename=')) {
+			let fileName = "";
+			if (
+				contentDisposition &&
+				contentDisposition.includes("filename=")
+			) {
 				// Tách tên file từ header
-				fileName = contentDisposition.split('filename=')[1].trim();
+				fileName = contentDisposition.split("filename=")[1].trim();
 				// Xóa dấu ngoặc kép nếu có
-				fileName = fileName.replace(/['"]/g, '');
+				fileName = fileName.replace(/['"]/g, "");
 			}
 
-            // Tạo URL từ blob
-            const url = window.URL.createObjectURL(new Blob([response.data]));
+			// Tạo URL từ blob
+			const url = window.URL.createObjectURL(new Blob([response.data]));
 
-            // Tạo một thẻ <a> để kích hoạt tải xuống
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = fileName;
-            document.body.appendChild(a);
-            a.click();
+			// Tạo một thẻ <a> để kích hoạt tải xuống
+			const a = document.createElement("a");
+			a.href = url;
+			a.download = fileName;
+			document.body.appendChild(a);
+			a.click();
 
-            // Dọn dẹp
-            a.remove();
-            window.URL.revokeObjectURL(url);
-        } catch (error) {
-            console.error('Error downloading file:', error);
-        }
-    };
-	
+			// Dọn dẹp
+			a.remove();
+			window.URL.revokeObjectURL(url);
+		} catch (error) {
+			console.error("Error downloading file:", error);
+		}
+	};
 
 	return (
 		<div className='flex h-full w-full flex-col overflow-y-auto'>
@@ -214,7 +218,7 @@ export function ChatList({
 								</div>
 
 								<ChatBubble variant={variant}>
-									<ChatBubbleAvatar src={"/user.png"} />
+									<ChatBubbleAvatar src={"/account.png"} />
 
 									<ChatBubbleMessage
 										variant={variant}
@@ -222,21 +226,24 @@ export function ChatList({
 									>
 										{message.file &&
 											!checkTypeFile(message.message) && (
-												<div className="flex flex-row items-center" >
-													<div className="bg-background text-foreground rounded-full p-2">
-														<File />
-													</div>
+												<div className='flex flex-row items-center'>
+													<File size={40} className="mr-2"/>
 													<Link
 														href={"#"}
-														onClick={(e) => handleDownload(e, message)}
-														className="m-2"
+														onClick={(e) =>
+															handleDownload(
+																e,
+																message
+															)
+														}
+														className='m-2'
 													>
 														{
 															message.message.split(
-																"\\"
+																"/"
 															)[
 																message.message.split(
-																	"\\"
+																	"/"
 																).length - 1
 															]
 														}
@@ -248,7 +255,13 @@ export function ChatList({
 											imageArray.map((img, index) => {
 												if (img.id === message.id)
 													return (
-														<a href={img.data} download={img.fileName} key={index}>
+														<a
+															href={img.data}
+															download={
+																img.fileName
+															}
+															key={index}
+														>
 															<Image
 																key={index}
 																alt={img.data}

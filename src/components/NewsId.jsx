@@ -9,7 +9,16 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { AlertCircle, CalendarIcon, MapPinIcon } from "lucide-react";
+import {
+	AlertCircle,
+	ArrowRightIcon,
+	CalendarIcon,
+	CloudDownload,
+	File,
+	FileImage,
+	MapPinIcon,
+	Paperclip,
+} from "lucide-react";
 import { useSelector } from "react-redux";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
@@ -20,6 +29,50 @@ import { useTranslation } from "react-i18next";
 import { usePathname } from "next/navigation";
 import { LoadingSpinner } from "./ui/loading-spinner";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "./ui/button";
+import axios from "axios";
+import { Preview } from "./Preview";
+
+const htmlContent = `<div>
+    <span style="font-size: 18px;">Quill Rich Text Editor</span>
+</div>
+<div>
+    <br>
+</div>
+<div>Quill is a free,
+    <a href="https://github.com/quilljs/quill/">open source</a>WYSIWYG editor built for the modern web. With its
+    <a href="http://quilljs.com/docs/modules/">extensible architecture</a>and a
+    <a href="http://quilljs.com/docs/api/">expressive API</a>you can completely customize it to fulfill your needs. Some built in features include:</div>
+<div>
+    <br>
+</div>
+<ul>
+    <li>Fast and lightweight</li>
+    <li>Semantic markup</li>
+    <li>Standardized HTML between browsers</li>
+    <li>Cross browser support including Chrome, Firefox, Safari, and IE 9+</li>
+</ul>
+<div>
+    <br>
+</div>
+<div>
+    <span style="font-size: 18px;">Downloads</span>
+</div>
+<div>
+    <br>
+</div>
+<ul>
+    <li>
+        <a href="https://quilljs.com">Quill.js</a>, the free, open source WYSIWYG editor</li>
+    <li>
+        <a href="https://zenoamaro.github.io/react-quill">React-quill</a>, a React component that wraps Quill.js</li>
+</ul>`;
+
+function isImageFile(filename) {
+	const imageExtensions = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"];
+	const extension = filename.split(".").pop().toLowerCase();
+	return imageExtensions.includes(extension);
+}
 export default function NewsId({}) {
 	const refreshToken = Cookies.get("refreshToken");
 	const decoded = jwtDecode(refreshToken);
@@ -39,6 +92,50 @@ export default function NewsId({}) {
 	const [mainNews, setMainNews] = useState(null);
 	const [relatedNews, setRelatedNews] = useState(null);
 
+	const handleDownload = async (fileId) => {
+		try {
+			const response = await axios.get(
+				`https://${process.env.NEXT_PUBLIC_BASE_URL}/api/news/file/${fileId}`,
+				{
+					headers: {
+						refreshToken: refreshToken,
+					},
+					responseType: "blob", // Đặt responseType là 'blob' để nhận tệp
+				}
+			);
+
+			const contentDisposition = response.headers["content-disposition"];
+
+			let fileName = "";
+			if (
+				contentDisposition &&
+				contentDisposition.includes("filename=")
+			) {
+				// Tách tên file từ header
+				fileName = contentDisposition.split("filename=")[1].trim();
+				// Xóa dấu ngoặc kép nếu có
+				fileName = fileName.replace(/['"]/g, "");
+				fileName = fileName.replace(/^\d+-/, "");
+			}
+
+			// Tạo URL từ blob
+			const url = window.URL.createObjectURL(new Blob([response.data]));
+
+			// Tạo một thẻ <a> để kích hoạt tải xuống
+			const a = document.createElement("a");
+			a.href = url;
+			a.download = fileName;
+			document.body.appendChild(a);
+			a.click();
+
+			// Dọn dẹp
+			a.remove();
+			window.URL.revokeObjectURL(url);
+		} catch (error) {
+			console.error("Error downloading file:", error);
+		}
+	};
+
 	useEffect(() => {
 		if (news) {
 			setNewsItems(_.cloneDeep(news.metadata));
@@ -50,6 +147,8 @@ export default function NewsId({}) {
 			const mainNew = newsItems.find((item) => {
 				return item.id == NewsId;
 			});
+
+			console.log("main", mainNew);
 			setMainNews(mainNew);
 			const listRelate = newsItems;
 
@@ -114,7 +213,8 @@ export default function NewsId({}) {
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<p className='mb-4'>{mainNews && mainNews.content}</p>
+						{/* <p className='mb-4'>{mainNews && mainNews.content}</p> */}
+						<Preview textValue={mainNews && mainNews.content} />
 						<div className='-mx-2 flex overflow-x-auto px-2 pb-2'>
 							<div className='flex flex-nowrap gap-2'>
 								{mainNews &&
@@ -129,6 +229,44 @@ export default function NewsId({}) {
 									))}
 							</div>
 						</div>
+						{mainNews.files.length > 0 && (
+							<>
+								<div className='my-1 flex flex-row items-center'>
+									<Paperclip size={20} />
+									<p className='ml-2 text-xl'>
+										{t("newsId.attachment")}
+									</p>
+								</div>
+								<div className='flex-wrap'>
+									{mainNews.files.map((file, index) => {
+										return (
+											<Button
+												key={index}
+												className='mb-1 mr-1'
+												variant='expandIcon'
+												Icon={CloudDownload}
+												iconPlacement='right'
+												onClick={() => {
+													handleDownload(file.id);
+												}}
+											>
+												{isImageFile(file.name) ? (
+													<FileImage />
+												) : (
+													<File />
+												)}
+												<div className='ml-2'>
+													{file.name.replace(
+														/^\d+-/,
+														""
+													)}
+												</div>
+											</Button>
+										);
+									})}
+								</div>
+							</>
+						)}
 					</CardContent>
 				</Card>
 

@@ -35,6 +35,7 @@
 		"link": "liên kết"
 	},
 	"newsId": {
-		"relatedNews": "Tin tức liên quan"
+		"relatedNews": "Tin tức liên quan",
+		"attachment": "Tệp đính kèm"
 	}
 }

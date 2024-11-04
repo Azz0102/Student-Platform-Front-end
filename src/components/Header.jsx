@@ -8,7 +8,14 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LineChart, Package2, PanelLeft, Search, Settings, UniversityIcon } from "lucide-react";
+import {
+	LineChart,
+	Package2,
+	PanelLeft,
+	Search,
+	Settings,
+	UniversityIcon,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -38,7 +45,12 @@ function Header() {
 	const [logout, { isLoading, isError }] = useLogoutMutation();
 	const { t } = useTranslation();
 	const refreshToken = Cookies.get("refreshToken");
-	const { name } = jwtDecode(refreshToken);
+
+	let name = null;
+
+	if (refreshToken) {
+		name = jwtDecode(refreshToken).name;
+	}
 
 	return (
 		<header className='sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6'>
@@ -109,7 +121,7 @@ function Header() {
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align='end'>
-					<DropdownMenuLabel>{name}</DropdownMenuLabel>
+					<DropdownMenuLabel>{name ? name : ""}</DropdownMenuLabel>
 					<DropdownMenuSeparator />
 					<DropdownMenuItem
 						onSelect={() => {

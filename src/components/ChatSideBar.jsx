@@ -60,11 +60,11 @@ export function Sidebar({ chats, isCollapsed, isMobile, setSelected }) {
 									>
 										<Avatar className='flex items-center justify-center'>
 											<AvatarImage
-												src={"/message.png"}
+												src={"/chat.png"}
 												alt={"logo"}
-												width={6}
-												height={6}
-												className='h-10 w-10'
+												width={8}
+												height={8}
+												className='h-8 w-8'
 											/>
 										</Avatar>{" "}
 										<span className='sr-only'>
@@ -96,16 +96,15 @@ export function Sidebar({ chats, isCollapsed, isMobile, setSelected }) {
 							onClick={(e) => {
 								e.preventDefault();
 								setSelected(chat.id);
-								console.log("touch2", chat.id);
 							}}
 						>
 							<Avatar className='flex items-center justify-center'>
 								<AvatarImage
-									src={"/message.png"}
+									src={"/chat.png"}
 									alt={"logo"}
-									width={6}
-									height={6}
-									className='h-10 w-10'
+									width={8}
+									height={8}
+									className='h-8 w-8'
 								/>
 							</Avatar>
 							<div className='flex max-w-28 flex-col'>
@@ -121,10 +120,10 @@ export function Sidebar({ chats, isCollapsed, isMobile, setSelected }) {
 										{
 											chat.messages[
 												chat.messages.length - 1
-											].message.split("\\")[
+											].message.split("/")[
 												chat.messages[
 													chat.messages.length - 1
-												].message.split("\\").length - 1
+												].message.split("/").length - 1
 											]
 										}
 									</span>

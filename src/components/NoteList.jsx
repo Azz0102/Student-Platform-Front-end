@@ -159,7 +159,7 @@ export function NoteList({
 							<TooltipTrigger asChild>
 								<Button
 									variant='ghost'
-									className='p-2'
+									size='icon'
 									onClick={handleAddNote}
 									// onClick={handleDeleteNote}
 									disabled={isLoading || error ? true : false}

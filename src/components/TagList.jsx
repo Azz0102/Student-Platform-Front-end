@@ -86,7 +86,7 @@ export function TagList({
 						<TooltipTrigger asChild>
 							<Button
 								variant='ghost'
-								className='p-2'
+								size='icon'
 								onClick={() => {
 									setCurrentTag("");
 									setCurrentNote(notes[0]);
@@ -121,7 +121,9 @@ export function TagList({
 				<Alert variant='destructive' className='w-5/6'>
 					<AlertCircle className='h-4 w-4' />
 					<AlertTitle>{t("tagList.error")}</AlertTitle>
-					<AlertDescription>{t("tagList.errorFetchingTags")}</AlertDescription>
+					<AlertDescription>
+						{t("tagList.errorFetchingTags")}
+					</AlertDescription>
 				</Alert>
 			)}
 			{tags.length === 0 && !isLoading && !error && (

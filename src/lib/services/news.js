@@ -28,4 +28,5 @@ export const newsApi = createApi({
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useGetListNewsByUserQuery, useGetUserRelatedNewsQuery } = newsApi;
+export const { useGetListNewsByUserQuery, useGetUserRelatedNewsQuery } =
+	newsApi;
