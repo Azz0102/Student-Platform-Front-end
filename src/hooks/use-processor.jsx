@@ -10,11 +10,11 @@ import { jsx } from "react/jsx-runtime";
 
 export function useProcessor(md) {
 	const [content, setContent] = useState(null);
-	console.log("md", md);
+	// console.log("md", md);
 	const mentionRegex = /@(\w+)/g;
 	const text = md.replace(mentionRegex, '<mention handle="$1">@$1</mention>');
 
-	console.log("text", text);
+	// console.log("text", text);
 
 	useEffect(() => {
 		unified()

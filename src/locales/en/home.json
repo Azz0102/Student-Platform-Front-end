@@ -36,6 +36,7 @@
 	},
 	"newsId": {
 		"relatedNews": "Related News",
-		"attachment": "Attachment"
+		"attachment": "Attachment",
+		"wholeSchool": "Whole School"
 	}
 }

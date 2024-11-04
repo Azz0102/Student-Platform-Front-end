@@ -36,6 +36,7 @@
 	},
 	"newsId": {
 		"relatedNews": "Tin tức liên quan",
-		"attachment": "Tệp đính kèm"
+		"attachment": "Tệp đính kèm",
+		"wholeSchool": "Cả trường"
 	}
 }

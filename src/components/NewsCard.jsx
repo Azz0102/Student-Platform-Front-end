@@ -27,6 +27,7 @@ import { setListNews, setSelectedNews } from "@/lib/features/newsSlice";
 import _ from "lodash";
 import { useTranslation } from "react-i18next";
 import { LoadingSpinner } from "./ui/loading-spinner";
+import { Preview } from "./Preview";
 
 export function NewsCard() {
 	// const { data, error, isLoading } = useGetListNewsByUserQuery("2");
@@ -130,8 +131,10 @@ export function NewsCard() {
 												<span className='mb-1 text-ellipsis text-lg font-semibold'>
 													{item.title}
 												</span>
-												<span className='line-clamp-2 text-sm text-muted-foreground group-hover:text-primary-foreground/90'>
-													{item.content}
+												<span className='line-clamp-2 text-sm text-muted-foreground group-hover:text-primary-foreground/90 h-6'>
+													<Preview
+														textValue={item.content}
+													/>
 												</span>
 											</div>
 											<ChevronRight className='ml-auto h-5 w-5 shrink-0 transition-transform duration-200 group-hover:translate-x-1' />

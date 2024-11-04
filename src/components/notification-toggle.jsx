@@ -140,9 +140,6 @@ export function NotiToggle() {
 					<div className='space-y-4'>
 						{notiList.length > 0 &&
 							notiList.map((notification) => {
-								const temp =
-									notification.noti_content.split("-");
-
 								return (
 									<Button
 										key={notification.id}
@@ -200,7 +197,7 @@ export function NotiToggle() {
 											</span>
 										</div>
 										<p className='mt-1 text-sm text-muted-foreground'>
-											{temp[2].split(":")[1]}
+											{notification.noti_content}
 										</p>
 									</Button>
 								);

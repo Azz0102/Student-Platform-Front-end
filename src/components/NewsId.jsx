@@ -33,41 +33,6 @@ import { Button } from "./ui/button";
 import axios from "axios";
 import { Preview } from "./Preview";
 
-const htmlContent = `<div>
-    <span style="font-size: 18px;">Quill Rich Text Editor</span>
-</div>
-<div>
-    <br>
-</div>
-<div>Quill is a free,
-    <a href="https://github.com/quilljs/quill/">open source</a>WYSIWYG editor built for the modern web. With its
-    <a href="http://quilljs.com/docs/modules/">extensible architecture</a>and a
-    <a href="http://quilljs.com/docs/api/">expressive API</a>you can completely customize it to fulfill your needs. Some built in features include:</div>
-<div>
-    <br>
-</div>
-<ul>
-    <li>Fast and lightweight</li>
-    <li>Semantic markup</li>
-    <li>Standardized HTML between browsers</li>
-    <li>Cross browser support including Chrome, Firefox, Safari, and IE 9+</li>
-</ul>
-<div>
-    <br>
-</div>
-<div>
-    <span style="font-size: 18px;">Downloads</span>
-</div>
-<div>
-    <br>
-</div>
-<ul>
-    <li>
-        <a href="https://quilljs.com">Quill.js</a>, the free, open source WYSIWYG editor</li>
-    <li>
-        <a href="https://zenoamaro.github.io/react-quill">React-quill</a>, a React component that wraps Quill.js</li>
-</ul>`;
-
 function isImageFile(filename) {
 	const imageExtensions = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"];
 	const extension = filename.split(".").pop().toLowerCase();
@@ -215,8 +180,16 @@ export default function NewsId({}) {
 					<CardContent>
 						{/* <p className='mb-4'>{mainNews && mainNews.content}</p> */}
 						<Preview textValue={mainNews && mainNews.content} />
-						<div className='-mx-2 flex overflow-x-auto px-2 pb-2'>
+						<div className='-mx-2 mt-2 flex overflow-x-auto px-2 pb-2'>
 							<div className='flex flex-nowrap gap-2'>
+								{mainNews.isGeneralSchoolNews && (
+									<Badge
+										variant='secondary'
+										className='whitespace-nowrap'
+									>
+										{t("newsId.wholeSchool")}
+									</Badge>
+								)}
 								{mainNews &&
 									mainNews.relatedTo.map((item, index) => (
 										<Badge
@@ -285,6 +258,14 @@ export default function NewsId({}) {
 								</h3>
 								<div className='-mx-2 flex overflow-x-auto px-2 pb-2'>
 									<div className='flex flex-nowrap gap-2'>
+										{news.isGeneralSchoolNews && (
+											<Badge
+												variant='secondary'
+												className='whitespace-nowrap'
+											>
+												{t("newsId.wholeSchool")}
+											</Badge>
+										)}
 										{news.relatedTo.map((item, idx) => (
 											<Badge
 												key={idx}
