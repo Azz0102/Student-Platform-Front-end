@@ -16,6 +16,11 @@ const links = [
 		icon: <AppWindow className='h-5 w-5' />,
 		title: "App",
 	},
+	{
+		href: "/admin/quantri",
+		icon: <AppWindow className='h-5 w-5' />,
+		title: "Quan Tri",
+	},
 ];
 
 export default links;

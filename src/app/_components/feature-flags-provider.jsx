@@ -1,0 +1,102 @@
+"use client"
+
+import * as React from "react"
+import { useQueryState } from "nuqs"
+
+import { dataTableConfig} from "@/config/data-table"
+import { cn } from "@/lib/utils"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+
+
+const FeatureFlagsContext = React.createContext({
+  featureFlags: [],
+  setFeatureFlags: () => {},
+})
+
+export function useFeatureFlags() {
+  const context = React.useContext(FeatureFlagsContext)
+  if (!context) {
+    throw new Error(
+      "useFeatureFlags must be used within a FeatureFlagsProvider"
+    )
+  }
+  return context
+}
+
+
+export function FeatureFlagsProvider({ children }) {
+  const [featureFlags, setFeatureFlags] = useQueryState(
+    "flags",
+    {
+      defaultValue: [],
+      parse: (value) => value.split(","),
+      serialize: (value) => value.join(","),
+      eq: (a, b) =>
+        a.length === b.length && a.every((value, index) => value === b[index]),
+      clearOnDefault: true,
+      shallow: false,
+    }
+  )
+
+  return (
+    <FeatureFlagsContext.Provider
+      value={{
+        featureFlags,
+        setFeatureFlags: (value) => void setFeatureFlags(value),
+      }}
+    >
+      <div className="w-full overflow-x-auto">
+        <ToggleGroup
+          type="multiple"
+          variant="outline"
+          size="sm"
+          value={featureFlags}
+          onValueChange={(value) => setFeatureFlags(value)}
+          className="w-fit gap-0"
+        >
+          {dataTableConfig.featureFlags.map((flag, index) => (
+            <TooltipProvider key={flag.value}>
+              <Tooltip key={flag.value}>
+                <ToggleGroupItem
+                  value={flag.value}
+                  className={cn(
+                    "gap-2 whitespace-nowrap rounded-none px-3 text-xs data-[state=on]:bg-accent/70 data-[state=on]:hover:bg-accent/90",
+                    {
+                      "rounded-l-sm border-r-0": index === 0,
+                      "rounded-r-sm":
+                        index === dataTableConfig.featureFlags.length - 1,
+                    }
+                  )}
+                  asChild
+                >
+                  <TooltipTrigger>
+                    <flag.icon className="size-3.5 shrink-0" aria-hidden="true" />
+                    {flag.label}
+                  </TooltipTrigger>
+                </ToggleGroupItem>
+                <TooltipContent
+                  align="start"
+                  side="bottom"
+                  sideOffset={6}
+                  className="flex max-w-60 flex-col space-y-1.5 border bg-background py-2 font-semibold text-foreground"
+                >
+                  <div>{flag.tooltipTitle}</div>
+                  <div className="text-xs text-muted-foreground">
+                    {flag.tooltipDescription}
+                  </div>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          ))}
+        </ToggleGroup>
+      </div>
+      {children}
+    </FeatureFlagsContext.Provider>
+  )
+}

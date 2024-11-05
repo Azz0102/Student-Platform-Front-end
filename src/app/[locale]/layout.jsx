@@ -8,6 +8,7 @@ import { dir } from "i18next";
 import { Toaster } from "@/components/ui/sonner";
 import { notFound } from "next/navigation";
 const inter = Inter({ subsets: ["latin", "vietnamese"] });
+import { NuqsAdapter } from 'nuqs/adapters/next/app'
 
 export const metadata = {
 	title: "Create Next App",
@@ -33,7 +34,7 @@ export default function RootLayout({ children, params: { locale } }) {
 						disableTransitionOnChange
 					>
 						<Toaster closeButton richColors />
-						{children}
+						<NuqsAdapter>{children}</NuqsAdapter>
 					</ThemeProvider>
 				</StoreProvider>
 			</body>
