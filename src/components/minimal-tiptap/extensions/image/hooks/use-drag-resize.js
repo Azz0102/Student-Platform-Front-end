@@ -11,7 +11,7 @@ export function useDragResize({
   maxWidth,
   onDimensionsChange
 }) {
-  const [dimensions, updateDimensions] = useState < ElementDimensions > ({
+  const [dimensions, updateDimensions] = useState({
     width: Math.max(initialWidth ?? minWidth, minWidth),
     height: Math.max(initialHeight ?? minHeight, minHeight)
   })

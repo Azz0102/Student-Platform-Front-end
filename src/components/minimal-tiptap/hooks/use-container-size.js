@@ -13,7 +13,7 @@ const DEFAULT_RECT = {
 }
 
 export function useContainerSize(element) {
-  const [size, setSize] = useState < DOMRect > (() => element?.getBoundingClientRect() ?? DEFAULT_RECT)
+  const [size, setSize] = useState(() => element?.getBoundingClientRect() ?? DEFAULT_RECT)
 
   const handleResize = useCallback(() => {
     if (!element) return

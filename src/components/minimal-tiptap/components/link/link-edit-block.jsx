@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils'
 
 export const LinkEditBlock = React.forwardRef(
   ({ onSave, defaultIsNewTab, defaultUrl, defaultText, className }, ref) => {
-    const formRef = React.useRef<HTMLDivElement>(null)
+    const formRef = React.useRef(null)
     const [url, setUrl] = React.useState(defaultUrl || '')
     const [text, setText] = React.useState(defaultText || '')
     const [isNewTab, setIsNewTab] = React.useState(defaultIsNewTab || false)

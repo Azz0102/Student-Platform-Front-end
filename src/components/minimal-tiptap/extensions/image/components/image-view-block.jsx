@@ -33,7 +33,7 @@ export const ImageViewBlock = ({ editor, node, selected, updateAttributes }) => 
     return initialSrc.src
   }, [initialSrc])
 
-  const [imageState, setImageState] = React.useState<ImageState>({
+  const [imageState, setImageState] = React.useState({
     src: initSrc,
     isServerUploading: false,
     imageLoaded: false,
@@ -42,8 +42,8 @@ export const ImageViewBlock = ({ editor, node, selected, updateAttributes }) => 
     naturalSize: { width: initialWidth, height: initialHeight }
   })
 
-  const containerRef = React.useRef<HTMLDivElement>(null)
-  const [activeResizeHandle, setActiveResizeHandle] = React.useState<'left' | 'right' | null>(null)
+  const containerRef = React.useRef(null)
+  const [activeResizeHandle, setActiveResizeHandle] = React.useState(null)
 
   const onDimensionsChange = React.useCallback(
     ({ width, height }) => {

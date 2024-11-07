@@ -5,7 +5,7 @@ export function useThrottle(
   delay
 ) {
   const lastRan = useRef(Date.now())
-  const timeoutRef = useRef < NodeJS.Timeout | null > (null)
+  const timeoutRef = useRef(null)
 
   return useCallback(
     (...args) => {

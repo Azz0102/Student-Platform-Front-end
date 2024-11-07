@@ -5,7 +5,7 @@ import { CopyIcon, ExternalLinkIcon, LinkBreak2Icon } from '@radix-ui/react-icon
 
 
 export const LinkPopoverBlock = ({ url, onClear, onEdit }) => {
-  const [copyTitle, setCopyTitle] = React.useState<string>('Copy')
+  const [copyTitle, setCopyTitle] = React.useState('Copy')
 
   const handleCopy = React.useCallback(
     (e) => {

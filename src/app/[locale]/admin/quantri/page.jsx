@@ -2,11 +2,11 @@
 
 import Table from "@/components/Table";
 import { TooltipProvider } from '@/components/ui/tooltip';
-import { useState } from 'react'
+import { useState,useRef } from 'react'
 import { MinimalTiptapEditor } from '@/components/minimal-tiptap'
 
 export default function Page() {
-	const [value, setValue] = useState('')
+	const [value, setValue] = useState('');
 	return (
 		<div>
 			<TooltipProvider>

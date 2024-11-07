@@ -87,7 +87,7 @@ const defaultCopyLink = async (props, options) => {
   }
 }
 
-export const Image = TiptapImage.extend < CustomImageOptions > ({
+export const Image = TiptapImage.extend({
   atom: true,
 
   addOptions() {

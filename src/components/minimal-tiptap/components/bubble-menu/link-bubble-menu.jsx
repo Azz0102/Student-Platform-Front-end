@@ -8,7 +8,7 @@ import { LinkPopoverBlock } from '../link/link-popover-block'
 
 export const LinkBubbleMenu = ({ editor }) => {
   const [showEdit, setShowEdit] = React.useState(false)
-  const [linkAttrs, setLinkAttrs] = React.useState<LinkAttributes>({ href: '', target: '' })
+  const [linkAttrs, setLinkAttrs] = React.useState({ href: '', target: '' })
   const [selectedText, setSelectedText] = React.useState('')
 
   const updateLinkState = React.useCallback(() => {
