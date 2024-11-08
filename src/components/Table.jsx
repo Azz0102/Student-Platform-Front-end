@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react"
 
 import { getValidFilters } from "@/lib/data-table"
@@ -15,7 +17,7 @@ import {
 } from "@/app/_lib/queries"
 import { searchParamsCache } from "@/app/_lib/validations"
 
-export default async function Table(props) {
+export default function Table(props) {
 //   const searchParams = await props.searchParams
 //   const search = searchParamsCache.parse(searchParams)
 

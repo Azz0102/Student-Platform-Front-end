@@ -29,7 +29,7 @@ const ImageEditDialog = ({ editor, size, variant }) => {
           <ImageIcon className="size-5" />
         </ToolbarButton>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-lg max-h-60">
         <DialogHeader>
           <DialogTitle>Select image</DialogTitle>
           <DialogDescription className="sr-only">Upload an image from your computer</DialogDescription>
