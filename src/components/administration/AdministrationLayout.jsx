@@ -81,8 +81,8 @@ const AdministrationLayout = ({
 				defaultSize={defaultLayout[0]}
 				collapsedSize={navCollapsedSize}
 				collapsible={true}
-				minSize={isMobile ? 13 : 24}
-				maxSize={isMobile ? 13 : 24}
+				minSize={isMobile ? 13 : 22}
+				maxSize={isMobile ? 13 : 22}
 				onCollapse={() => {
 					setIsCollapsed(true);
 					document.cookie = `react-resizable-panels:collapsed=${JSON.stringify(
