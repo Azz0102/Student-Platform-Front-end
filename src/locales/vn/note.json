@@ -36,6 +36,7 @@
 	"liveCode": "Mã trực tiếp (ctrl + 8)",
 	"editCode": "Chỉnh sửa mã (ctrl + 7)",
 	"attachAFile": "Đính kèm tập tin",
+	"fileTypeNotSupported": "Loại tệp không được hỗ trợ",
 	"tagList": {
 		"errorRemovingTag": "Lỗi xóa thẻ",
 		"tag": "Thẻ",

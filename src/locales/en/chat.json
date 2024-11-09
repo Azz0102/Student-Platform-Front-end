@@ -1,6 +1,7 @@
 {
-    "error": "Error",
-    "errorFetchingChat": "Error fetching chat",
-    "chats": "Chats",
-    "typeAMessage": "Type a message..."
+	"error": "Error",
+	"errorFetchingChat": "Error fetching chat",
+	"chats": "Chats",
+	"typeAMessage": "Type a message...",
+	"fileTypeNotSupported": "File type not supported"
 }

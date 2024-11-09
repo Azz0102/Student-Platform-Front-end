@@ -2,5 +2,6 @@
 	"error": "Lỗi",
 	"errorFetchingChat": "Lỗi tìm nạp cuộc trò chuyện",
 	"chats": "Trò chuyện",
-	"typeAMessage": "Nhập tin nhắn..."
+	"typeAMessage": "Nhập tin nhắn...",
+	"fileTypeNotSupported": "Loại tệp không được hỗ trợ"
 }

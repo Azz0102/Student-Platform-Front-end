@@ -25,6 +25,7 @@ import { useDeepCompareEffect } from "use-deep-compare";
 import io from "socket.io-client";
 import { socket } from "@/components/Header";
 import { useTranslation } from "react-i18next";
+import { allowedTypes } from "@/constants/AllowedTypes";
 
 export const BottombarIcons = [{ icon: Paperclip }];
 
@@ -149,15 +150,17 @@ export default function ChatBottombar({
 	};
 
 	const handleFileUpload = (event) => {
-		console.log("Up File");
 		const file = event.target.files[0];
 
 		if (!file) return;
+		// Check if file type is allowed
+		if (!allowedTypes.includes(file.type)) {
+			toast.error(t("fileTypeNotSupported"));
+			return;
+		}
 
 		const reader = new FileReader();
 		reader.onload = () => {
-			console.log("1");
-
 			const base64String = reader.result.split(",")[1]; // Lấy phần Base64 của tệp
 			const date = new Date();
 			const options = {
@@ -167,7 +170,6 @@ export default function ChatBottombar({
 			};
 			const timestamp = date.toLocaleTimeString("en-US", options);
 
-			console.log("2");
 			const temp = messages.filter(
 				(message) => message.classSession.id === selectedChat
 			);
@@ -179,7 +181,7 @@ export default function ChatBottombar({
 			};
 			console.log(base64String);
 			socket.emit("fileMessage", newMessage, selectedChat.toString()); // Gửi tệp qua socket
-			console.log("3");
+
 			event.target.value = null;
 		};
 		reader.readAsDataURL(file); // Đọc tệp dưới dạng Base64
@@ -197,7 +199,7 @@ export default function ChatBottombar({
 									type='file'
 									id={`file-input-${index}`} // Đặt ID duy nhất cho mỗi input
 									style={{ display: "none" }} // Ẩn thẻ input
-									accept='.jpg,.jpeg,.png,.pdf,.doc,.docx,.xls,.xlsx'
+									accept='.jpg,.jpeg,.png,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx'
 									onChange={handleFileUpload} // Kích hoạt hàm xử lý tải lên tệp
 								/>
 

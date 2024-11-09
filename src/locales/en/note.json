@@ -36,6 +36,7 @@
 	"liveCode": "Live code (ctrl + 8)",
 	"editCode": "Edit code (ctrl + 7)",
 	"attachAFile": "Attach a file",
+	"fileTypeNotSupported": "File type not supported",
 	"tagList": {
 		"errorRemovingTag": "Error removing tag",
 		"tag": "Tag",
@@ -59,15 +60,15 @@
 		"error": "Error",
 		"errorFetchingNotes": "Error fetching notes",
 		"noNoteAvailablePleaseCreateNewNote": "No note available please create new note",
-        "tags": "Tags",
-        "delete": "Delete",
-        "duplicate": "Duplicate"
+		"tags": "Tags",
+		"delete": "Delete",
+		"duplicate": "Duplicate"
 	},
-    "tagDialog": {
-        "clickToAddTags": "Click to add tags...",
-        "addOrRemoveTags": "Add or remove tags",
-        "noResultsFound": "no results found.",
-        "saveChanges": "Save changes",
-        "typeSomethingThatDoesNotExistInDropdowns": "Type something that does not exist in dropdowns..."
-    }
+	"tagDialog": {
+		"clickToAddTags": "Click to add tags...",
+		"addOrRemoveTags": "Add or remove tags",
+		"noResultsFound": "no results found.",
+		"saveChanges": "Save changes",
+		"typeSomethingThatDoesNotExistInDropdowns": "Type something that does not exist in dropdowns..."
+	}
 }

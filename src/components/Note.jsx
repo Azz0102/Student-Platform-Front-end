@@ -29,6 +29,7 @@ import Cookies from "js-cookie";
 import { useDeepCompareEffect } from "use-deep-compare";
 import MarkdownPreview from "@uiw/react-markdown-preview";
 import { useTranslation } from "react-i18next";
+import { allowedTypes } from "@/constants/AllowedTypes";
 
 const MDEditor = dynamic(
 	() => import("@uiw/react-md-editor").then((mod) => mod.default),
@@ -185,6 +186,10 @@ export function Note() {
 			fileInput.onchange = async (e) => {
 				const file = e.target.files[0];
 				if (file) {
+					if (!allowedTypes.includes(file.type)) {
+						toast.error(t("fileTypeNotSupported"));
+						return;
+					}
 					const data = await handleFileUpload(file);
 					if (data) {
 						if (data?.data?.fileUrl) {
@@ -193,14 +198,9 @@ export function Note() {
 								.split(".")
 								.pop()
 								.toLowerCase();
-							const isImage = [
-								"jpg",
-								"jpeg",
-								"png",
-								"gif",
-								"bmp",
-								"webp",
-							].includes(fileExtension);
+							const isImage = ["jpg", "jpeg", "png"].includes(
+								fileExtension
+							);
 
 							// Format as image or file link based on file type
 							const fileLink = isImage
