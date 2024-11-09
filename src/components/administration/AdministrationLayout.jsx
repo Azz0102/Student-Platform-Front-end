@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
 	ResizableHandle,
 	ResizablePanel,
@@ -47,6 +47,23 @@ const AdministrationLayout = ({
 
 	const { t } = useTranslation();
 
+	useEffect(() => {
+		const checkScreenWidth = () => {
+			setIsMobile(window.innerWidth <= 768);
+		};
+
+		// Initial check
+		checkScreenWidth();
+
+		// Event listener for screen width changes
+		window.addEventListener("resize", checkScreenWidth);
+
+		// Cleanup the event listener on component unmount
+		return () => {
+			window.removeEventListener("resize", checkScreenWidth);
+		};
+	}, []);
+
 	return (
 		<ResizablePanelGroup
 			direction='horizontal'
@@ -65,7 +82,7 @@ const AdministrationLayout = ({
 				collapsedSize={navCollapsedSize}
 				collapsible={true}
 				minSize={isMobile ? 13 : 24}
-				maxSize={isMobile ? 13 : 30}
+				maxSize={isMobile ? 13 : 24}
 				onCollapse={() => {
 					setIsCollapsed(true);
 					document.cookie = `react-resizable-panels:collapsed=${JSON.stringify(
