@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react'
+import React, { useState } from "react";
 import {
 	ResizableHandle,
 	ResizablePanel,
@@ -9,35 +9,46 @@ import {
 import { useWindowDimensions } from "@/hooks/useWindowDimension";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
-import { Sidebar } from '../ChatSideBar';
-import AdministrationSideBar from './AdministrationSideBar';
-import AdministrationContent from './AdministrationContent';
+import { Sidebar } from "../ChatSideBar";
+import AdministrationSideBar from "./AdministrationSideBar";
+import AdministrationContent from "./AdministrationContent";
+import {
+	Building,
+	Building2,
+	CalendarClock,
+	LibraryBig,
+	Newspaper,
+	Users,
+	UsersRound,
+} from "lucide-react";
 
-
-const lists= [
-    {
-        id:0,
-        name: "SinhVien",
-    },
-    { id: 1, name: "GiaoVien" },
-    { id: 2, name: "PhongHoc" },
-]
+const lists = [
+	{
+		id: 0,
+		name: "SinhVien",
+		icon: <Users />,
+	},
+	{ id: 1, name: "GiaoVien", icon: <UsersRound /> },
+	{ id: 2, name: "PhongHoc", icon: <Building2 /> },
+	{ id: 3, name: "TinTuc", icon: <Newspaper /> },
+	{ id: 4, name: "BuoiHoc", icon: <CalendarClock /> },
+	{ id: 5, name: "Monhoc", icon: <LibraryBig /> },
+];
 
 const AdministrationLayout = ({
 	defaultLayout = [320, 480],
 	defaultCollapsed = false,
 	navCollapsedSize,
 }) => {
+	const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed);
+	const [isMobile, setIsMobile] = useState(false);
+	const { width, height } = useWindowDimensions();
+	const [selected, setSelected] = useState(0);
 
-    const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed);
-    const [isMobile, setIsMobile] = useState(false);
-    const { width, height } = useWindowDimensions();
-    const [selected, setSelected] = useState(0);
+	const { t } = useTranslation();
 
-    const { t } = useTranslation();
-
-    return (
-        <ResizablePanelGroup
+	return (
+		<ResizablePanelGroup
 			direction='horizontal'
 			onLayout={(sizes) => {
 				document.cookie = `react-resizable-panels:layout=${JSON.stringify(
@@ -46,11 +57,10 @@ const AdministrationLayout = ({
 			}}
 			className={`w-full items-stretch`}
 			style={{
-				height: isMobile ? `${height - 58}px` : `${height - 89}px`,
+				height: isMobile ? `${height - 58}px` : `${height - 88}px`,
 			}}
 		>
-
-            <ResizablePanel
+			<ResizablePanel
 				defaultSize={defaultLayout[0]}
 				collapsedSize={navCollapsedSize}
 				collapsible={true}
@@ -73,32 +83,31 @@ const AdministrationLayout = ({
 						"min-w-[50px] transition-all duration-300 ease-in-out md:min-w-[70px]"
 				)}
 			>
-				<AdministrationSideBar 
-                    lists={
-						lists.map((list) => ({
-									id: list.id,
-									name: list.name,
-									variant:
-										selected === list.id
-											? "secondary"
-											: "ghost",
-						}))		
+				<AdministrationSideBar
+					lists={lists.map((list) => ({
+						id: list.id,
+						name: list.name,
+						variant: selected === list.id ? "secondary" : "ghost",
+						icon: list.icon,
+					}))}
+					isCollapsed={isCollapsed || isMobile}
+					setSelected={setSelected}
+				/>
+			</ResizablePanel>
+
+			<ResizableHandle withHandle />
+
+			<ResizablePanel defaultSize={defaultLayout[1]} minSize={30}>
+				<AdministrationContent
+					content={
+						lists.find((list) => {
+							return list.id == selected;
+						}).name
 					}
-                    setSelected={setSelected}
-                />
+				/>
 			</ResizablePanel>
+		</ResizablePanelGroup>
+	);
+};
 
-            <ResizableHandle withHandle />
-
-            <ResizablePanel defaultSize={defaultLayout[1]} minSize={30}>
-                <AdministrationContent 
-                    content={lists.find((list)=>{
-                        return list.id == selected
-                    }).name}
-                />
-			</ResizablePanel>
-        </ResizablePanelGroup>
-    )
-}
-
-export default AdministrationLayout
+export default AdministrationLayout;

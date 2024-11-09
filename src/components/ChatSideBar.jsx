@@ -96,7 +96,6 @@ export function Sidebar({ chats, isCollapsed, isMobile, setSelected }) {
 							onClick={(e) => {
 								e.preventDefault();
 								setSelected(chat.id);
-								console.log("touch2", chat.id);
 							}}
 						>
 							<Avatar className='flex items-center justify-center'>
