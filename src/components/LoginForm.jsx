@@ -16,6 +16,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useTransform } from "framer-motion";
 import { useTranslation } from "react-i18next";
+import { PasswordInput } from "./PasswordInput";
 
 export default function LoginForm() {
 	const router = useRouter();
@@ -132,10 +133,18 @@ export default function LoginForm() {
 
 							<Field name='password'>
 								{({ field }) => (
-									<Input
+									// <Input
+									// 	{...field}
+									// 	id='password'
+									// 	type='password'
+									// 	placeholder={t(
+									// 		"login:enterYourPassword"
+									// 	)}
+									// />
+									<PasswordInput
 										{...field}
 										id='password'
-										type='password'
+										// type='password'
 										placeholder={t(
 											"login:enterYourPassword"
 										)}

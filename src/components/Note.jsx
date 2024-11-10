@@ -30,6 +30,7 @@ import { useDeepCompareEffect } from "use-deep-compare";
 import MarkdownPreview from "@uiw/react-markdown-preview";
 import { useTranslation } from "react-i18next";
 import { allowedTypes } from "@/constants/AllowedTypes";
+import { Button } from "./ui/button";
 
 const MDEditor = dynamic(
 	() => import("@uiw/react-md-editor").then((mod) => mod.default),
@@ -722,6 +723,50 @@ export function Note() {
 							handleTagChange={handleTagChange}
 							tags={tags}
 						/>
+						<div className='mt-2 xl:hidden'>
+							<Button
+								onClick={async () => {
+									if (notes.length > 0) {
+										try {
+											for (
+												let i = 0;
+												i < notes.length;
+												i++
+											) {
+												if (
+													notes[i].name !==
+														listNote[i].name ||
+													notes[i].content !==
+														listNote[i].content
+												) {
+													const updatedNote =
+														await updateNote({
+															noteId: notes[i].id,
+															name: notes[i].name,
+															content:
+																notes[i]
+																	.content,
+															tagIds: notes[
+																i
+															].tags.map(
+																(e) => e.id
+															),
+														});
+												}
+											}
+											toast.success(
+												t("saveNotesSuccessfully")
+											);
+											dispatch(setListNote(notes));
+										} catch (error) {
+											toast.error(t("saveNoteFailed"));
+										}
+									}
+								}}
+							>
+								{t("tagDialog.saveChanges")}
+							</Button>
+						</div>
 					</>
 				)}
 			</div>

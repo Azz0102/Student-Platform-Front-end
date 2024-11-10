@@ -15,6 +15,7 @@
 	"updateNotificationError": "Update Notification Error",
 	"notifications": "Notifications",
 	"news": "News",
+	"class": "Class",
 	"minsAgo": "mins ago",
 	"hoursAgo": "hours ago",
 	"daysAgo": "days ago",
@@ -23,5 +24,8 @@
 	"setting": "Setting",
 	"language": "Language",
 	"chooseYourPreferredLanguageForTheInterface": "Choose your preferred language for the interface",
-	"thisSettingWillChangeTheLanguageOfTheUserInterface": "This setting will change the language of the user interface. Your content will remain in its original language."
+	"thisSettingWillChangeTheLanguageOfTheUserInterface": "This setting will change the language of the user interface. Your content will remain in its original language.",
+	"exam": "Exam",
+	"event": "Event",
+	"assignment": "Assignment"
 }

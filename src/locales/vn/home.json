@@ -8,6 +8,7 @@
 	"day": "Ngày",
 	"agenda": "Lịch biểu",
 	"news": "Tin tức",
+	"class": "Lớp học",
 	"stayInformedWithTheLatestBreakingNews": "Luôn cập nhật những tin tức mới nhất",
 	"error": "Lỗi",
 	"errorFetchingNews": "Lỗi khi tìm nạp Tin tức",
@@ -32,7 +33,10 @@
 		"date": "Ngày",
 		"title": "Tiêu đề",
 		"type": "Kiểu",
-		"link": "liên kết"
+		"link": "liên kết",
+		"exam": "Bài thi",
+		"event": "Sự kiện",
+		"assignment": "Phân công"
 	},
 	"newsId": {
 		"relatedNews": "Tin tức liên quan",

@@ -15,6 +15,7 @@ import {
 } from "@/lib/services/auth";
 import { useRouter, usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
+import { PasswordInput } from "./PasswordInput";
 
 export default function ForgotPasswordForm() {
 	const router = useRouter();
@@ -68,10 +69,10 @@ export default function ForgotPasswordForm() {
 							</Label>
 							<Field name='newPassword'>
 								{({ field }) => (
-									<Input
+									<PasswordInput
 										{...field}
 										id='newPassword'
-										type='password'
+										// type='password'
 										placeholder={t(
 											"forgot-password:enterYourNewPassword"
 										)}
@@ -99,10 +100,10 @@ export default function ForgotPasswordForm() {
 
 							<Field name='confirmPassword'>
 								{({ field }) => (
-									<Input
+									<PasswordInput
 										{...field}
 										id='confirmPassword'
-										type='password'
+										// type='password'
 										placeholder={t(
 											"forgot-password:enterYourConfirmPassword"
 										)}

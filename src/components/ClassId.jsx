@@ -119,32 +119,26 @@ export default function ClassId() {
 					}
 				),
 				relatedNotes: classInfos.metadata.userNotes,
-				notifications: [
-					{
-						id: 1,
-						date: "2023-05-15",
-						title: "Midterm Exam Schedule",
-						type: "Exam",
-						link: "/notifications/midterm-exam-schedule",
-					},
-					{
-						id: 2,
-						date: "2023-05-10",
-						title: "Assignment 3 Due",
-						type: "Assignment",
-						link: "/notifications/assignment-3-due",
-					},
-					{
-						id: 3,
-						date: "2023-05-05",
-						title: "Guest Lecture Announcement",
-						type: "Event",
-						link: "/notifications/guest-lecture",
-					},
-				],
+				notifications: classInfos.metadata.classSessionDetails.News.map(
+					(item) => ({
+						id: item.id,
+						date: new Date(item.time).toISOString().split("T")[0],
+						title: item.name,
+						type: t(
+							item.type === "EVENT-002"
+								? "classId.event"
+								: item.type === "EXAM-001"
+									? "classId.exam"
+									: item.type === "ASSIGNMENT-003"
+										? "classId.assignment"
+										: ""
+						),
+						link: `/user/dashboard/news/${item.id}`,
+					})
+				),
 			});
 		}
-	}, [classInfos]);
+	}, [classInfos, t]);
 
 	if (isLoading) {
 		return (

@@ -8,6 +8,7 @@
 	"toggleMenu": "Chuyển đổi menu",
 	"dashboard": "Trang chủ",
 	"note": "Ghi chú",
+	"class": "Lớp học",
 	"chat": "Trò chuyện",
 	"settings": "Cài đặt",
 	"support": "Hỗ Trợ",
@@ -23,5 +24,8 @@
 	"setting": "Cài đặt",
 	"language": "Ngôn ngữ",
 	"chooseYourPreferredLanguageForTheInterface": "Chọn ngôn ngữ ưa thích của bạn cho giao diện",
-	"thisSettingWillChangeTheLanguageOfTheUserInterface": "Cài đặt này sẽ thay đổi ngôn ngữ của giao diện người dùng. "
+	"thisSettingWillChangeTheLanguageOfTheUserInterface": "Cài đặt này sẽ thay đổi ngôn ngữ của giao diện người dùng. ",
+	"exam": "Bài thi",
+	"event": "Sự kiện",
+	"assignment": "Phân công"
 }

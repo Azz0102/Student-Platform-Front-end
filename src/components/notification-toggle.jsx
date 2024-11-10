@@ -66,7 +66,7 @@ export function NotiToggle() {
 		}
 	}, [data]);
 
-	const handleNotificationClick = (notiUserId) => {
+	const handleNotificationClick = (notiUserId, newsId) => {
 		try {
 			updateNotiUser({ id: notiUserId });
 
@@ -92,7 +92,7 @@ export function NotiToggle() {
 				})
 			);
 
-			router.push(`/user/dashboard/news/${notiUserId}`);
+			router.push(`/user/dashboard/news/${newsId}`);
 		} catch {
 			toast.error(t("updateNotificationError"));
 		}
@@ -145,7 +145,8 @@ export function NotiToggle() {
 										key={notification.id}
 										onClick={() =>
 											handleNotificationClick(
-												notification.NotiUsers[0].id
+												notification.NotiUsers[0].id,
+												notification.noti_senderId
 											)
 										}
 										className={`flex h-auto w-72 flex-col items-start rounded-lg p-3 text-left ${
@@ -157,8 +158,18 @@ export function NotiToggle() {
 									>
 										<div className='flex w-full items-start justify-between'>
 											<h4 className='text-sm font-semibold'>
-												{notification.noti_type ===
-													"NEWS-001" && t("news")}
+												{t(
+													notification.noti_type ===
+														"EVENT-002"
+														? "event"
+														: notification.noti_type ===
+															  "EXAM-001"
+															? "exam"
+															: notification.noti_type ===
+																  "ASSIGNMENT-003"
+																? "assignment"
+																: ""
+												)}
 											</h4>
 											<span className='text-xs text-muted-foreground'>
 												{(() => {
