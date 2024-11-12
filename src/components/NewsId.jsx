@@ -113,7 +113,7 @@ export default function NewsId({}) {
 				return item.id == NewsId;
 			});
 
-			console.log("main", mainNew);
+			console.log("main", newsItems);
 			setMainNews(mainNew);
 			const listRelate = newsItems;
 
@@ -121,6 +121,7 @@ export default function NewsId({}) {
 				id: item.id,
 				title: item.title,
 				relatedTo: item.relatedTo.map((related) => related.name), // Chỉ lấy tên từ mảng relatedTo
+				isGeneralSchoolNews: item.isGeneralSchoolNews,
 			}));
 
 			const filteredNews = array.filter((item) => item.id !== mainNew.id);
