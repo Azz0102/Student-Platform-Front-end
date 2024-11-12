@@ -557,7 +557,7 @@ export function DataTableFilterList({
 
               return (
                 <SortableItem key={filter.rowId} value={filter.rowId} asChild>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 p-1">
                     <div className="min-w-[4.5rem] text-center">
                       {index === 0 ? (
                         <span className="text-sm text-muted-foreground">

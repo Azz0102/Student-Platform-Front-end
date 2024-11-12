@@ -165,7 +165,7 @@ export function DataTableSortList({
 
                 return (
                   <SortableItem key={sort.id} value={sort.id} asChild>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 p-1">
                       <Select
                         value={sort.id}
                         onValueChange={(value) =>
