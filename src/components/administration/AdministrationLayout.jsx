@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,Suspense } from "react";
 import {
 	ResizableHandle,
 	ResizablePanel,
@@ -9,9 +9,9 @@ import {
 import { useWindowDimensions } from "@/hooks/useWindowDimension";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
-// import Table from '../Table';
-import dynamic from "next/dynamic";
-const Table = dynamic(() => import("../Table"), { ssr: false });
+import Table from '../Table';
+// import dynamic from "next/dynamic";
+// const Table = dynamic(() => import("../Table"), { ssr: false });
 import { Sidebar } from "../ChatSideBar";
 import AdministrationSideBar from "./AdministrationSideBar";
 import AdministrationContent from "./AdministrationContent";
@@ -44,6 +44,8 @@ const AdministrationLayout = ({
 	navCollapsedSize,
 	props,
 }) => {
+
+	console.log("layoutsss")
 	const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed);
 	const [isMobile, setIsMobile] = useState(false);
 	const { width, height } = useWindowDimensions();
@@ -118,7 +120,7 @@ const AdministrationLayout = ({
 
 			<ResizableHandle withHandle />
 
-			<ResizablePanel defaultSize={defaultLayout[1]} minSize={30}>
+			{/* <ResizablePanel defaultSize={defaultLayout[1]} minSize={30}>
 				<AdministrationContent
 					content={
 						lists.find((list) => {
@@ -126,11 +128,11 @@ const AdministrationLayout = ({
 						}).name
 					}
 				>
-					{/* <Suspense fallback={<div>Loading...</div>}>
-					 </Suspense> */}
-					<Table props={props} />
+					<Suspense fallback={<div>Loading...</div>}>
+						<Table props={props} />
+					 </Suspense>
 				</AdministrationContent>
-			</ResizablePanel>
+			</ResizablePanel> */}
 		</ResizablePanelGroup>
 	);
 };

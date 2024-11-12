@@ -23,7 +23,6 @@ export function TasksTable({ promises }) {
 
   const [{ data, pageCount }, statusCounts, priorityCounts] =
     React.use(promises)
-
   // const [results, setResults] = useState(promises)
   // promises.then((resolvedPromises) => {
   //   setResults(resolvedPromises)
