@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react'
+import React, { useState,Suspense } from 'react'
 import {
 	ResizableHandle,
 	ResizablePanel,
@@ -12,6 +12,9 @@ import { useTranslation } from "react-i18next";
 import { Sidebar } from '../ChatSideBar';
 import AdministrationSideBar from './AdministrationSideBar';
 import AdministrationContent from './AdministrationContent';
+// import Table from '../Table';
+import dynamic from 'next/dynamic';
+const Table = dynamic(() => import('../Table'), { ssr: false });
 
 
 const lists= [
@@ -27,6 +30,7 @@ const AdministrationLayout = ({
 	defaultLayout = [320, 480],
 	defaultCollapsed = false,
 	navCollapsedSize,
+	props
 }) => {
 
     const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed);
@@ -95,7 +99,11 @@ const AdministrationLayout = ({
                     content={lists.find((list)=>{
                         return list.id == selected
                     }).name}
-                />
+                >
+					 {/* <Suspense fallback={<div>Loading...</div>}>
+					 </Suspense> */}
+						<Table props={props} />
+				</AdministrationContent>
 			</ResizablePanel>
         </ResizablePanelGroup>
     )

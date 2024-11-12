@@ -36,6 +36,7 @@ export function useDataTable({
   initialState,
   ...props
 }) {
+
   const queryStateOptions = React.useMemo(() => {
     return {
       history,
@@ -122,6 +123,8 @@ export function useDataTable({
   // Sort
   function onSortingChange(updaterOrValue) {
     if (typeof updaterOrValue === "function") {
+      console.log("Sort");
+
       const newSorting = updaterOrValue(sorting)
       void setSorting(newSorting)
     }

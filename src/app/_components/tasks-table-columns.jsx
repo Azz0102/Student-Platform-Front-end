@@ -60,104 +60,120 @@ export function getColumns({
       enableSorting: false,
       enableHiding: false,
     },
+    // {
+    //   accessorKey: "code",
+    //   header: ({ column }) => (
+    //     <DataTableColumnHeader column={column} title="Code" />
+    //   ),
+    //   cell: ({ row }) => <div className="w-20">{row.getValue("code")}</div>,
+    //   enableSorting: false,
+    //   enableHiding: false,
+    // },
     {
-      accessorKey: "code",
+      accessorKey: "name",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Task" />
-      ),
-      cell: ({ row }) => <div className="w-20">{row.getValue("code")}</div>,
-      enableSorting: false,
-      enableHiding: false,
-    },
-    {
-      accessorKey: "title",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Title" />
+        <DataTableColumnHeader column={column} title="Name" />
       ),
       cell: ({ row }) => {
-        const label = LABELS.find(
-          (label) => label === row.original.label
-        )
+        // const label = LABELS.find(
+        //   (label) => label === row.original.label
+        // )
 
         return (
           <div className="flex space-x-2">
-            {label && <Badge variant="outline">{label}</Badge>}
+            {/* {label && <Badge variant="outline">{label}</Badge>} */}
             <span className="max-w-[31.25rem] truncate font-medium">
-              {row.getValue("title")}
+              {row.getValue("name")}
             </span>
           </div>
         )
       },
+      enableSorting: false,
+      enableHiding: false,
     },
+    // {
+    //   accessorKey: "status",
+    //   header: ({ column }) => (
+    //     <DataTableColumnHeader column={column} title="Status" />
+    //   ),
+    //   cell: ({ row }) => {
+    //     const status = STATUSES.find(
+    //       (status) => status === row.original.status
+    //     )
+
+    //     if (!status) return null
+
+    //     const Icon = getStatusIcon(status)
+
+    //     return (
+    //       <div className="flex w-[6.25rem] items-center">
+    //         <Icon
+    //           className="mr-2 size-4 text-muted-foreground"
+    //           aria-hidden="true"
+    //         />
+    //         <span className="capitalize">{status}</span>
+    //       </div>
+    //     )
+    //   },
+    //   filterFn: (row, id, value) => {
+    //     return Array.isArray(value) && value.includes(row.getValue(id))
+    //   },
+    // },
+    // {
+    //   accessorKey: "priority",
+    //   header: ({ column }) => (
+    //     <DataTableColumnHeader column={column} title="Priority" />
+    //   ),
+    //   cell: ({ row }) => {
+    //     const priority = PRIORITIES.find(
+    //       (priority) => priority === row.original.priority
+    //     )
+
+    //     if (!priority) return null
+
+    //     const Icon = getPriorityIcon(priority)
+
+    //     return (
+    //       <div className="flex items-center">
+    //         <Icon
+    //           className="mr-2 size-4 text-muted-foreground"
+    //           aria-hidden="true"
+    //         />
+    //         <span className="capitalize">{priority}</span>
+    //       </div>
+    //     )
+    //   },
+    //   filterFn: (row, id, value) => {
+    //     return Array.isArray(value) && value.includes(row.getValue(id))
+    //   },
+    // },
+    // {
+    //   accessorKey: "archived",
+    //   header: ({ column }) => (
+    //     <DataTableColumnHeader column={column} title="Archived" />
+    //   ),
+    //   cell: ({ row }) => (
+    //     <Badge variant="outline">{row.original.archived ? "Yes" : "No"}</Badge>
+    //   ),
+    // },
     {
-      accessorKey: "status",
+      accessorKey: "lastLogin",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Status" />
+        <DataTableColumnHeader column={column} title="LastLogin" />
       ),
-      cell: ({ row }) => {
-        const status = STATUSES.find(
-          (status) => status === row.original.status
-        )
-
-        if (!status) return null
-
-        const Icon = getStatusIcon(status)
-
-        return (
-          <div className="flex w-[6.25rem] items-center">
-            <Icon
-              className="mr-2 size-4 text-muted-foreground"
-              aria-hidden="true"
-            />
-            <span className="capitalize">{status}</span>
-          </div>
-        )
-      },
-      filterFn: (row, id, value) => {
-        return Array.isArray(value) && value.includes(row.getValue(id))
-      },
-    },
-    {
-      accessorKey: "priority",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Priority" />
-      ),
-      cell: ({ row }) => {
-        const priority = PRIORITIES.find(
-          (priority) => priority === row.original.priority
-        )
-
-        if (!priority) return null
-
-        const Icon = getPriorityIcon(priority)
-
-        return (
-          <div className="flex items-center">
-            <Icon
-              className="mr-2 size-4 text-muted-foreground"
-              aria-hidden="true"
-            />
-            <span className="capitalize">{priority}</span>
-          </div>
-        )
-      },
-      filterFn: (row, id, value) => {
-        return Array.isArray(value) && value.includes(row.getValue(id))
-      },
-    },
-    {
-      accessorKey: "archived",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Archived" />
-      ),
-      cell: ({ row }) => (
-        <Badge variant="outline">{row.original.archived ? "Yes" : "No"}</Badge>
-      ),
+      cell: ({ cell }) => formatDate(cell.getValue()),
     },
     {
       accessorKey: "createdAt",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Created At" />
+      ),
+      cell: ({ cell }) => formatDate(cell.getValue()),
+    },
+    {
+      accessorKey: "updatedAt",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Updated At" />
       ),
       cell: ({ cell }) => formatDate(cell.getValue()),
     },
@@ -183,7 +199,7 @@ export function getColumns({
               >
                 Edit
               </DropdownMenuItem>
-              <DropdownMenuSub>
+              {/* <DropdownMenuSub>
                 <DropdownMenuSubTrigger>Labels</DropdownMenuSubTrigger>
                 <DropdownMenuSubContent>
                   <DropdownMenuRadioGroup
@@ -216,7 +232,7 @@ export function getColumns({
                     ))}
                   </DropdownMenuRadioGroup>
                 </DropdownMenuSubContent>
-              </DropdownMenuSub>
+              </DropdownMenuSub> */}
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onSelect={() => setRowAction({ row, type: "delete" })}

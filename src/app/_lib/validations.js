@@ -20,17 +20,15 @@ export const searchParamsCache = createSearchParamsCache({
   ),
   page: parseAsInteger.withDefault(1),
   perPage: parseAsInteger.withDefault(10),
-  sort: getSortingStateParser().withDefault([
-    { id: "createdAt", desc: true },
-  ]),
-  title: parseAsString.withDefault(""),
-  status: parseAsArrayOf(z.enum(TASK_STATUSES)).withDefault([]),
-  priority: parseAsArrayOf(z.enum(TASK_PRIORITIES)).withDefault([]),
-  from: parseAsString.withDefault(""),
-  to: parseAsString.withDefault(""),
+  sort: getSortingStateParser().withDefault([]),
+  // title: parseAsString.withDefault(""),
+  // status: parseAsArrayOf(z.enum(TASK_STATUSES)).withDefault([]),
+  // priority: parseAsArrayOf(z.enum(TASK_PRIORITIES)).withDefault([]),
+  // from: parseAsString.withDefault(""),
+  // to: parseAsString.withDefault(""),
   // advanced filter
   filters: getFiltersStateParser().withDefault([]),
-  joinOperator: parseAsStringEnum(["and", "or"]).withDefault("and"),
+  // joinOperator: parseAsStringEnum(["and", "or"]).withDefault(),
 });
 
 export const createTaskSchema = z.object({

@@ -55,6 +55,14 @@ export function DataTableFilterList({
   shallow,
 }) {
   const id = React.useId()
+
+  console.log("getRowModel",getFiltersStateParser(table.getRowModel().rows[0]?.original)
+  .withDefault([])
+  .withOptions({
+    clearOnDefault: true,
+    shallow,
+  }));
+
   const [filters, setFilters] = useQueryState(
     "filters",
     getFiltersStateParser(table.getRowModel().rows[0]?.original)
@@ -64,6 +72,8 @@ export function DataTableFilterList({
         shallow,
       })
   )
+
+  console.log('filters',filters);
 
   const [joinOperator, setJoinOperator] = useQueryState(
     "joinOperator",
@@ -78,6 +88,8 @@ export function DataTableFilterList({
   function addFilter() {
     const filterField = filterFields[0]
 
+    console.log('filterField',filterField);
+
     if (!filterField) return
 
     void setFilters([
@@ -87,10 +99,10 @@ export function DataTableFilterList({
         value: "",
         type: filterField.type,
         operator: getDefaultFilterOperator(filterField.type),
-        rowId: customAlphabet(
-          "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
-          6
-        )(),
+        // rowId: customAlphabet(
+        //   "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
+        //   6
+        // )(),
       },
     ])
   }
@@ -656,7 +668,7 @@ export function DataTableFilterList({
                     >
                       <Icons.trash className="size-3.5" aria-hidden="true" />
                     </Button>
-                    <SortableDragHandle
+                    {/* <SortableDragHandle
                       variant="outline"
                       size="icon"
                       className="size-8 shrink-0 rounded"
@@ -665,7 +677,7 @@ export function DataTableFilterList({
                         className="size-3.5"
                         aria-hidden="true"
                       />
-                    </SortableDragHandle>
+                    </SortableDragHandle> */}
                   </div>
                 </SortableItem>
               )
@@ -676,10 +688,11 @@ export function DataTableFilterList({
               size="sm"
               className="h-[1.85rem] rounded"
               onClick={addFilter}
+              disabled={filters.length}
             >
               Add filter
             </Button>
-            {filters.length > 0 ? (
+            {/* {filters.length > 0 ? (
               <Button
                 size="sm"
                 variant="outline"
@@ -691,7 +704,7 @@ export function DataTableFilterList({
               >
                 Reset filters
               </Button>
-            ) : null}
+            ) : null} */}
           </div>
         </PopoverContent>
       </Popover>

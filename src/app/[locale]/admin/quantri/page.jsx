@@ -2,10 +2,12 @@
 
 import AdministrationLayout from "@/components/administration/AdministrationLayout";
 
-export default function Page() {
+export default function Page(props) {
 	return (
 		<div>
-			<AdministrationLayout />
+			<AdministrationLayout 
+				props={props}
+			/>
 		</div>
 	);
 }

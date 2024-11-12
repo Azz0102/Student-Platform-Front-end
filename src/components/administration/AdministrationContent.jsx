@@ -4,7 +4,7 @@ import React from 'react'
 import Table from "@/components/Table";
 import { ExpandableChatHeader } from '../ui/chat/expandable-chat';
 
-const AdministrationContent = ({content}) => {
+const AdministrationContent = ({content,children}) => {
     return (
         <div className='flex h-full w-full flex-col '>
             <>
@@ -15,7 +15,7 @@ const AdministrationContent = ({content}) => {
                         </div>
                     </div>
                 </ExpandableChatHeader>
-                <Table />
+                {children}
             </>
         </div>
     )

@@ -1,157 +1,27 @@
-// import "server-only"
 
-// import { db } from "@/db"
-// import { tasks } from "@/db/schema"
-// import {
-//   and,
-//   asc,
-//   count,
-//   desc,
-//   gt,
-//   gte,
-//   ilike,
-//   inArray,
-//   lte,
-// } from "drizzle-orm"
+const toQueryString = (params) => {
+    const queryString = [];
 
-// import { filterColumns } from "@/lib/filter-columns"
-// import { unstable_cache } from "@/lib/unstable-cache"
+    // Duyệt qua các thuộc tính và thêm vào query string
+    Object.keys(params).forEach(key => {
+        // Kiểm tra nếu là mảng hoặc đối tượng, chuyển thành chuỗi JSON
+        if (Array.isArray(params[key]) || typeof params[key] === 'object') {
+            queryString.push(`${key}=${JSON.stringify(params[key])}`);
+        } else {
+            queryString.push(`${key}=${params[key]}`);
+        }
+    });
 
+    return queryString.join('&');
+};
 
-// export async function getTasks(input) {
-//   return await unstable_cache(
-//     async () => {
-//       try {
-//         const offset = (input.page - 1) * input.perPage
-//         const fromDate = input.from ? new Date(input.from) : undefined
-//         const toDate = input.to ? new Date(input.to) : undefined
-//         const advancedTable = input.flags.includes("advancedTable")
+export const getList = async (search) => {
 
-//         const advancedWhere = filterColumns({
-//           table: tasks,
-//           filters: input.filters,
-//           joinOperator: input.joinOperator,
-//         })
+    console.log('hii', `https://${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/?${toQueryString(search)}`)
+    const response = await fetch(`https://${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/?${toQueryString(search)}`, {
+        cache: 'default'  // hoặc "force-cache" nếu cần cache
+    });
 
-//         const where = advancedTable
-//           ? advancedWhere
-//           : and(
-//             input.title ? ilike(tasks.title, `%${input.title}%`) : undefined,
-//             input.status.length > 0
-//               ? inArray(tasks.status, input.status)
-//               : undefined,
-//             input.priority.length > 0
-//               ? inArray(tasks.priority, input.priority)
-//               : undefined,
-//             fromDate ? gte(tasks.createdAt, fromDate) : undefined,
-//             toDate ? lte(tasks.createdAt, toDate) : undefined
-//           )
-
-//         const orderBy =
-//           input.sort.length > 0
-//             ? input.sort.map((item) =>
-//               item.desc ? desc(tasks[item.id]) : asc(tasks[item.id])
-//             )
-//             : [asc(tasks.createdAt)]
-
-//         const { data, total } = await db.transaction(async (tx) => {
-//           const data = await tx
-//             .select()
-//             .from(tasks)
-//             .limit(input.perPage)
-//             .offset(offset)
-//             .where(where)
-//             .orderBy(...orderBy)
-
-//           const total = await tx
-//             .select({
-//               count: count(),
-//             })
-//             .from(tasks)
-//             .where(where)
-//             .execute()
-//             .then((res) => res[0]?.count ?? 0)
-
-//           return {
-//             data,
-//             total,
-//           }
-//         })
-
-//         const pageCount = Math.ceil(total / input.perPage)
-//         return { data, pageCount }
-//       } catch (err) {
-//         return { data: [], pageCount: 0 }
-//       }
-//     },
-//     [JSON.stringify(input)],
-//     {
-//       revalidate: 3600,
-//       tags: ["tasks"],
-//     }
-//   )()
-// }
-
-// export async function getTaskStatusCounts() {
-//   return unstable_cache(
-//     async () => {
-//       try {
-//         return await db
-//           .select({
-//             status: tasks.status,
-//             count: count(),
-//           })
-//           .from(tasks)
-//           .groupBy(tasks.status)
-//           .having(gt(count(), 0))
-//           .then((res) =>
-//             res.reduce(
-//               (acc, { status, count }) => {
-//                 acc[status] = count
-//                 return acc
-//               },
-//               {}
-//             )
-//           )
-//       } catch (err) {
-//         return {}
-//       }
-//     },
-//     ["task-status-counts"],
-//     {
-//       revalidate: 3600,
-//     }
-//   )()
-// }
-
-// export async function getTaskPriorityCounts() {
-//   return unstable_cache(
-//     async () => {
-//       try {
-//         return await db
-//           .select({
-//             priority: tasks.priority,
-//             count: count(),
-//           })
-//           .from(tasks)
-//           .groupBy(tasks.priority)
-//           .having(gt(count(), 0))
-//           .then((res) =>
-//             res.reduce(
-//               (acc, { priority, count }) => {
-//                 acc[priority] = count
-//                 return acc
-//               },
-//               {}
-//             )
-//           )
-//       } catch (err) {
-//         return {}
-//       }
-//     },
-//     ["task-priority-counts"],
-//     {
-//       revalidate: 3600,
-//     }
-//   )()
-// }
+    const data = await response.json();
+    return data;
+}

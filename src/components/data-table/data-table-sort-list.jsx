@@ -38,8 +38,9 @@ export function DataTableSortList({
 }) {
   const id = React.useId()
 
-  const initialSorting = (table.initialState.sorting ??
-    [])
+  // const initialSorting = (table.initialState.sorting ?? [])
+  const initialSorting = []
+
   const [sorting, setSorting] = useQueryState(
     "sort",
     getSortingStateParser(table.getRowModel().rows[0]?.original)
@@ -243,7 +244,7 @@ export function DataTableSortList({
                       >
                         <Icons.trash className="size-3.5" aria-hidden="true" />
                       </Button>
-                      <SortableDragHandle
+                      {/* <SortableDragHandle
                         variant="outline"
                         size="icon"
                         className="size-8 shrink-0 rounded"
@@ -252,7 +253,7 @@ export function DataTableSortList({
                           className="size-3.5"
                           aria-hidden="true"
                         />
-                      </SortableDragHandle>
+                      </SortableDragHandle> */}
                     </div>
                   </SortableItem>
                 )
@@ -264,11 +265,11 @@ export function DataTableSortList({
               size="sm"
               className="h-[1.85rem] rounded"
               onClick={addSort}
-              disabled={sorting.length >= sortableColumns.length}
+              disabled={sorting.length}
             >
               Add sort
             </Button>
-            {sorting.length > 0 ? (
+            {/* {sorting.length > 0 ? (
               <Button
                 size="sm"
                 variant="outline"
@@ -277,7 +278,7 @@ export function DataTableSortList({
               >
                 Reset sorting
               </Button>
-            ) : null}
+            ) : null} */}
           </div>
         </PopoverContent>
       </Popover>

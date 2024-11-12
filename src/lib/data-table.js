@@ -56,7 +56,7 @@ export function getDefaultFilterOperator(
   columnType
 ) {
   if (columnType === "text") {
-    return "iLike"
+    return "like"
   }
 
   return "eq"

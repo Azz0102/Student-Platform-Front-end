@@ -34,7 +34,7 @@ export function FeatureFlagsProvider({ children }) {
   const [featureFlags, setFeatureFlags] = useQueryState(
     "flags",
     {
-      defaultValue: [],
+      defaultValue: ["advancedTable"],
       parse: (value) => value.split(","),
       serialize: (value) => value.join(","),
       eq: (a, b) =>
@@ -52,7 +52,7 @@ export function FeatureFlagsProvider({ children }) {
       }}
     >
       <div className="w-full overflow-x-auto">
-        <ToggleGroup
+        {/* <ToggleGroup
           type="multiple"
           variant="outline"
           size="sm"
@@ -94,7 +94,7 @@ export function FeatureFlagsProvider({ children }) {
               </Tooltip>
             </TooltipProvider>
           ))}
-        </ToggleGroup>
+        </ToggleGroup> */}
       </div>
       {children}
     </FeatureFlagsContext.Provider>

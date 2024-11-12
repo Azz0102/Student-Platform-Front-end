@@ -21,17 +21,21 @@ const PRIORITY_VALUES = ["low", "medium", "high"]
 export function TasksTable({ promises }) {
   const { featureFlags } = useFeatureFlags()
 
-  const [results, setResults] = useState(promises)
+  const [{ data, pageCount }, statusCounts, priorityCounts] =
+    React.use(promises)
+
+  // const [results, setResults] = useState(promises)
   // promises.then((resolvedPromises) => {
   //   setResults(resolvedPromises)
   // })
-  // setResults(promises);
-  
-  const [{ data, pageCount }, statusCounts, priorityCounts] = results || [
-    { data: [], pageCount: 0 },
-    {},
-    {},
-  ]
+
+  // console.log('results',results)
+
+  // const [{ data, pageCount }, statusCounts, priorityCounts] = results || [
+  //   { data: [], pageCount: 0 },
+  //   {},
+  //   {},
+  // ]
 
   const [rowAction, setRowAction] = useState(null)
 
@@ -43,26 +47,26 @@ export function TasksTable({ promises }) {
       label: "Title",
       placeholder: "Filter titles...",
     },
-    {
-      id: "status",
-      label: "Status",
-      options: STATUS_VALUES.map((status) => ({
-        label: toSentenceCase(status),
-        value: status,
-        icon: getStatusIcon(status),
-        count: statusCounts[status],
-      })),
-    },
-    {
-      id: "priority",
-      label: "Priority",
-      options: PRIORITY_VALUES.map((priority) => ({
-        label: toSentenceCase(priority),
-        value: priority,
-        icon: getPriorityIcon(priority),
-        count: priorityCounts[priority],
-      })),
-    },
+    // {
+    //   id: "status",
+    //   label: "Status",
+    //   options: STATUS_VALUES.map((status) => ({
+    //     label: toSentenceCase(status),
+    //     value: status,
+    //     icon: getStatusIcon(status),
+    //     count: statusCounts[status],
+    //   })),
+    // },
+    // {
+    //   id: "priority",
+    //   label: "Priority",
+    //   options: PRIORITY_VALUES.map((priority) => ({
+    //     label: toSentenceCase(priority),
+    //     value: priority,
+    //     icon: getPriorityIcon(priority),
+    //     count: priorityCounts[priority],
+    //   })),
+    // },
   ]
 
   const advancedFilterFields = [
@@ -71,28 +75,28 @@ export function TasksTable({ promises }) {
       label: "Title",
       type: "text",
     },
-    {
-      id: "status",
-      label: "Status",
-      type: "multi-select",
-      options: STATUS_VALUES.map((status) => ({
-        label: toSentenceCase(status),
-        value: status,
-        icon: getStatusIcon(status),
-        count: statusCounts[status],
-      })),
-    },
-    {
-      id: "priority",
-      label: "Priority",
-      type: "multi-select",
-      options: PRIORITY_VALUES.map((priority) => ({
-        label: toSentenceCase(priority),
-        value: priority,
-        icon: getPriorityIcon(priority),
-        count: priorityCounts[priority],
-      })),
-    },
+    // {
+    //   id: "status",
+    //   label: "StatusAd",
+    //   type: "multi-select",
+    //   options: STATUS_VALUES.map((status) => ({
+    //     label: toSentenceCase(status),
+    //     value: status,
+    //     icon: getStatusIcon(status),
+    //     count: statusCounts[status],
+    //   })),
+    // },
+    // {
+    //   id: "priority",
+    //   label: "PriorityAd",
+    //   type: "multi-select",
+    //   options: PRIORITY_VALUES.map((priority) => ({
+    //     label: toSentenceCase(priority),
+    //     value: priority,
+    //     icon: getPriorityIcon(priority),
+    //     count: priorityCounts[priority],
+    //   })),
+    // },
     {
       id: "createdAt",
       label: "Created at",
@@ -103,6 +107,10 @@ export function TasksTable({ promises }) {
   const enableAdvancedTable = featureFlags.includes("advancedTable")
   const enableFloatingBar = featureFlags.includes("floatingBar")
 
+  console.log('enableAdvancedTable',enableAdvancedTable);
+  console.log('enableFloatingBar',enableFloatingBar);
+
+
   const { table } = useDataTable({
     data,
     columns,
@@ -110,7 +118,7 @@ export function TasksTable({ promises }) {
     filterFields,
     enableAdvancedFilter: enableAdvancedTable,
     initialState: {
-      sorting: [{ id: "createdAt", desc: true }],
+      sorting: [],
       columnPinning: { right: ["actions"] },
     },
     getRowId: (originalRow, index) => `${originalRow.id}-${index}`,

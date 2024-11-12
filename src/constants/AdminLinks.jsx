@@ -12,7 +12,7 @@ const links = [
 		title: "Schedule",
 	},
 	{
-		href: "/admin/quantri",
+		href: "/admin/quantri?flags=advancedTable",
 		icon: <UserRoundCog className='h-5 w-5' />,
 		title: "Quan Tri",
 	},
