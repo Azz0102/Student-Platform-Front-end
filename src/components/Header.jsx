@@ -46,7 +46,7 @@ function Header() {
 	const { t } = useTranslation();
 	const refreshToken = Cookies.get("refreshToken");
 
-	let name = null;
+	let name = "";
 
 	if (refreshToken) {
 		name = jwtDecode(refreshToken).name;

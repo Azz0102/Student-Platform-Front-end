@@ -38,13 +38,17 @@ export function ChatLayout({
 	const { t } = useTranslation();
 
 	const refreshToken = Cookies.get("refreshToken");
-	const decoded = jwtDecode(refreshToken);
+	let userId = "";
+
+	if (refreshToken) {
+		userId = jwtDecode(refreshToken).userId;
+	}
 	const {
 		data: listChat,
 		isLoading,
 		isError,
 		isSuccess,
-	} = useGetChatListQuery({ userId: decoded.userId });
+	} = useGetChatListQuery({ userId: userId });
 
 	const selectedChat = useSelector((state) => state.chat.selectedChat);
 	// const messages = useSelector((state) => state.chat.messages);
