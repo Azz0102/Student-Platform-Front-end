@@ -14,7 +14,7 @@ import Link from "next/link";
 
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import favicon from "../app/[locale]/favicon.ico";
-import { ModeToggle } from "./mode-toggle";
+import ModeToggle from "./mode-toggle";
 import { NotiToggle } from "./notification-toggle";
 import { DynamicBreadcrumb } from "./DynamicBreadcrumb";
 import { Button } from "@/components/ui/button";

@@ -4,7 +4,7 @@ import Image from "next/image";
 
 import LanguageToggle from "@/components/LanguageToggle";
 import ForgotPasswordForm from "@/components/ForgotPasswordForm";
-import { ModeToggle } from "@/components/mode-toggle";
+import ModeToggle from "@/components/mode-toggle";
 import { useWindowDimensions } from "@/hooks/useWindowDimension";
 import vercel from "/public/android-chrome-512x512.png";
 import { useTranslation } from "react-i18next";
