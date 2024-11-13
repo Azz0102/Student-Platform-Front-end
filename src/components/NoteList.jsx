@@ -59,7 +59,11 @@ export function NoteList({
 	const dispatch = useDispatch();
 
 	const refreshToken = Cookies.get("refreshToken");
-	const { userId } = jwtDecode(refreshToken);
+	let userId = "";
+
+	if (refreshToken) {
+		userId = jwtDecode(refreshToken).userId;
+	}
 	const { t } = useTranslation();
 	const [
 		createNote,

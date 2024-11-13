@@ -40,13 +40,19 @@ function isImageFile(filename) {
 }
 export default function NewsId({}) {
 	const refreshToken = Cookies.get("refreshToken");
-	const decoded = jwtDecode(refreshToken);
+
+	let userId = "";
+
+	if (refreshToken) {
+		userId = jwtDecode(refreshToken).userId;
+	}
+
 	const {
 		data: news,
 		isLoading,
 		isError,
 		isSuccess,
-	} = useGetUserRelatedNewsQuery({ userId: decoded.userId });
+	} = useGetUserRelatedNewsQuery({ userId: userId });
 
 	const pathname = usePathname().split("/");
 	const NewsId = pathname[pathname.length - 1];

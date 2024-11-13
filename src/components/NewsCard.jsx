@@ -34,17 +34,17 @@ export function NewsCard() {
 
 	const dispatch = useDispatch();
 	const refreshToken = Cookies.get("refreshToken");
-	let uid = null;
+	let userId = "";
 
 	if (refreshToken) {
-		uid = jwtDecode(refreshToken).userId;
+		userId = jwtDecode(refreshToken).userId;
 	}
 	const {
 		data: news,
 		isLoading,
 		isError,
 		isSuccess,
-	} = useGetUserRelatedNewsQuery({ userId: uid });
+	} = useGetUserRelatedNewsQuery({ userId: userId });
 
 	const [newsItems, setNewsItems] = useState(null);
 	const { t } = useTranslation();

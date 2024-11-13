@@ -44,10 +44,10 @@ export function MyCalendar({ className }) {
 	const { t, i18n } = useTranslation(); // Access i18n to get current language
 	const refreshToken = Cookies.get("refreshToken");
 
-	let uid = null;
+	let userId = "";
 
 	if (refreshToken) {
-		uid = jwtDecode(refreshToken).userId;
+		userId = jwtDecode(refreshToken).userId;
 	}
 
 	const {
@@ -55,7 +55,7 @@ export function MyCalendar({ className }) {
 		isLoading,
 		isError,
 		isSuccess,
-	} = useGetcalenderQuery({ userId: uid });
+	} = useGetcalenderQuery({ userId: userId });
 
 	const [myEventsList, setMyEventsList] = useState([]);
 

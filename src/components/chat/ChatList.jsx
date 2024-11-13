@@ -54,7 +54,11 @@ export function ChatList({
 	let imageSrc;
 
 	const refreshToken = Cookies.get("refreshToken");
-	const { userId } = jwtDecode(refreshToken);
+	let userId = "";
+
+	if (refreshToken) {
+		userId = jwtDecode(refreshToken).userId;
+	}
 
 	const doSth = async () => {
 		if (messagesContainerRef.current) {
@@ -227,7 +231,10 @@ export function ChatList({
 										{message.file &&
 											!checkTypeFile(message.message) && (
 												<div className='flex flex-row items-center'>
-													<File size={40} className="mr-2"/>
+													<File
+														size={40}
+														className='mr-2'
+													/>
 													<Link
 														href={"#"}
 														onClick={(e) =>

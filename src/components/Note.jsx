@@ -88,7 +88,11 @@ export function Note() {
 	const dispatch = useDispatch();
 
 	const refreshToken = Cookies.get("refreshToken");
-	const { userId } = jwtDecode(refreshToken);
+	let userId = "";
+
+	if (refreshToken) {
+		userId = jwtDecode(refreshToken).userId;
+	}
 
 	const {
 		data: noteList = [],
