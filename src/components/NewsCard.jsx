@@ -34,13 +34,17 @@ export function NewsCard() {
 
 	const dispatch = useDispatch();
 	const refreshToken = Cookies.get("refreshToken");
-	const decoded = jwtDecode(refreshToken);
+	let uid = null;
+
+	if (refreshToken) {
+		uid = jwtDecode(refreshToken).userId;
+	}
 	const {
 		data: news,
 		isLoading,
 		isError,
 		isSuccess,
-	} = useGetUserRelatedNewsQuery({ userId: decoded.userId });
+	} = useGetUserRelatedNewsQuery({ userId: uid });
 
 	const [newsItems, setNewsItems] = useState(null);
 	const { t } = useTranslation();
@@ -131,7 +135,7 @@ export function NewsCard() {
 												<span className='mb-1 text-ellipsis text-lg font-semibold'>
 													{item.title}
 												</span>
-												<span className='line-clamp-2 text-sm text-muted-foreground group-hover:text-primary-foreground/90 h-6'>
+												<span className='line-clamp-2 h-6 text-sm text-muted-foreground group-hover:text-primary-foreground/90'>
 													<Preview
 														textValue={item.content}
 													/>

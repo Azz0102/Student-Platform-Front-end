@@ -43,13 +43,19 @@ const localizer = dayjsLocalizer(dayjs);
 export function MyCalendar({ className }) {
 	const { t, i18n } = useTranslation(); // Access i18n to get current language
 	const refreshToken = Cookies.get("refreshToken");
-	const decoded = jwtDecode(refreshToken);
+
+	let uid = null;
+
+	if (refreshToken) {
+		uid = jwtDecode(refreshToken).userId;
+	}
+
 	const {
 		data: listEvents,
 		isLoading,
 		isError,
 		isSuccess,
-	} = useGetcalenderQuery({ userId: decoded.userId });
+	} = useGetcalenderQuery({ userId: uid });
 
 	const [myEventsList, setMyEventsList] = useState([]);
 
