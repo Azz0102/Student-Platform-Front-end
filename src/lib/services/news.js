@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 export const newsApi = createApi({
 	reducerPath: "newsApi",
 	baseQuery: fetchBaseQuery({
-		baseUrl: "https://localhost:3001/api/",
+		baseUrl: `https://${process.env.NEXT_PUBLIC_BASE_URL}/api/`,
 		prepareHeaders: async (headers) => {
 			const refreshToken = Cookies.get("refreshToken");
 
@@ -20,9 +20,13 @@ export const newsApi = createApi({
 		getListNewsByUser: builder.query({
 			query: (id) => `news/${id}`,
 		}),
+		getUserRelatedNews: builder.query({
+			query: ({ userId }) => `/news/user/${userId}`,
+		}),
 	}),
 });
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useGetListNewsByUserQuery } = newsApi;
+export const { useGetListNewsByUserQuery, useGetUserRelatedNewsQuery } =
+	newsApi;

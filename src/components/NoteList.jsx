@@ -33,6 +33,9 @@ import {
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
 import { setListNote } from "@/lib/features/noteSlice";
+import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
+import { useTranslation } from "react-i18next";
 
 export function NoteList({
 	notes,
@@ -54,6 +57,10 @@ export function NoteList({
 	error,
 }) {
 	const dispatch = useDispatch();
+
+	const refreshToken = Cookies.get("refreshToken");
+	const { userId } = jwtDecode(refreshToken);
+	const { t } = useTranslation();
 	const [
 		createNote,
 		{
@@ -77,7 +84,7 @@ export function NoteList({
 	const handleDeleteNote = async (note) => {
 		try {
 			await deleteNote({ noteId: note.id });
-			const updatedNotes = [...fullnotes];
+			let updatedNotes = [...fullnotes];
 			updatedNotes.splice(
 				updatedNotes.findIndex((e) => e.id === note.id),
 				1
@@ -92,51 +99,50 @@ export function NoteList({
 				setSelectedValues([]);
 			}
 		} catch (error) {
-			toast.error("Error deleting notes");
+			toast.error(t("noteList.errorDeletingNotes"));
 		}
 	};
 
 	const handleAddNote = async () => {
 		try {
 			const newNote = await createNote({
-				userId: 1,
-				title: "",
+				userId: userId,
+				name: "",
 				content: "",
 				tags: [],
 			});
 
-			setNotes([newNote, ...fullnotes]);
-			dispatch(setListNote([newNote, ...fullnotes]));
+			setNotes([newNote.data.metadata, ...fullnotes]);
+			dispatch(setListNote([newNote.data.metadata, ...fullnotes]));
 
 			setNewNoteIndex(newNoteIndex + 1);
 			// focusOnContentInput();
 			focusOnTitleInput();
-			setCurrentNote(newNote);
+			setCurrentNote(newNote.data.metadata);
 			setTitleValue("");
 			setContentValue("");
 			setSelectedValues([]);
 			setCurrentTag({});
 		} catch (error) {
-			toast.error("Error creating note");
+			toast.error(t("noteList.errorCreatingNote"));
 		}
 	};
 
 	const handleDuplicate = async (note) => {
 		try {
 			const newNote = await createNote({
-				userId: 1,
-				title: note.title,
+				userId: 2,
+				name: note.name,
 				content: note.content,
 				tags: note.tags,
 			});
-			const updatedNotes = [...fullnotes];
+			let updatedNotes = [...fullnotes];
 
-			// duplicateNote.id = "new" + newNoteIndex;
-			updatedNotes.push(newNote);
+			updatedNotes.push(newNote.data.metadata);
 			setNotes(updatedNotes);
 			dispatch(setListNote(updatedNotes));
 		} catch (error) {
-			toast.error("Error duplicate note");
+			toast.error(t("noteList.errorDuplicateNote"));
 		}
 	};
 
@@ -145,7 +151,7 @@ export function NoteList({
 			<div className='flex w-full justify-between p-4 pb-2'>
 				<div className='flex items-center'>
 					<Notebook />
-					<h3 className='pl-2'>Note</h3>
+					<h3 className='pl-2'>{t("noteList.note")}</h3>
 				</div>
 				<div className='flex'>
 					<TooltipProvider>
@@ -153,15 +159,16 @@ export function NoteList({
 							<TooltipTrigger asChild>
 								<Button
 									variant='ghost'
-									className='p-2'
+									size='icon'
 									onClick={handleAddNote}
+									// onClick={handleDeleteNote}
 									disabled={isLoading || error ? true : false}
 								>
 									<Plus />
 								</Button>
 							</TooltipTrigger>
 							<TooltipContent>
-								<p>Add note</p>
+								<p>{t("noteList.addNote")}</p>
 							</TooltipContent>
 						</Tooltip>
 					</TooltipProvider>
@@ -173,7 +180,7 @@ export function NoteList({
 					<Input
 						onChange={(e) => setSearchQuery(e.target.value)}
 						type='search'
-						placeholder='Search...'
+						placeholder={t("noteList.search")}
 						className='w-full rounded-lg bg-background pl-8'
 					/>
 				</div>
@@ -186,12 +193,14 @@ export function NoteList({
 			{error && (
 				<Alert variant='destructive' className='w-5/6'>
 					<AlertCircle className='h-4 w-4' />
-					<AlertTitle>Error</AlertTitle>
-					<AlertDescription>Error fetching tags</AlertDescription>
+					<AlertTitle>{t("noteList.error")}</AlertTitle>
+					<AlertDescription>
+						{t("noteList.errorFetchingNotes")}
+					</AlertDescription>
 				</Alert>
 			)}
 			{notes.length === 0 && !isLoading && !error && (
-				<div>No note available please create new note</div>
+				<div>{t("noteList.noNoteAvailablePleaseCreateNewNote")}</div>
 			)}
 			{notes.length !== 0 && !isLoading && !error && (
 				<ScrollArea className='h-[600px] w-full rounded-md [&>div>div[style]]:!block'>
@@ -211,7 +220,7 @@ export function NoteList({
 															note.content
 														);
 														setTitleValue(
-															note.title
+															note.name
 														);
 														setSelectedValues(
 															!note.tags ||
@@ -231,7 +240,7 @@ export function NoteList({
 														);
 													}}
 												>
-													{note.title}
+													{note.name}
 												</Button>
 												<Separator className='' />
 											</ContextMenuTrigger>
@@ -244,7 +253,7 @@ export function NoteList({
 															note.content
 														);
 														setTitleValue(
-															note.title
+															note.name
 														);
 														setSelectedValues(
 															!note.tags ||
@@ -265,7 +274,7 @@ export function NoteList({
 														setOpen(true);
 													}}
 												>
-													Tags
+													{t("noteList.tags")}
 													<Tags />
 												</ContextMenuItem>
 												<ContextMenuItem
@@ -274,7 +283,7 @@ export function NoteList({
 														handleDeleteNote(note);
 													}}
 												>
-													Delete
+													{t("noteList.delete")}
 													<Trash2 />
 												</ContextMenuItem>
 												<ContextMenuItem
@@ -283,7 +292,7 @@ export function NoteList({
 														handleDuplicate(note);
 													}}
 												>
-													Duplicate
+													{t("noteList.duplicate")}
 													<CopyPlus />
 												</ContextMenuItem>
 											</ContextMenuContent>
@@ -292,7 +301,7 @@ export function NoteList({
 								))
 							: notes
 									.filter((note) =>
-										note.title.includes(searchQuery)
+										note.name.includes(searchQuery)
 									)
 									.map((note, index) => (
 										<>
@@ -310,7 +319,7 @@ export function NoteList({
 																note.content
 															);
 															setTitleValue(
-																note.title
+																note.name
 															);
 															setSelectedValues(
 																!note.tags ||
@@ -330,7 +339,7 @@ export function NoteList({
 															);
 														}}
 													>
-														{note.title}
+														{note.name}
 													</Button>
 													<Separator className='' />
 												</ContextMenuTrigger>
@@ -345,7 +354,7 @@ export function NoteList({
 																note.content
 															);
 															setTitleValue(
-																note.title
+																note.name
 															);
 															setSelectedValues(
 																!note.tags ||
@@ -366,7 +375,7 @@ export function NoteList({
 															setOpen(true);
 														}}
 													>
-														Tags
+														{t("noteList.tags")}
 														<Tags />
 													</ContextMenuItem>
 													<ContextMenuItem
@@ -377,7 +386,7 @@ export function NoteList({
 															);
 														}}
 													>
-														Delete
+														{t("noteList.delete")}
 														<Trash2 />
 													</ContextMenuItem>
 													<ContextMenuItem
@@ -388,7 +397,9 @@ export function NoteList({
 															);
 														}}
 													>
-														Duplicate
+														{t(
+															"noteList.duplicate"
+														)}
 														<CopyPlus />
 													</ContextMenuItem>
 												</ContextMenuContent>

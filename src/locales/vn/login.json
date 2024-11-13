@@ -1,0 +1,12 @@
+{
+	"loginError": "Lỗi đăng nhập",
+	"name": "Mã sinh viên",
+	"enterYourName": "Nhập MSV của bạn",
+	"nameMustBeExactly8Digits": "Tên phải có chính xác 8 chữ số",
+	"required": "Yêu cầu",
+	"mustBeMoreThan6Digits": "Phải có nhiều hơn 6 chữ số",
+	"password": "Mật khẩu",
+	"forgotYourPassword": "Bạn quên mật khẩu?",
+	"enterYourPassword": "Nhập mật khẩu của bạn",
+	"login": "Đăng nhập"
+}

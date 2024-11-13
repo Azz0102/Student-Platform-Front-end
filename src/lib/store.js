@@ -6,7 +6,12 @@ import { authApi } from "./services/auth";
 import { noteApi } from "./services/note";
 import chatReducer from "./features/chatSlice";
 import noteReducer from "./features/noteSlice";
-
+import newsReducer from "./features/newsSlice";
+import { chatApi } from "./services/chat";
+import { notiApi } from "./services/noti";
+import { calenderApi } from "./services/calender";
+import { classInfoApi } from "./services/classInfo";
+import { subscriptionApi } from "./services/subscription";
 
 export const makeStore = () => {
 	return configureStore({
@@ -15,15 +20,26 @@ export const makeStore = () => {
 			[tagApi.reducerPath]: tagApi.reducer,
 			[noteApi.reducerPath]: noteApi.reducer,
 			[authApi.reducerPath]: authApi.reducer,
+			[chatApi.reducerPath]: chatApi.reducer,
+			[notiApi.reducerPath]: notiApi.reducer,
+			[calenderApi.reducerPath]: calenderApi.reducer,
+			[classInfoApi.reducerPath]: classInfoApi.reducer,
+			[subscriptionApi.reducerPath]: subscriptionApi.reducer,
 			chat: chatReducer,
 			note: noteReducer,
+			news: newsReducer,
 		},
 		middleware: (getDefaultMiddleware) =>
 			getDefaultMiddleware()
 				.concat(newsApi.middleware)
 				.concat(tagApi.middleware)
 				.concat(noteApi.middleware)
-				.concat(authApi.middleware),
+				.concat(authApi.middleware)
+				.concat(chatApi.middleware)
+				.concat(notiApi.middleware)
+				.concat(calenderApi.middleware)
+				.concat(classInfoApi.middleware)
+				.concat(subscriptionApi.middleware),
 		devTools: true,
 	});
 };

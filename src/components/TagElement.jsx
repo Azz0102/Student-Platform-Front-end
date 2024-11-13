@@ -34,6 +34,7 @@ import { useRenameTagMutation } from "@/lib/services/tag";
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
 import { setListNote } from "@/lib/features/noteSlice";
+import { useTranslation } from "react-i18next";
 
 export function TagElement({
 	tag,
@@ -55,6 +56,7 @@ export function TagElement({
 	const { width } = useWindowDimensions();
 	const [open, setOpen] = useState(false);
 	const [renameInput, setRenameInput] = useState(tag.name);
+	const { t } = useTranslation();
 	const [
 		renameTag,
 		{
@@ -80,10 +82,16 @@ export function TagElement({
 			setRenameInput(tag.name);
 		} else {
 			try {
-				const renameTagData = await renameTag({
+				const newT = await renameTag({
 					tagId: tag.id,
 					name: renameInput,
 				}).unwrap();
+
+				const renameTagData = {
+					id: newT.metadata.id,
+					name: newT.metadata.name,
+				};
+
 				let updatedTags = [...tags];
 				updatedTags[index] = renameTagData;
 				setTags(updatedTags);
@@ -91,7 +99,7 @@ export function TagElement({
 
 				let updatedNotes = [...notes];
 				updatedNotes = updatedNotes.map((note) => {
-					if (note.tags.includes(tag)) {
+					if (note.tags.some((item) => item.id === tag.id)) {
 						note.tags = note.tags.map((t) =>
 							t.id === tag.id ? renameTagData : t
 						);
@@ -108,7 +116,7 @@ export function TagElement({
 					),
 				});
 			} catch (error) {
-				toast.error("Error rename tag");
+				toast.error(t("tagList.errorRenameTag"));
 			}
 		}
 	};
@@ -140,16 +148,21 @@ export function TagElement({
 											}
 										}
 									});
-									setCurrentNote(newNote[0]);
-									setTitleValue(newNote[0].title);
-									setContentValue(newNote[0].content);
-									setSelectedValues(
-										newNote[0].tags.map((e) => ({
-											id: e.id,
-											label: e.name,
-											value: e.name,
-										}))
-									);
+									if (
+										newNote.length > 0 &&
+										newNote[0] !== undefined
+									) {
+										setCurrentNote(newNote[0]);
+										setTitleValue(newNote[0].name);
+										setContentValue(newNote[0].content);
+										setSelectedValues(
+											newNote[0].tags.map((e) => ({
+												id: e.id,
+												label: e.name,
+												value: e.name,
+											}))
+										);
+									}
 								}}
 							>
 								{tag.name}
@@ -165,13 +178,15 @@ export function TagElement({
 										e.preventDefault();
 									}}
 								>
-									Rename
+									{t("tagList.rename")}
 									<RotateCcw />
 								</ContextMenuItem>
 							</DialogTrigger>
 							<DialogContent className='sm:max-w-md'>
 								<DialogHeader>
-									<DialogTitle>Rename tags</DialogTitle>
+									<DialogTitle>
+										{t("tagList.renameTags")}
+									</DialogTitle>
 									<DialogDescription></DialogDescription>
 								</DialogHeader>
 								<div className='flex items-center space-x-2'>
@@ -186,7 +201,7 @@ export function TagElement({
 											type='submit'
 											onClick={handleSaveChange}
 										>
-											Save changes
+											{t("tagList.saveChanges")}
 										</Button>
 									</DialogClose>
 								</DialogFooter>
@@ -198,7 +213,7 @@ export function TagElement({
 									removeTag(tag);
 								}}
 							>
-								Remove
+								{t("tagList.remove")}
 								<X />
 							</ContextMenuItem>
 						</ContextMenuContent>
@@ -233,7 +248,7 @@ export function TagElement({
 									}
 								});
 								setCurrentNote(newNote[0]);
-								setTitleValue(newNote[0].title);
+								setTitleValue(newNote[0].name);
 								setContentValue(newNote[0].content);
 								setSelectedValues(
 									newNote[0].tags.map((e) => ({
@@ -257,13 +272,15 @@ export function TagElement({
 									e.preventDefault();
 								}}
 							>
-								Rename
+								{t("tagList.rename")}
 								<RotateCcw />
 							</ContextMenuItem>
 						</DrawerTrigger>
 						<DrawerContent className='h-96'>
 							<DrawerHeader className='text-left'>
-								<DrawerTitle>Add or remove tags</DrawerTitle>
+								<DrawerTitle>
+									{t("tagList.renameTags")}
+								</DrawerTitle>
 								<DrawerDescription></DrawerDescription>
 							</DrawerHeader>
 							<div className='m-4 flex items-center space-x-2'>
@@ -278,7 +295,7 @@ export function TagElement({
 										type='submit'
 										onClick={handleSaveChange}
 									>
-										Save changes
+										{t("tagList.saveChanges")}
 									</Button>
 								</DrawerClose>
 							</DrawerFooter>
@@ -290,7 +307,7 @@ export function TagElement({
 								removeTag(tag);
 							}}
 						>
-							Remove
+							{t("tagList.remove")}
 							<X />
 						</ContextMenuItem>
 					</ContextMenuContent>

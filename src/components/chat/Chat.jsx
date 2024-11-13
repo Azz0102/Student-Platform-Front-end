@@ -1,28 +1,38 @@
-import { Message, UserData } from "@/app/data";
-import ChatTopBar from "./ChatTopBar";
+import { useMemo } from "react";
 import { ChatList } from "./ChatList";
-import React, { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { setMessages } from "@/lib/features/chatSlice";
+import ChatTopBar from "./ChatTopBar";
 
-export function Chat({ messages, selectedUser, isMobile }) {
-    const dispatch = useAppDispatch();
-    const messagesState = useAppSelector((state) => state.chat.messages);
+export function Chat({ selectedChat, isMobile, messagesState, setMessages }) {
 
-    const sendMessage = (newMessage) => {
-        dispatch(setMessages([...messagesState, newMessage]));
-    };
+	console.log("bick", messagesState);
+	console.log("count", selectedChat);
 
-    return (
-        <div className="flex flex-col justify-between w-full h-full">
-            <ChatTopBar selectedUser={selectedUser} />
+	const message = useMemo(()=>{
+		console.log("hamnay");
+		return messagesState.filter(
+			(message) => message.classSession.id === selectedChat
+		)[0];
+	},[messagesState, selectedChat])
 
-            <ChatList
-                messages={messagesState}
-                selectedUser={selectedUser}
-                sendMessage={sendMessage}
-                isMobile={isMobile}
-            />
-        </div>
-    );
+	
+
+	console.log("mesSelecter",message)
+
+	return (
+		<div className='flex h-full w-full flex-col justify-between'>
+			{message && (
+				<>
+					<ChatTopBar selectedUser={message.classSession} />
+					<ChatList
+						selectedChat={selectedChat}
+						messagesState={messagesState}
+						messages={message.newmessages}
+						selectedUser={message.classSession.id}
+						isMobile={isMobile}
+						setMessages={setMessages}
+					/>
+				</>
+			)}
+		</div>
+	);
 }

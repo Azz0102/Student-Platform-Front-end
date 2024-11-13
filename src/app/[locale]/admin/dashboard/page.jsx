@@ -1,10 +1,6 @@
-"use client";
-import { AdminDashBoard } from "@/components/AdminDashBoard";
-import useFcmToken from "@/hooks/useFcmToken";
+import AdminDashBoard from "@/components/AdminDashBoard";
 
 export default function Page() {
-	const { token, notificationPermissionStatus } = useFcmToken();
-
 	return (
 		<div>
 			<AdminDashBoard />

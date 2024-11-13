@@ -1,12 +1,12 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import Cookies from 'js-cookie'
+import Cookies from "js-cookie";
 
 // const cookieStore = cookies();
 // Define a service using a base URL and expected endpoints
 export const noteApi = createApi({
 	reducerPath: "noteApi",
 	baseQuery: fetchBaseQuery({
-		baseUrl: "https://localhost:3001/api/",
+		baseUrl: `https://${process.env.NEXT_PUBLIC_BASE_URL}/api/`,
 		prepareHeaders: async (headers) => {
 			const refreshToken = Cookies.get("refreshToken");
 
@@ -22,17 +22,17 @@ export const noteApi = createApi({
 			query: (userId) => `note/${userId}`,
 		}),
 		createNote: builder.mutation({
-			query: ({ userId, title, content, tags }) => ({
+			query: ({ userId, name, content, tags }) => ({
 				url: "note",
 				method: "POST",
-				body: { userId, title, content, tags },
+				body: { userId, name, content, tags },
 			}),
 		}),
 		updateNote: builder.mutation({
-			query: ({ noteId, title, content, tags }) => ({
+			query: ({ noteId, name, content, tagIds }) => ({
 				url: "note",
 				method: "PATCH",
-				body: { noteId, title, content, tags },
+				body: { noteId, name, content, tagIds },
 			}),
 		}),
 		deleteNote: builder.mutation({
@@ -40,6 +40,15 @@ export const noteApi = createApi({
 				url: `note/${noteId}`,
 				method: "DELETE",
 			}),
+		}),
+		uploadFile: builder.mutation({
+			query: ({ file }) => {
+				return {
+					url: `note/upload`,
+					method: "POST",
+					body: file,
+				};
+			},
 		}),
 	}),
 });
@@ -51,4 +60,5 @@ export const {
 	useCreateNoteMutation,
 	useDeleteNoteMutation,
 	useUpdateNoteMutation,
+	useUploadFileMutation,
 } = noteApi;

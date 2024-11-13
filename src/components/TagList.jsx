@@ -15,6 +15,7 @@ import { useRemoveTagMutation } from "@/lib/services/tag";
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
 import { setListNote } from "@/lib/features/noteSlice";
+import { useTranslation } from "react-i18next";
 
 export function TagList({
 	tags,
@@ -40,6 +41,7 @@ export function TagList({
 			data: removeTagData,
 		},
 	] = useRemoveTagMutation();
+	const { t } = useTranslation();
 
 	const removeTag = async (tag) => {
 		try {
@@ -68,7 +70,7 @@ export function TagList({
 				dispatch(setListNote(updatedNotes));
 			}
 		} catch (error) {
-			toast.error("Error removing tag");
+			toast.error(t("tagList.errorRemovingTag"));
 		}
 	};
 
@@ -77,14 +79,14 @@ export function TagList({
 			<div className='flex w-full justify-between p-4'>
 				<div className='flex items-center p-2 pb-10'>
 					<Tags />
-					<h3 className='pl-2'>Tag</h3>
+					<h3 className='pl-2'>{t("tagList.tag")}</h3>
 				</div>
 				<TooltipProvider>
 					<Tooltip>
 						<TooltipTrigger asChild>
 							<Button
 								variant='ghost'
-								className='p-2'
+								size='icon'
 								onClick={() => {
 									setCurrentTag("");
 									setCurrentNote(notes[0]);
@@ -105,7 +107,7 @@ export function TagList({
 							</Button>
 						</TooltipTrigger>
 						<TooltipContent>
-							<p>Clear tag</p>
+							<p>{t("tagList.clearTag")}</p>
 						</TooltipContent>
 					</Tooltip>
 				</TooltipProvider>
@@ -118,12 +120,14 @@ export function TagList({
 			{error && (
 				<Alert variant='destructive' className='w-5/6'>
 					<AlertCircle className='h-4 w-4' />
-					<AlertTitle>Error</AlertTitle>
-					<AlertDescription>Error fetching tags</AlertDescription>
+					<AlertTitle>{t("tagList.error")}</AlertTitle>
+					<AlertDescription>
+						{t("tagList.errorFetchingTags")}
+					</AlertDescription>
 				</Alert>
 			)}
 			{tags.length === 0 && !isLoading && !error && (
-				<div>No tag available. Please create a new Tag</div>
+				<div>{t("tagList.noTagAvailablePleaseCreateANewTag")}</div>
 			)}
 
 			{tags.length !== 0 && !isLoading && !error && (

@@ -23,28 +23,21 @@ export function middleware(request) {
 
 	const refreshToken = request.cookies.get("refreshToken")?.value;
 
-	if (pathname.endsWith("/login") || pathname === `/${locale}/login`) {
-		console.log("2");
-
-		return i18nRouter(request, i18nConfig);
-	}
-
-	console.log(pathname);
-	console.log("1");
-
 	// Redirect for unauthenticated users (with locale-based path handling)
 	if (!refreshToken) {
 		// Handle English locale
-		if (!pathname.endsWith("/login")) {
-			console.log("3");
+		if (pathname.includes("reset-password")) {
+			return i18nRouter(request, i18nConfig);
+		}
 
-			return NextResponse.redirect(new URL(`/${locale}/login`, request.url));
+		if (!pathname.endsWith("/login")) {
+			return NextResponse.redirect(
+				new URL(`/${locale}/login`, request.url)
+			);
 		}
 	}
 
 	if (refreshToken) {
-		console.log("4");
-
 		const roleId = jwtDecode(refreshToken).roleId;
 
 		if (pathname === "/login") {
@@ -94,7 +87,6 @@ export function middleware(request) {
 
 	// Default i18n routing
 	return i18nRouter(request, i18nConfig);
-	// return i18nResponse;
 }
 
 // applies this middleware only to files in the app directory

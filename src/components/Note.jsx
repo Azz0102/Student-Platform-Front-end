@@ -12,40 +12,97 @@ import { useTheme } from "next-themes";
 import { TagList } from "./TagList";
 import { useWindowDimensions } from "@/hooks/useWindowDimension";
 import { NoteList } from "./NoteList";
-import { current } from "@reduxjs/toolkit";
-import { set } from "date-fns";
 import { TagDialog } from "./TagDialog";
 import {
 	useGetListNoteQuery,
 	useUpdateNoteMutation,
+	useUploadFileMutation,
 } from "@/lib/services/note";
 import { useCreateTagMutation, useGetListTagQuery } from "@/lib/services/tag";
 import { toast } from "sonner";
 import { useAppSelector } from "@/lib/hooks";
 import { useDispatch } from "react-redux";
-import { useRouter } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { setCurrentNoteId, setListNote } from "@/lib/features/noteSlice";
+import { jwtDecode } from "jwt-decode";
+import Cookies from "js-cookie";
+import { useDeepCompareEffect } from "use-deep-compare";
+import MarkdownPreview from "@uiw/react-markdown-preview";
+import { useTranslation } from "react-i18next";
+import { allowedTypes } from "@/constants/AllowedTypes";
+import { Button } from "./ui/button";
 
 const MDEditor = dynamic(
 	() => import("@uiw/react-md-editor").then((mod) => mod.default),
 	{ ssr: false }
 );
 
+const originalUrl = `https://${process.env.NEXT_PUBLIC_BASE_URL}/uploads/`;
+// const originalUrl = `https://df6c-42-116-197-7.ngrok-free.app/uploads/`;
+
+const processMarkdownContent = (content) => {
+	return content.replace(
+		/!\[([^\]]*)\]\(([^)]+)\)|\[(.*?)\]\((.*?)\)/g,
+		(match, alt, imageUrl, linkText, linkUrl) => {
+			const url = imageUrl || linkUrl;
+
+			// Only process URLs that start with the host URL
+			if (!url.startsWith(originalUrl)) {
+				return match; // Leave non-host URLs unchanged
+			}
+
+			const filename = url.split("/").pop(); // Extract filename from URL
+
+			if (imageUrl) {
+				// If it's an image, keep markdown syntax for images
+				return `![${alt || filename}](${filename})`;
+			} else {
+				// If it's a link, keep markdown syntax for links
+				return `[${linkText || filename}](${filename})`;
+			}
+		}
+	);
+};
+
+const revertProcessedContent = (content) => {
+	return content.replace(
+		/!\[([^\]]*)\]\(([^)]+)\)|\[(.*?)\]\((.*?)\)/g,
+		(match, alt, filenameImage, linkText, filenameLink) => {
+			const filename = filenameImage || filenameLink;
+
+			// Only proceed if the filename has no slashes, meaning it's not a full URL
+			if (filename.includes("/")) return match;
+
+			if (filenameImage) {
+				// Revert image to full URL format
+				return `![${alt || filename}](${originalUrl}${filenameImage})`;
+			} else {
+				// Revert link to full URL format
+				return `[${linkText || filename}](${originalUrl}${filenameLink})`;
+			}
+		}
+	);
+};
+
 export function Note() {
 	const dispatch = useDispatch();
-	const router = useRouter();
+
+	const refreshToken = Cookies.get("refreshToken");
+	const { userId } = jwtDecode(refreshToken);
 
 	const {
 		data: noteList = [],
 		error: noteError,
 		isLoading: isNoteLoading,
-	} = useGetListNoteQuery("1");
+	} = useGetListNoteQuery(userId);
 
 	const {
 		data: tagList = [],
 		error: tagError,
 		isLoading: isTagLoading,
-	} = useGetListTagQuery("1");
+	} = useGetListTagQuery(userId);
+
+	const { t } = useTranslation();
 
 	const [updateNote, { isError: updateNoteError }] = useUpdateNoteMutation();
 
@@ -67,44 +124,213 @@ export function Note() {
 	const { width, height } = useWindowDimensions();
 	const { theme } = useTheme();
 
-	const [titleValue, setTitleValue] = useState("");
+	const [nameValue, setnameValue] = useState("");
 	const [contentValue, setContentValue] = useState("");
 
-	const [tags, setTags] = useState([]); // [{id: 1, name: "Nextjs"}, {id: 2 ,name: "React"}, {id: 3, name: "Remix"}]
+	const [tags, setTags] = useState([]);
 	const [notes, setNotes] = useState([]);
-	/* [{
-		id: 1,
-		title: "Note 1",
-		content: "This is the content of note 1",
-		tags: [{id: 1, name: "Nextjs"}, {id: 2 ,name: "React"}],
-	},
-	{
-		id: 2,
-		title: "Note 2",
-		content: "This is the content of note 2",
-		tags: [{id: 2 ,name: "React"}, {id: 3, name: "Remix"}],
-	},] */
 
-	const [currentNote, setCurrentNote] = useState({});
-	/**{
-		id: "",
-		title: "",
-		content: "",
-		tags: [],
-	}
-	 */
+	const [currentNote, setCurrentNote] = useState(
+		currentNoteIdState
+			? notes.filter((item) => item.id === currentNoteIdState)[0]
+			: {}
+	);
+
 	const [currentTag, setCurrentTag] = useState({});
 	const [newNoteIndex, setNewNoteIndex] = useState(0);
 
-	const titleInputRef = useRef(null);
+	const nameInputRef = useRef(null);
 	const contentInputRef = useRef(null);
 
 	// State to hold selected values
 	const [selectedValues, setSelectedValues] = useState([]);
 	const [open, setOpen] = useState(false);
+	const [uploadFile] = useUploadFileMutation();
+
+	// Function to handle file upload
+	const handleFileUpload = async (file) => {
+		// Create form data and append the file
+		const formData = new FormData();
+
+		formData.append("file", file);
+
+		try {
+			const data = await uploadFile({ file: formData });
+			toast.success(t("fileUploadedSuccessfully"));
+
+			return data; // Return the URL of the uploaded file
+		} catch (error) {
+			toast.error(t("errorUploadingFile"));
+			return null;
+		}
+	};
+
+	const attachFileCommand = {
+		name: "attach-file",
+		keyCommand: "attach-file",
+		buttonProps: { "aria-label": "Attach File", title: t("attachAFile") },
+		icon: (
+			<svg
+				viewBox='0 0 24 24'
+				fill='currentColor'
+				height='1em'
+				width='1em'
+			>
+				<path fill='none' d='M0 0h24v24H0z' />
+				<path d='M14.828 7.757l-5.656 5.657a1 1 0 101.414 1.414l5.657-5.656A3 3 0 1012 4.929l-5.657 5.657a5 5 0 107.071 7.07L19.071 12l1.414 1.414-5.657 5.657a7 7 0 11-9.9-9.9l5.658-5.656a5 5 0 017.07 7.07L12 16.244A3 3 0 117.757 12l5.657-5.657 1.414 1.414z' />
+			</svg>
+		),
+		execute: () => {
+			const fileInput = document.createElement("input");
+			fileInput.type = "file";
+			fileInput.accept = "*";
+			fileInput.onchange = async (e) => {
+				const file = e.target.files[0];
+				if (file) {
+					if (!allowedTypes.includes(file.type)) {
+						toast.error(t("fileTypeNotSupported"));
+						return;
+					}
+					const data = await handleFileUpload(file);
+					if (data) {
+						if (data?.data?.fileUrl) {
+							const fileUrl = data?.data?.fileUrl;
+							const fileExtension = fileUrl
+								.split(".")
+								.pop()
+								.toLowerCase();
+							const isImage = ["jpg", "jpeg", "png"].includes(
+								fileExtension
+							);
+
+							// Format as image or file link based on file type
+							const fileLink = isImage
+								? `![](${fileUrl})` // Markdown for displaying an image
+								: `[Download File](${fileUrl})`; // Markdown for non-image file link
+
+							let updatedContent = "";
+							setContentValue((prevContent) => {
+								updatedContent = `${prevContent}\n${fileLink}`;
+								return `${prevContent}\n${fileLink}`;
+							});
+							const updatedNotes = [...notes];
+							updatedNotes[
+								updatedNotes.findIndex(
+									(note) => note.id === currentNote.id
+								)
+							] = {
+								...currentNote,
+								content: updatedContent,
+							};
+							setCurrentNote({
+								...currentNote,
+								content: updatedContent,
+							});
+
+							setNotes(updatedNotes);
+						}
+					}
+				}
+			};
+			fileInput.click();
+		},
+	};
+
+	const customCommands = commands.getCommands().map((cmd) => {
+		switch (cmd.name) {
+			case "bold":
+				cmd.buttonProps.title = t("addBoldText");
+				break;
+			case "italic":
+				cmd.buttonProps.title = t("addItalicText");
+				break;
+			case "strikethrough":
+				cmd.buttonProps.title = t("addStrikethroughText");
+				break;
+			case "quote":
+				cmd.buttonProps.title = t("insertAQuote");
+				break;
+			case "link":
+				cmd.buttonProps.title = t("addALink");
+				break;
+			case "image":
+				cmd.buttonProps.title = t("addImage");
+				break;
+			case "comment":
+				cmd.buttonProps.title = t("insertComment");
+				break;
+			case "codeBlock":
+				cmd.buttonProps.title = t("insertCodeBlock");
+				break;
+			case "unordered-list":
+				cmd.buttonProps.title = t("addUnorderedList");
+				break;
+			case "ordered-list":
+				cmd.buttonProps.title = t("addOrderedList");
+				break;
+			case "checked-list":
+				cmd.buttonProps.title = t("addCheckedList");
+				break;
+			case "title":
+				cmd.buttonProps.title = t("insertTitle");
+				break;
+			case "title1":
+				cmd.buttonProps.title = t("insertTitle1");
+				break;
+			case "title2":
+				cmd.buttonProps.title = t("insertTitle2");
+				break;
+			case "title3":
+				cmd.buttonProps.title = t("insertTitle3");
+				break;
+			case "title4":
+				cmd.buttonProps.title = t("insertTitle4");
+				break;
+			case "title5":
+				cmd.buttonProps.title = t("insertTitle5");
+				break;
+			case "title6":
+				cmd.buttonProps.title = t("insertTitle6");
+				break;
+			case "help":
+				cmd.buttonProps.title = t("openHelp");
+				break;
+			case "hr":
+				cmd.buttonProps.title = t("insertHR");
+				break;
+			case "issue":
+				cmd.buttonProps.title = t("addIssue");
+				break;
+			case "table":
+				cmd.buttonProps.title = t("addTable");
+				break;
+			default:
+				break;
+		}
+		return cmd;
+	});
+
+	const extraCustomCommands = commands.getExtraCommands().map((cmd) => {
+		switch (cmd.name) {
+			case "fullscreen":
+				cmd.buttonProps.title = t("toggleFullscreen");
+				break;
+			case "preview":
+				cmd.buttonProps.title = t("previewCode");
+				break;
+			case "live":
+				cmd.buttonProps.title = t("liveCode");
+				break;
+			case "edit":
+				cmd.buttonProps.title = t("editCode");
+				break;
+			default:
+				break;
+		}
+		return cmd;
+	});
 
 	useEffect(() => {
-		toast("Use Ctrl+S to save note changes");
 		// Handle Ctrl+S key press
 		const handleKeyDown = async (event) => {
 			if ((event.ctrlKey || event.metaKey) && event.key === "s") {
@@ -114,21 +340,21 @@ export function Note() {
 					try {
 						for (let i = 0; i < notes.length; i++) {
 							if (
-								notes[i].title !== listNote[i].title ||
+								notes[i].name !== listNote[i].name ||
 								notes[i].content !== listNote[i].content
 							) {
 								const updatedNote = await updateNote({
 									noteId: notes[i].id,
-									title: notes[i].title,
+									name: notes[i].name,
 									content: notes[i].content,
-									tags: notes[i].tags,
+									tagIds: notes[i].tags.map((e) => e.id),
 								});
 							}
 						}
-						toast.success("Save notes successfully");
+						toast.success(t("saveNotesSuccessfully"));
 						dispatch(setListNote(notes));
 					} catch (error) {
-						toast.error("Save note failed");
+						toast.error(t("saveNoteFailed"));
 					}
 				}
 			}
@@ -140,7 +366,7 @@ export function Note() {
 			if (notes.length > 0) {
 				for (let i = 0; i < notes.length; i++) {
 					if (
-						notes[i].title !== listNote[i].title ||
+						notes[i].name !== listNote[i].name ||
 						notes[i].content !== listNote[i].content
 					) {
 						isSaved = false; // Set isSaved to false if any notes are not saved
@@ -150,8 +376,7 @@ export function Note() {
 			}
 			if (!isSaved) {
 				event.preventDefault();
-				event.returnValue =
-					"You have unsaved changes. Are you sure you want to leave?"; // Display warning dialog
+				event.returnValue = t("youHaveUnsavedChanges"); // Display warning dialog
 			}
 		};
 
@@ -166,20 +391,24 @@ export function Note() {
 			window.removeEventListener("keydown", handleKeyDown);
 			window.removeEventListener("beforeunload", handleBeforeUnload);
 		};
-	}, [dispatch, listNote, notes, updateNote]);
+	}, [dispatch, listNote, notes, t, updateNote]);
 
-	useEffect(() => {
-		if (noteList && noteList.length !== 0) {
-			setNotes(noteList);
-			dispatch(setListNote([...noteList]));
+	useDeepCompareEffect(() => {
+		toast(t("useCtrlSToSaveNoteChanges"));
+	}, []);
+
+	useDeepCompareEffect(() => {
+		if (noteList.metadata && noteList.metadata.length !== 0) {
+			setNotes(noteList.metadata);
+			dispatch(setListNote([...noteList.metadata]));
 			if (currentNoteIdState) {
-				const note = noteList.find(
+				const note = noteList.metadata.find(
 					(note) => note.id === currentNoteIdState
 				);
 				if (note) {
 					setCurrentNote(note);
 					setContentValue(note.content);
-					setTitleValue(note.title);
+					setnameValue(note.name);
 					setSelectedValues(
 						note.tags.map((e) => ({
 							id: e.id,
@@ -188,16 +417,16 @@ export function Note() {
 						}))
 					);
 				} else {
-					toast.error("No selected note found!");
+					toast.error(t("noSelectedNoteFound!"));
 				}
 
 				dispatch(setCurrentNoteId(null));
 			} else {
-				setCurrentNote(noteList[0]);
-				setContentValue(noteList[0].content);
-				setTitleValue(noteList[0].title);
+				setCurrentNote(noteList.metadata[0]);
+				setContentValue(noteList.metadata[0].content);
+				setnameValue(noteList.metadata[0].name);
 				setSelectedValues(
-					noteList[0].tags.map((e) => ({
+					noteList.metadata[0].tags.map((e) => ({
 						id: e.id,
 						label: e.name,
 						value: e.name,
@@ -206,59 +435,15 @@ export function Note() {
 			}
 		}
 
-		if (tagList && tagList.length !== 0) {
-			setTags(tagList);
+		if (tagList.metadata && tagList.metadata.length !== 0) {
+			setTags(tagList.metadata);
 		}
-
-		// setCurrentNote({
-		// 	id: 1,
-		// 	title: "Note 1",
-		// 	content: "This is the content of note 1",
-		// 	tags: ["Nextjs", "React"],
-		// });
-		// setContentValue("This is the content of note 1");
-		// setTitleValue("Note 1");
-		// setSelectedValues(
-		// 	["Nextjs", "React"].map((e) => ({ label: e, value: e }))
-		// );
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [dispatch, noteList, tagList]);
 
-	useEffect(() => {
-		const handleRouteChange = (url) => {
-			let isSaved = true; // Assume all notes are saved initially
-			if (notes.length > 0) {
-				for (let i = 0; i < notes.length; i++) {
-					if (
-						notes[i].title !== listNote[i].title ||
-						notes[i].content !== listNote[i].content
-					) {
-						isSaved = false; // Set isSaved to false if any notes are not saved
-						break; // Break the loop if any notes are not saved
-					}
-				}
-			}
-			if (
-				!isSaved &&
-				!window.confirm(
-					"You have unsaved changes. Are you sure you want to leave?"
-				)
-			) {
-				router.events.emit("routeChangeError");
-				throw new Error("Route change aborted due to unsaved changes"); // Prevent route change
-			}
-		};
-
-		router.events.on("routeChangeStart", handleRouteChange);
-
-		return () => {
-			router.events.off("routeChangeStart", handleRouteChange);
-		};
-	}, [listNote, notes, router.events]);
-
-	const focusOnTitleInput = () => {
-		if (titleInputRef.current) {
-			titleInputRef.current.focus(); // Focus the input
+	const focusOnnameInput = () => {
+		if (nameInputRef.current) {
+			nameInputRef.current.focus(); // Focus the input
 		}
 	};
 
@@ -272,20 +457,20 @@ export function Note() {
 		}
 	};
 
-	const handleTitleChange = (e) => {
+	const handlenameChange = (e) => {
 		const updatedNotes = [...notes];
 		updatedNotes[
 			updatedNotes.findIndex((note) => note.id === currentNote.id)
 		] = {
 			...currentNote,
-			title: e.target.value,
+			name: e.target.value,
 		};
 		setNotes(updatedNotes);
 		setCurrentNote({
 			...currentNote,
-			title: e.target.value,
+			name: e.target.value,
 		});
-		setTitleValue(e.target.value);
+		setnameValue(e.target.value);
 	};
 
 	const handleContentChange = (newContent) => {
@@ -294,13 +479,13 @@ export function Note() {
 			updatedNotes.findIndex((note) => note.id === currentNote.id)
 		] = {
 			...currentNote,
-			content: newContent,
+			content: revertProcessedContent(newContent),
 		};
 		setCurrentNote({
 			...currentNote,
-			content: newContent,
+			content: revertProcessedContent(newContent),
 		});
-		setContentValue(newContent);
+		setContentValue(revertProcessedContent(newContent));
 		setNotes(updatedNotes);
 	};
 
@@ -311,7 +496,7 @@ export function Note() {
 			dispatch(setListNote(notes.slice(1)));
 
 			setContentValue(!notes[1] ? "" : notes[1].content);
-			setTitleValue(!notes[1] ? "" : notes[1].title);
+			setnameValue(!notes[1] ? "" : notes[1].name);
 			setCurrentNote(!notes[1] ? {} : notes[1]);
 			setSelectedValues(
 				notes[1].tags.length === 0 || !notes[1]
@@ -339,19 +524,25 @@ export function Note() {
 				if (!element.id) {
 					try {
 						const newTag = await createTag({
-							userId: 1,
-							name: element.name,
+							userId: userId,
+							name: element.value,
 						}).unwrap();
 
 						newSelectedValue[i] = {
-							id: newTag.id,
-							label: newTag.name,
-							value: newTag.name,
+							id: newTag.metadata.id,
+							label: newTag.metadata.name,
+							value: newTag.metadata.name,
 						};
 
-						setTags([...tags, newTag]);
+						setTags([
+							...tags,
+							{
+								id: newTag.metadata.id,
+								name: newTag.metadata.name,
+							},
+						]);
 					} catch (error) {
-						toast.error("Error creating tag");
+						toast.error(t("errorCreatingTag"));
 					}
 				}
 			}
@@ -370,6 +561,16 @@ export function Note() {
 							name: e.label,
 						})),
 		};
+
+		const updatedNote = await updateNote({
+			noteId: currentNote.id,
+			content: currentNote.content,
+			name: currentNote.name,
+			tagIds:
+				newSelectedValue.length === 0
+					? []
+					: newSelectedValue.map((e) => e.id),
+		});
 
 		setCurrentNote({
 			...currentNote,
@@ -390,7 +591,6 @@ export function Note() {
 	const handleDialogChange = (isOpen) => {
 		if (!isOpen) {
 			// Perform cleanup or any actions needed on unmount
-			console.log(currentNote);
 			// Add your cleanup logic here, e.g., resetting state, clearing timers, etc.
 			setSelectedValues(
 				currentNote.tags.length === 0 || !currentNote.tags
@@ -417,7 +617,7 @@ export function Note() {
 						currentTag={currentTag}
 						setCurrentNote={setCurrentNote}
 						notes={notes}
-						setTitleValue={setTitleValue}
+						setTitleValue={setnameValue}
 						setContentValue={setContentValue}
 						setSelectedValues={setSelectedValues}
 						setTags={setTags}
@@ -429,13 +629,13 @@ export function Note() {
 					<NoteList
 						setCurrentNote={setCurrentNote}
 						currentNote={currentNote}
-						setTitleValue={setTitleValue}
+						setTitleValue={setnameValue}
 						setContentValue={setContentValue}
 						setNotes={setNotes}
 						newNoteIndex={newNoteIndex}
 						setNewNoteIndex={setNewNoteIndex}
 						focusOnContentInput={focusOnContentInput}
-						focusOnTitleInput={focusOnTitleInput}
+						focusOnTitleInput={focusOnnameInput}
 						setSelectedValues={setSelectedValues}
 						setCurrentTag={setCurrentTag}
 						currentTag={currentTag}
@@ -465,28 +665,51 @@ export function Note() {
 					<>
 						<div className='mb-2 w-full'>
 							<Input
-								placeholder="Note's title"
-								value={titleValue}
-								onChange={handleTitleChange}
+								placeholder={t("noteName")}
+								value={nameValue}
+								onChange={handlenameChange}
 								onBlur={handleContentBlur}
-								ref={titleInputRef}
+								ref={nameInputRef}
 							/>
 						</div>
 						<div className='w-full' data-color-mode={`${theme}`}>
 							<MDEditor
-								value={contentValue}
+								value={processMarkdownContent(contentValue)}
 								onChange={handleContentChange}
 								previewOptions={{
 									rehypePlugins: [[rehypeSanitize]],
 								}}
 								textareaProps={{
-									placeholder: "Please enter Markdown text",
+									placeholder: t("pleaseEnterMarkdownText"),
 								}}
 								visibleDragbar={false}
 								ref={contentInputRef}
 								// height="100%"
 								// minHeight={1000}
 								height={height - 210}
+								commands={[
+									// ...commands.getCommands(),
+									...customCommands,
+									attachFileCommand,
+								]}
+								extraCommands={extraCustomCommands}
+								components={{
+									preview: (source, state, dispatch) => {
+										return (
+											<MarkdownPreview
+												rehypePlugins={[
+													[rehypeSanitize],
+												]}
+												source={revertProcessedContent(
+													source
+												)}
+											/>
+											// <div>
+											// 	{revertProcessedContent(source)}
+											// </div>
+										);
+									},
+								}}
 							/>
 						</div>
 
@@ -500,6 +723,50 @@ export function Note() {
 							handleTagChange={handleTagChange}
 							tags={tags}
 						/>
+						<div className='mt-2 xl:hidden'>
+							<Button
+								onClick={async () => {
+									if (notes.length > 0) {
+										try {
+											for (
+												let i = 0;
+												i < notes.length;
+												i++
+											) {
+												if (
+													notes[i].name !==
+														listNote[i].name ||
+													notes[i].content !==
+														listNote[i].content
+												) {
+													const updatedNote =
+														await updateNote({
+															noteId: notes[i].id,
+															name: notes[i].name,
+															content:
+																notes[i]
+																	.content,
+															tagIds: notes[
+																i
+															].tags.map(
+																(e) => e.id
+															),
+														});
+												}
+											}
+											toast.success(
+												t("saveNotesSuccessfully")
+											);
+											dispatch(setListNote(notes));
+										} catch (error) {
+											toast.error(t("saveNoteFailed"));
+										}
+									}
+								}}
+							>
+								{t("tagDialog.saveChanges")}
+							</Button>
+						</div>
 					</>
 				)}
 			</div>

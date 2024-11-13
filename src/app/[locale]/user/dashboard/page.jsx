@@ -1,13 +1,21 @@
-"use client";
 import { Dashboard } from "@/components/dashboard";
-import useFcmToken from "@/hooks/useFcmToken";
+import TranslationsProvider from "@/components/TranslationsProvider";
+import initTranslations from "@/app/i18n";
 
-export default function Page() {
-	const { token, notificationPermissionStatus } = useFcmToken();
+const i18nNamespaces = ["home"];
+
+export default async function Page({ params: { locale } }) {
+	const { resources } = await initTranslations(locale, i18nNamespaces);
 
 	return (
-		<div>
-			<Dashboard />
-		</div>
+		<TranslationsProvider
+			namespaces={i18nNamespaces}
+			locale={locale}
+			resources={resources}
+		>
+			<div>
+				<Dashboard />
+			</div>
+		</TranslationsProvider>
 	);
 }

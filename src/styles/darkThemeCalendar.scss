@@ -13,6 +13,7 @@ $foreground: hsl(210, 40%, 98%);
                 &.rbc-active {
                     color: $btn-color;
                 }
+
                 &:focus {
                     color: $btn-color;
                 }
@@ -31,4 +32,17 @@ $foreground: hsl(210, 40%, 98%);
     .rbc-current-time-indicator {
         background-color: $background;
     }
+
+    .rbc-time-view-resources .rbc-time-gutter {
+        background-color: black;
+    }
+
+    .rbc-time-view-resources .rbc-time-header-gutter {
+        background-color: black;
+        z-index: 0;
+    }
+}
+
+.rbc-time-view-resources .rbc-time-header-gutter {
+    z-index: 0 !important;
 }

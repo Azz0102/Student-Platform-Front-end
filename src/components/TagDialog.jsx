@@ -26,6 +26,7 @@ import {
 	DrawerTitle,
 	DrawerTrigger,
 } from "@/components/ui/drawer";
+import { useTranslation } from "react-i18next";
 
 export function TagDialog({
 	open,
@@ -38,6 +39,7 @@ export function TagDialog({
 	tags,
 }) {
 	const { width } = useWindowDimensions();
+	const { t } = useTranslation();
 
 	if (width > 768) {
 		return (
@@ -52,8 +54,8 @@ export function TagDialog({
 									? []
 									: currentNote.tags.map((e) => ({
 											id: e.id,
-											label: e,
-											value: e,
+											label: e.name,
+											value: e.name,
 										}))
 							);
 						}}
@@ -66,9 +68,9 @@ export function TagDialog({
 							currentNote.tags.length !== 0 &&
 							currentNote.tags
 								.map((tag) => ({
-									id: e,
-									label: tag,
-									value: tag,
+									id: tag.id,
+									label: tag.name,
+									value: tag.name,
 								}))
 								.map((option, index) => {
 									return (
@@ -78,26 +80,31 @@ export function TagDialog({
 									);
 								})}
 						<div className='ml-2 text-foreground'>
-							Click to add tags...
+							{t("tagDialog.clickToAddTags")}
 						</div>
 					</div>
 				</DialogTrigger>
 				<DialogContent className='sm:max-w-md'>
 					<DialogHeader>
-						<DialogTitle>Add or remove tags</DialogTitle>
+						<DialogTitle>
+							{t("tagDialog.addOrRemoveTags")}
+						</DialogTitle>
 						<DialogDescription></DialogDescription>
 					</DialogHeader>
 					<div className='flex items-center space-x-2'>
 						<MultipleSelector
 							defaultOptions={(tags || []).map((tag) => ({
-								label: tag,
-								value: tag,
+								id: tag.id,
+								label: tag.name,
+								value: tag.name,
 							}))}
-							placeholder='Type something that does not exist in dropdowns...'
+							placeholder={t(
+								"tagDialog.typeSomethingThatDoesNotExistInDropdowns"
+							)}
 							creatable
 							emptyIndicator={
 								<p className='text-center text-lg leading-10 text-gray-600 dark:text-gray-400'>
-									no results found.
+									{t("tagDialog.noResultsFound")}
 								</p>
 							}
 							value={selectedValues}
@@ -107,7 +114,7 @@ export function TagDialog({
 					<DialogFooter className='sm:justify-end'>
 						<DialogClose asChild>
 							<Button type='submit' onClick={handleTagChange}>
-								Save changes
+								{t("tagDialog.saveChanges")}
 							</Button>
 						</DialogClose>
 					</DialogFooter>
@@ -123,11 +130,12 @@ export function TagDialog({
 					className='mt-1 flex w-full flex-wrap items-center'
 					onClick={() => {
 						setSelectedValues(
-							currentNote.tags.length === 0
+							currentNote.tags.length === 0 || !currentNote.tags
 								? []
 								: currentNote.tags.map((e) => ({
-										label: e,
-										value: e,
+										id: e.id,
+										label: e.name,
+										value: e.name,
 									}))
 						);
 					}}
@@ -138,7 +146,11 @@ export function TagDialog({
 					{currentNote &&
 						currentNote.tags &&
 						currentNote.tags
-							.map((tag) => ({ label: tag, value: tag }))
+							.map((tag) => ({
+								id: tag.id,
+								label: tag.name,
+								value: tag.name,
+							}))
 							.map((option, index) => {
 								return (
 									<div className='m-1' key={index}>
@@ -147,26 +159,29 @@ export function TagDialog({
 								);
 							})}
 					<div className='ml-2 text-foreground'>
-						Click to add tags...
+						{t("tagDialog.clickToAddTags")}
 					</div>
 				</div>
 			</DrawerTrigger>
 			<DrawerContent className='h-96'>
 				<DrawerHeader className='text-left'>
-					<DrawerTitle>Add or remove tags</DrawerTitle>
+					<DrawerTitle>{t("tagDialog.addOrRemoveTags")}</DrawerTitle>
 					<DrawerDescription></DrawerDescription>
 				</DrawerHeader>
 				<div className='m-2 flex items-center space-x-2'>
 					<MultipleSelector
 						defaultOptions={(tags || []).map((tag) => ({
-							label: tag,
-							value: tag,
+							id: tag.id,
+							label: tag.name,
+							value: tag.name,
 						}))}
-						placeholder='Type something that does not exist in dropdowns...'
+						placeholder={t(
+							"tagDialog.typeSomethingThatDoesNotExistInDropdowns"
+						)}
 						creatable
 						emptyIndicator={
 							<p className='text-center text-lg leading-10 text-gray-600 dark:text-gray-400'>
-								no results found.
+								{t("tagDialog.noResultsFound")}
 							</p>
 						}
 						value={selectedValues}
@@ -176,7 +191,7 @@ export function TagDialog({
 				<DrawerFooter className='pt-2'>
 					<DrawerClose asChild>
 						<Button type='submit' onClick={handleTagChange}>
-							Save changes
+							{t("tagDialog.saveChanges")}
 						</Button>
 					</DrawerClose>
 				</DrawerFooter>
