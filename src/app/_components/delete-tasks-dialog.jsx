@@ -51,7 +51,7 @@ export function DeleteTasksDialog({
         return
       }
 
-      props.onOpenChange?.(false)
+      props.onOpenChange?.()
       toast.success("Tasks deleted")
       onSuccess?.()
     })

@@ -668,7 +668,7 @@ export function DataTableFilterList({
                     >
                       <Icons.trash className="size-3.5" aria-hidden="true" />
                     </Button>
-                    {/* <SortableDragHandle
+                    <SortableDragHandle
                       variant="outline"
                       size="icon"
                       className="size-8 shrink-0 rounded"
@@ -677,7 +677,7 @@ export function DataTableFilterList({
                         className="size-3.5"
                         aria-hidden="true"
                       />
-                    </SortableDragHandle> */}
+                    </SortableDragHandle>
                   </div>
                 </SortableItem>
               )
@@ -688,7 +688,7 @@ export function DataTableFilterList({
               size="sm"
               className="h-[1.85rem] rounded"
               onClick={addFilter}
-              disabled={filters.length}
+              // disabled={filters.length}
             >
               Add filter
             </Button>

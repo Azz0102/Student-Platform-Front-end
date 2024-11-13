@@ -42,26 +42,25 @@ const LABEL_VALUES = ["bug", "feature", "enhancement", "documentation"]
 const STATUS_VALUES = ["todo", "in-progress", "done", "canceled"]
 const PRIORITY_VALUES = ["low", "medium", "high"]
 
+const list  ={
+  name:'phamducdat'
+}
+
 export function UpdateTaskSheet({ task, ...props }) {
   const [isUpdatePending, startUpdateTransition] = useTransition()
 
-  const form = useForm({
+  const form = useForm({  
     resolver: zodResolver(updateTaskSchema),
     defaultValues: {
-      title: task?.title ?? "",
-      label: task?.label,
-      status: task?.status,
-      priority: task?.priority,
+      name: task?.name ?? "",
+      // label: task?.label,
+      // status: task?.status,
+      // priority: task?.priority,
     },
   })
 
   useEffect(() => {
-    form.reset({
-      title: task?.title ?? "",
-      label: task?.label,
-      status: task?.status,
-      priority: task?.priority,
-    })
+    form.reset(task)
   }, [task, form])
 
   function onSubmit(input) {
@@ -100,10 +99,10 @@ export function UpdateTaskSheet({ task, ...props }) {
           >
             <FormField
               control={form.control}
-              name="title"
+              name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Title</FormLabel>
+                  <FormLabel>Name</FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder="Do a kickflip"
@@ -115,7 +114,7 @@ export function UpdateTaskSheet({ task, ...props }) {
                 </FormItem>
               )}
             />
-            <FormField
+            {/* <FormField
               control={form.control}
               name="label"
               render={({ field }) => (
@@ -213,7 +212,7 @@ export function UpdateTaskSheet({ task, ...props }) {
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
             <SheetFooter className="gap-2 pt-2 sm:space-x-0">
               <SheetClose asChild>
                 <Button type="button" variant="outline">

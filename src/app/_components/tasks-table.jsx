@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useMemo, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { useDataTable } from "@/hooks/use-data-table"
 import { DataTable } from "@/components/data-table/data-table"
 import { DataTableAdvancedToolbar } from "@/components/data-table/data-table-advanced-toolbar"
@@ -13,16 +13,42 @@ import { getColumns } from "./tasks-table-columns"
 import { TasksTableFloatingBar } from "./tasks-table-floating-bar"
 import { TasksTableToolbarActions } from "./tasks-table-toolbar-actions"
 import { UpdateTaskSheet } from "./update-task-sheet"
+import { useRouter } from 'next/navigation';
+import { getList } from "../_lib/queries"
 
 // Định nghĩa các giá trị enum dưới dạng hằng số
 const STATUS_VALUES = ["todo", "in-progress", "done", "canceled"]
 const PRIORITY_VALUES = ["low", "medium", "high"]
 
-export function TasksTable({ promises }) {
+export function TasksTable({ search }) {
+
+  const router = useRouter();
+
   const { featureFlags } = useFeatureFlags()
 
-  const [{ data, pageCount }, statusCounts, priorityCounts] =
-    React.use(promises)
+  const [data, setData] = useState(null);
+  const [pageCount, setPageCount] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await getList(search);
+        setData(result.metadata.data);
+        setPageCount(result.metadata.pageCount);
+        setLoading(false);
+        
+      } catch (err) {
+        return err;
+      }
+    };
+
+    fetchData();
+    console.log("ffffff")
+  }, [search]);
+
+  // const [{ data, pageCount }, statusCounts, priorityCounts] =
+  //   React.use(promises)
   // const [results, setResults] = useState(promises)
   // promises.then((resolvedPromises) => {
   //   setResults(resolvedPromises)
@@ -70,8 +96,8 @@ export function TasksTable({ promises }) {
 
   const advancedFilterFields = [
     {
-      id: "title",
-      label: "Title",
+      id: "name",
+      label: "name",
       type: "text",
     },
     // {
@@ -125,6 +151,12 @@ export function TasksTable({ promises }) {
     clearOnDefault: true,
   })
 
+  if (loading) {
+    return (
+      <h1>Loading...</h1>
+    );
+  }
+
   return (
     <>
       <DataTable
@@ -154,7 +186,10 @@ export function TasksTable({ promises }) {
       />
       <DeleteTasksDialog
         open={rowAction?.type === "delete"}
-        onOpenChange={() => setRowAction(null)}
+        onOpenChange={() => {
+              router.refresh();
+              setRowAction(null);
+          }}
         tasks={rowAction?.row.original ? [rowAction?.row.original] : []}
         showTrigger={false}
         onSuccess={() => rowAction?.row.toggleSelected(false)}

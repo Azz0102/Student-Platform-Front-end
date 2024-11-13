@@ -1,38 +1,35 @@
-// "use client";
+"use client";
 
 import * as React from "react"
 
-import { getValidFilters } from "@/lib/data-table"
-import { Skeleton } from "@/components/ui/skeleton"
+// import { getValidFilters } from "@/lib/data-table"
+// import { Skeleton } from "@/components/ui/skeleton"
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton"
-import { DateRangePicker } from "@/components/date-range-picker"
+// import { DateRangePicker } from "@/components/date-range-picker"
 import { Shell } from "@/components/shell"
 
 import { FeatureFlagsProvider } from "@/app/_components/feature-flags-provider"
 import { TasksTable } from "@/app/_components/tasks-table"
 import {
   getList,
-  getTaskPriorityCounts,
-  getTasks,
-  getTaskStatusCounts,
 } from "@/app/_lib/queries"
-import { searchParamsCache } from "@/app/_lib/validations"
+// import { searchParamsCache } from "@/app/_lib/validations"
 
-export default async function Table({props}) {
+export default function Table({search}) {
 
-    const searchParams = await props.searchParams
-    if (typeof searchParams.filters === 'string') {
-      try {
-        searchParams.filters = JSON.parse(searchParams.filters); // Phân tích chuỗi JSON
-      } catch (error) {
-        console.error("Lỗi phân tích JSON:", error);
-        searchParams.filters = []; // Gán mảng rỗng nếu có lỗi
-      }
-    }
-    const search = searchParamsCache.parse(searchParams)
-    const validFilters = getValidFilters(search.filters)
+    // const searchParams = await props.searchParams
+    // if (typeof searchParams.filters === 'string') {
+    //   try {
+    //     searchParams.filters = JSON.parse(searchParams.filters); // Phân tích chuỗi JSON
+    //   } catch (error) {
+    //     console.error("Lỗi phân tích JSON:", error);
+    //     searchParams.filters = []; // Gán mảng rỗng nếu có lỗi
+    //   }
+    // }
+    // const search = searchParamsCache.parse(searchParams)
+    // const validFilters = getValidFilters(search.filters)
 
-    const tasksData = await getList(search)
+    // const tasksData = await getList(search)
     // console.log("search",tasksData.metadata);
 
 //   const promises = Promise.all([
@@ -43,7 +40,7 @@ export default async function Table({props}) {
 //     getTaskStatusCounts(),
 //     getTaskPriorityCounts(),
 //   ])
-    // const promisess= new Promise(async function(myResolve, myReject) {
+    // const promises= new Promise(async function(myResolve, myReject) {
     //   try {
     //     const result = await getList(search);  // Gọi getList và đợi kết quả
     //     myResolve([
@@ -68,20 +65,20 @@ export default async function Table({props}) {
     // const promises= promisess.then((item)=> item)
 
 
-    const promises=[
-        tasksData.metadata,
-        {
-            "todo": 10,
-            "in-progress": 5,
-            "done": 8,
-            "canceled": 2
-        },
-        {
-            "low": 6,
-            "medium": 15,
-            "high": 9
-          }     
-    ]
+    // const promises=[
+    //     tasksData.metadata,
+    //     {
+    //         "todo": 10,
+    //         "in-progress": 5,
+    //         "done": 8,
+    //         "canceled": 2
+    //     },
+    //     {
+    //         "low": 6,
+    //         "medium": 15,
+    //         "high": 9
+    //       }     
+    // ]
 
   return (
     <Shell className="gap-2">
@@ -97,7 +94,10 @@ export default async function Table({props}) {
             />
           }
         >
-          <TasksTable promises={promises} />
+          <TasksTable 
+          //  promises={promises} 
+          search={search}
+          />
         </React.Suspense>
       </FeatureFlagsProvider>
     </Shell>

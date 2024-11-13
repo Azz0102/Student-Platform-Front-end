@@ -1,4 +1,6 @@
-import { cache } from 'react';
+
+
+import { unstable_cache } from '@/lib/unstable-cache';
 
 const toQueryString = (params) => {
     const queryString = [];
@@ -16,13 +18,13 @@ const toQueryString = (params) => {
     return queryString.join('&');
 };
 
-export const getList = cache(async (search) => {
+export const getList = async (search) => {
 
-    console.log('hii', `https://${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/?${toQueryString(search)}`)
-    const response = await fetch(`https://${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/?${toQueryString(search)}`, {
-        cache: 'force-cache'  // hoặc "force-cache" nếu cần cache
+    const response = await fetch(`https://${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/user/?${toQueryString(search)}`, {
+        cache: 'no-store'  // hoặc "force-cache" nếu cần cache
     });
 
     const data = await response.json();
     return data;
-})
+}
+

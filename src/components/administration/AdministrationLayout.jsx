@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState,Suspense } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import {
 	ResizableHandle,
 	ResizablePanel,
@@ -24,6 +24,8 @@ import {
 	Users,
 	UsersRound,
 } from "lucide-react";
+import { useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation'
 
 const lists = [
 	{
@@ -42,16 +44,20 @@ const AdministrationLayout = ({
 	defaultLayout = [320, 480],
 	defaultCollapsed = false,
 	navCollapsedSize,
-	props,
+	// promises,
+	search
 }) => {
-
-	console.log("layoutsss")
 	const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed);
 	const [isMobile, setIsMobile] = useState(false);
 	const { width, height } = useWindowDimensions();
 	const [selected, setSelected] = useState(0);
-
+	
 	const { t } = useTranslation();
+
+	const router = useRouter();
+	const searchParams = useSearchParams()
+	const paramsObject = Object.fromEntries(searchParams.entries());
+	console.log("searchParams",paramsObject)
 
 	useEffect(() => {
 		const checkScreenWidth = () => {
@@ -120,7 +126,7 @@ const AdministrationLayout = ({
 
 			<ResizableHandle withHandle />
 
-			{/* <ResizablePanel defaultSize={defaultLayout[1]} minSize={30}>
+			<ResizablePanel defaultSize={defaultLayout[1]} minSize={30}>
 				<AdministrationContent
 					content={
 						lists.find((list) => {
@@ -128,11 +134,14 @@ const AdministrationLayout = ({
 						}).name
 					}
 				>
-					<Suspense fallback={<div>Loading...</div>}>
-						<Table props={props} />
-					 </Suspense>
+					{/* <Suspense fallback={<div>Loading...</div>}>
+					 </Suspense> */}
+						< Table 
+						// promises={promises}
+						search={search}
+						 />
 				</AdministrationContent>
-			</ResizablePanel> */}
+			</ResizablePanel>
 		</ResizablePanelGroup>
 	);
 };
