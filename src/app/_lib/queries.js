@@ -1,6 +1,12 @@
 
-
-import { unstable_cache } from '@/lib/unstable-cache';
+const objectQuery = [
+    "admin/user",
+    "teacher",
+    "classroom",
+    "news",
+    "session-details",
+    "subject"
+];
 
 const toQueryString = (params) => {
     const queryString = [];
@@ -18,9 +24,9 @@ const toQueryString = (params) => {
     return queryString.join('&');
 };
 
-export const getList = async (search) => {
+export const getList = async (search, selected) => {
 
-    const response = await fetch(`https://${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/user/?${toQueryString(search)}`, {
+    const response = await fetch(`https://${process.env.NEXT_PUBLIC_BASE_URL}/api/${objectQuery[selected]}/?${toQueryString(search)}`, {
         cache: 'no-store'  // hoặc "force-cache" nếu cần cache
     });
 

@@ -15,7 +15,9 @@ import {
 } from "@/app/_lib/queries"
 // import { searchParamsCache } from "@/app/_lib/validations"
 
-export default function Table({search}) {
+export default function Table(
+  {search}
+) {
 
     // const searchParams = await props.searchParams
     // if (typeof searchParams.filters === 'string') {
@@ -30,7 +32,7 @@ export default function Table({search}) {
     // const validFilters = getValidFilters(search.filters)
 
     // const tasksData = await getList(search)
-    // console.log("search",tasksData.metadata);
+    // console.log("TableRender");
 
 //   const promises = Promise.all([
 //     getTasks({
@@ -95,8 +97,7 @@ export default function Table({search}) {
           }
         >
           <TasksTable 
-          //  promises={promises} 
-          search={search}
+            searchAs={search}
           />
         </React.Suspense>
       </FeatureFlagsProvider>

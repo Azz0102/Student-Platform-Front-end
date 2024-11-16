@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation';
 
 export function TasksTableToolbarActions({
   table,
+  setLoadingDelete
 }) {
 
   const router = useRouter();
@@ -24,7 +25,7 @@ export function TasksTableToolbarActions({
             .rows.map((row) => row.original)}
           onSuccess={() => {
             table.toggleAllRowsSelected(false)
-            router.refresh();
+            setLoadingDelete(true)
           }}
         />
       ) : null}

@@ -56,13 +56,6 @@ export function DataTableFilterList({
 }) {
   const id = React.useId()
 
-  console.log("getRowModel",getFiltersStateParser(table.getRowModel().rows[0]?.original)
-  .withDefault([])
-  .withOptions({
-    clearOnDefault: true,
-    shallow,
-  }));
-
   const [filters, setFilters] = useQueryState(
     "filters",
     getFiltersStateParser(table.getRowModel().rows[0]?.original)
@@ -73,7 +66,7 @@ export function DataTableFilterList({
       })
   )
 
-  console.log('filters',filters);
+  // console.log('filters',filters);
 
   const [joinOperator, setJoinOperator] = useQueryState(
     "joinOperator",
@@ -88,7 +81,7 @@ export function DataTableFilterList({
   function addFilter() {
     const filterField = filterFields[0]
 
-    console.log('filterField',filterField);
+    // console.log('filterField',filterField);
 
     if (!filterField) return
 
@@ -518,7 +511,7 @@ export function DataTableFilterList({
             aria-controls={`${id}-filter-dialog`}
           >
             <Icons.filter className="size-3" aria-hidden="true" />
-            Filters
+            Filter
             {filters.length > 0 && (
               <Badge
                 variant="secondary"
@@ -556,7 +549,7 @@ export function DataTableFilterList({
               const inputId = `${filterId}-input`
 
               return (
-                <SortableItem key={filter.rowId} value={filter.rowId} asChild>
+                <SortableItem key={index} value={filter.rowId} asChild>
                   <div className="flex items-center gap-2 p-1">
                     <div className="min-w-[4.5rem] text-center">
                       {index === 0 ? (
@@ -688,7 +681,7 @@ export function DataTableFilterList({
               size="sm"
               className="h-[1.85rem] rounded"
               onClick={addFilter}
-              // disabled={filters.length}
+              disabled={filters.length}
             >
               Add filter
             </Button>

@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useMemo, useState } from "react"
+import React, { useEffect, useMemo, useState,useRef } from "react"
 import { useDataTable } from "@/hooks/use-data-table"
 import { DataTable } from "@/components/data-table/data-table"
 import { DataTableAdvancedToolbar } from "@/components/data-table/data-table-advanced-toolbar"
@@ -13,58 +13,143 @@ import { getColumns } from "./tasks-table-columns"
 import { TasksTableFloatingBar } from "./tasks-table-floating-bar"
 import { TasksTableToolbarActions } from "./tasks-table-toolbar-actions"
 import { UpdateTaskSheet } from "./update-task-sheet"
-import { useRouter } from 'next/navigation';
 import { getList } from "../_lib/queries"
+import { useSelector } from "react-redux"
+import { usePathname, useRouter,useSearchParams } from 'next/navigation';
+import { searchParamsCache } from "../_lib/validations"
 
-// Định nghĩa các giá trị enum dưới dạng hằng số
-const STATUS_VALUES = ["todo", "in-progress", "done", "canceled"]
+const LABEL_VALUES = ["bug", "feature", "enhancement", "documentation"]
+const STATUS_VALUES = ["EXAM-001", "EVENT-002", "ASSIGNMENT-003"]
+const lables = {
+  "EXAM-001":"EXAM",
+  "EVENT-002":"EVENT",
+  "ASSIGNMENT-003":"ASSIGNMENT"
+}
 const PRIORITY_VALUES = ["low", "medium", "high"]
 
-export function TasksTable({ search }) {
+const filterList = [
+  [
+    {
+      id: "name",
+      label: "Name",
+      type: "text",
+    }
+  ],
+  [
+    {
+      id: "name",
+      label: "Name",
+      type: "text",
+    },
+    {
+      id: "email",
+      label: "Email",
+      type: "text",
+    }
+  ],
+  [
+    {
+      id: "name",
+      label: "Name",
+      type: "text",
+    },
+    {
+      id: "nameAmphitheater",
+      label: "Amphitheater",
+      type: "text",
+    },
+    {
+      id: "location",
+      label: "Location",
+      type: "text",
+    }
+  ],
+  [
+    {
+      id: "name",
+      label: "Name",
+      type: "text",
+    },
+    {
+      id: "owner",
+      label: "Owner",
+      type: "text",
+    },
+    {
+      id: "type",
+      label: "Type",
+      type: "multi-select",
+      options: STATUS_VALUES.map((status) => ({
+        label: lables[status],
+        value: status,
+      })),
+    },
+    {
+      id: "location",
+      label: "Location",
+      type: "text",
+    }
+  ]
+]
 
+
+export function TasksTable({
+  searchAs
+}) {
+
+  // console.log("TasksTablesss")
   const router = useRouter();
+	const pathname = usePathname();
+  
+  let search=searchAs;
 
   const { featureFlags } = useFeatureFlags()
+  // console.log("bbbbbbb",pathname)
 
   const [data, setData] = useState(null);
   const [pageCount, setPageCount] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loadingDelete, setLoadingDelete] = useState(false);
+  const selected = useSelector((state) => state.adminContent.selectedContent);
+  
+
+  const prevValueRef = useRef(-1);
+  let loadings;
+  
+  if (prevValueRef.current != selected){
+    loadings = true;
+  }else{
+    loadings = false;
+  }
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const result = await getList(search);
-        setData(result.metadata.data);
-        setPageCount(result.metadata.pageCount);
-        setLoading(false);
-        
-      } catch (err) {
-        return err;
-      }
-    };
+    if(true){
+      console.log("aaaaa")
+      const fetchData = async () => {
+        try {
+          const result = await getList(search,selected);
+          setData(result.metadata.data);
+          setPageCount(result.metadata.pageCount);
+          // setLoading(false);
+          setLoadingDelete(false);
+          prevValueRef.current= selected;
+  
+        } catch (err) {
+          return err;
+        }
+      };
+  
+      fetchData();
+      // console.log("ffffff")
+    }
+  }, [search,selected,loadingDelete]);
 
-    fetchData();
-    console.log("ffffff")
-  }, [search]);
+  const [rowAction, setRowAction] = useState(null);
 
-  // const [{ data, pageCount }, statusCounts, priorityCounts] =
-  //   React.use(promises)
-  // const [results, setResults] = useState(promises)
-  // promises.then((resolvedPromises) => {
-  //   setResults(resolvedPromises)
-  // })
 
-  // console.log('results',results)
-
-  // const [{ data, pageCount }, statusCounts, priorityCounts] = results || [
-  //   { data: [], pageCount: 0 },
-  //   {},
-  //   {},
-  // ]
-
-  const [rowAction, setRowAction] = useState(null)
-
-  const columns = useMemo(() => getColumns({ setRowAction }), [setRowAction])
+  const columns = useMemo(() => {
+    return getColumns({ setRowAction,selected })
+  }, [setRowAction,selected])
 
   const filterFields = [
     {
@@ -72,69 +157,12 @@ export function TasksTable({ search }) {
       label: "Title",
       placeholder: "Filter titles...",
     },
-    // {
-    //   id: "status",
-    //   label: "Status",
-    //   options: STATUS_VALUES.map((status) => ({
-    //     label: toSentenceCase(status),
-    //     value: status,
-    //     icon: getStatusIcon(status),
-    //     count: statusCounts[status],
-    //   })),
-    // },
-    // {
-    //   id: "priority",
-    //   label: "Priority",
-    //   options: PRIORITY_VALUES.map((priority) => ({
-    //     label: toSentenceCase(priority),
-    //     value: priority,
-    //     icon: getPriorityIcon(priority),
-    //     count: priorityCounts[priority],
-    //   })),
-    // },
   ]
-
-  const advancedFilterFields = [
-    {
-      id: "name",
-      label: "name",
-      type: "text",
-    },
-    // {
-    //   id: "status",
-    //   label: "StatusAd",
-    //   type: "multi-select",
-    //   options: STATUS_VALUES.map((status) => ({
-    //     label: toSentenceCase(status),
-    //     value: status,
-    //     icon: getStatusIcon(status),
-    //     count: statusCounts[status],
-    //   })),
-    // },
-    // {
-    //   id: "priority",
-    //   label: "PriorityAd",
-    //   type: "multi-select",
-    //   options: PRIORITY_VALUES.map((priority) => ({
-    //     label: toSentenceCase(priority),
-    //     value: priority,
-    //     icon: getPriorityIcon(priority),
-    //     count: priorityCounts[priority],
-    //   })),
-    // },
-    {
-      id: "createdAt",
-      label: "Created at",
-      type: "date",
-    },
-  ]
+  
+  const advancedFilterFields = filterList[selected];
 
   const enableAdvancedTable = featureFlags.includes("advancedTable")
   const enableFloatingBar = featureFlags.includes("floatingBar")
-
-  console.log('enableAdvancedTable',enableAdvancedTable);
-  console.log('enableFloatingBar',enableFloatingBar);
-
 
   const { table } = useDataTable({
     data,
@@ -151,11 +179,14 @@ export function TasksTable({ search }) {
     clearOnDefault: true,
   })
 
-  if (loading) {
+  if (loadings) {
     return (
       <h1>Loading...</h1>
     );
   }
+  // return (
+  //   <h1>Comple...</h1>
+  // );
 
   return (
     <>
@@ -171,11 +202,11 @@ export function TasksTable({ search }) {
             filterFields={advancedFilterFields}
             shallow={false}
           >
-            <TasksTableToolbarActions table={table} />
+            <TasksTableToolbarActions table={table} setLoadingDelete={setLoadingDelete} />
           </DataTableAdvancedToolbar>
         ) : (
           <DataTableToolbar table={table} filterFields={filterFields}>
-            <TasksTableToolbarActions table={table} />
+            <TasksTableToolbarActions table={table} setLoadingDelete={setLoadingDelete} />
           </DataTableToolbar>
         )}
       </DataTable>
@@ -187,7 +218,8 @@ export function TasksTable({ search }) {
       <DeleteTasksDialog
         open={rowAction?.type === "delete"}
         onOpenChange={() => {
-              router.refresh();
+              // router.refresh();
+              setLoadingDelete(true);
               setRowAction(null);
           }}
         tasks={rowAction?.row.original ? [rowAction?.row.original] : []}

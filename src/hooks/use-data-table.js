@@ -27,7 +27,7 @@ export function useDataTable({
   filterFields = [],
   enableAdvancedFilter = false,
   history = "replace",
-  scroll = false,
+  scroll = true,
   shallow = true,
   throttleMs = 50,
   debounceMs = 300,

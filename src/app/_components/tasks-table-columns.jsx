@@ -24,227 +24,556 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
 
-import { updateTask } from "../_lib/actions"
-import { getPriorityIcon, getStatusIcon } from "../_lib/utils"
-
-// Định nghĩa các hằng số cho các giá trị enum
-const LABELS = ["bug", "feature", "task"];
-const STATUSES = ["todo", "in-progress", "done", "canceled"];
-const PRIORITIES = ["low", "medium", "high"];
+const STATUS_VALUES = ["EXAM-001", "EVENT-002", "ASSIGNMENT-003"]
+const lables = {
+  "EXAM-001":"EXAM",
+  "EVENT-002":"EVENT",
+  "ASSIGNMENT-003":"ASSIGNMENT"
+}
 
 export function getColumns({
   setRowAction,
+  selected
 }) {
-  return [
-    {
-      id: "select",
-      header: ({ table }) => (
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-          className="translate-y-0.5"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-          className="translate-y-0.5"
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    },
-    // {
-    //   accessorKey: "code",
-    //   header: ({ column }) => (
-    //     <DataTableColumnHeader column={column} title="Code" />
-    //   ),
-    //   cell: ({ row }) => <div className="w-20">{row.getValue("code")}</div>,
-    //   enableSorting: false,
-    //   enableHiding: false,
-    // },
-    {
-      accessorKey: "name",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Name" />
-      ),
-      cell: ({ row }) => {
-        // const label = LABELS.find(
-        //   (label) => label === row.original.label
-        // )
-
-        return (
-          <div className="flex space-x-2">
-            {/* {label && <Badge variant="outline">{label}</Badge>} */}
-            <span className="max-w-[31.25rem] truncate font-medium">
-              {row.getValue("name")}
-            </span>
-          </div>
-        )
+  const colums = [
+    [
+      {
+        id: "select",
+        header: ({ table }) => (
+          <Checkbox
+            checked={
+              table.getIsAllPageRowsSelected() ||
+              (table.getIsSomePageRowsSelected() && "indeterminate")
+            }
+            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+            aria-label="Select all"
+            className="translate-y-0.5"
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(value) => row.toggleSelected(!!value)}
+            aria-label="Select row"
+            className="translate-y-0.5"
+          />
+        ),
+        enableSorting: false,
+        enableHiding: false,
       },
-      enableSorting: false,
-      enableHiding: false,
-    },
-    // {
-    //   accessorKey: "status",
-    //   header: ({ column }) => (
-    //     <DataTableColumnHeader column={column} title="Status" />
-    //   ),
-    //   cell: ({ row }) => {
-    //     const status = STATUSES.find(
-    //       (status) => status === row.original.status
-    //     )
-
-    //     if (!status) return null
-
-    //     const Icon = getStatusIcon(status)
-
-    //     return (
-    //       <div className="flex w-[6.25rem] items-center">
-    //         <Icon
-    //           className="mr-2 size-4 text-muted-foreground"
-    //           aria-hidden="true"
-    //         />
-    //         <span className="capitalize">{status}</span>
-    //       </div>
-    //     )
-    //   },
-    //   filterFn: (row, id, value) => {
-    //     return Array.isArray(value) && value.includes(row.getValue(id))
-    //   },
-    // },
-    // {
-    //   accessorKey: "priority",
-    //   header: ({ column }) => (
-    //     <DataTableColumnHeader column={column} title="Priority" />
-    //   ),
-    //   cell: ({ row }) => {
-    //     const priority = PRIORITIES.find(
-    //       (priority) => priority === row.original.priority
-    //     )
-
-    //     if (!priority) return null
-
-    //     const Icon = getPriorityIcon(priority)
-
-    //     return (
-    //       <div className="flex items-center">
-    //         <Icon
-    //           className="mr-2 size-4 text-muted-foreground"
-    //           aria-hidden="true"
-    //         />
-    //         <span className="capitalize">{priority}</span>
-    //       </div>
-    //     )
-    //   },
-    //   filterFn: (row, id, value) => {
-    //     return Array.isArray(value) && value.includes(row.getValue(id))
-    //   },
-    // },
-    // {
-    //   accessorKey: "archived",
-    //   header: ({ column }) => (
-    //     <DataTableColumnHeader column={column} title="Archived" />
-    //   ),
-    //   cell: ({ row }) => (
-    //     <Badge variant="outline">{row.original.archived ? "Yes" : "No"}</Badge>
-    //   ),
-    // },
-    {
-      accessorKey: "lastLogin",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="LastLogin" />
-      ),
-      cell: ({ cell }) => formatDate(cell.getValue()),
-    },
-    {
-      accessorKey: "createdAt",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Created At" />
-      ),
-      cell: ({ cell }) => formatDate(cell.getValue()),
-    },
-    {
-      accessorKey: "updatedAt",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Updated At" />
-      ),
-      cell: ({ cell }) => formatDate(cell.getValue()),
-    },
-    {
-      id: "actions",
-      cell: function Cell({ row }) {
-        const [isUpdatePending, startUpdateTransition] = React.useTransition()
-
-        return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                aria-label="Open menu"
-                variant="ghost"
-                className="flex size-8 p-0 data-[state=open]:bg-muted"
-              >
-                <DotsHorizontalIcon className="size-4" aria-hidden="true" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-40">
-              <DropdownMenuItem
-                onSelect={() => setRowAction({ row, type: "update" })}
-              >
-                Edit
-              </DropdownMenuItem>
-              {/* <DropdownMenuSub>
-                <DropdownMenuSubTrigger>Labels</DropdownMenuSubTrigger>
-                <DropdownMenuSubContent>
-                  <DropdownMenuRadioGroup
-                    value={row.original.label}
-                    onValueChange={(value) => {
-                      startUpdateTransition(() => {
-                        toast.promise(
-                          updateTask({
-                            id: row.original.id,
-                            label: value,
-                          }),
-                          {
-                            loading: "Updating...",
-                            success: "Label updated",
-                            error: (err) => getErrorMessage(err),
-                          }
-                        )
-                      })
-                    }}
-                  >
-                    {LABELS.map((label) => (
-                      <DropdownMenuRadioItem
-                        key={label}
-                        value={label}
-                        className="capitalize"
-                        disabled={isUpdatePending}
-                      >
-                        {label}
-                      </DropdownMenuRadioItem>
-                    ))}
-                  </DropdownMenuRadioGroup>
-                </DropdownMenuSubContent>
-              </DropdownMenuSub> */}
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onSelect={() => setRowAction({ row, type: "delete" })}
-              >
-                Delete
-                <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )
+      {
+        accessorKey: "name",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Name" />
+        ),
+        cell: ({ row }) => {
+          // const label = LABELS.find(
+          //   (label) => label === row.original.label
+          // )
+  
+          return (
+            <div className="flex space-x-2">
+              {/* {label && <Badge variant="outline">{label}</Badge>} */}
+              <span className="max-w-[31.25rem] truncate font-medium">
+                {row.getValue("name")}
+              </span>
+            </div>
+          )
+        },
+        enableSorting: false,
+        enableHiding: false,
       },
-      size: 40,
-    },
+      {
+        accessorKey: "lastLogin",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="LastLogin" />
+        ),
+        cell: ({ cell }) => formatDate(cell.getValue()),
+      },
+      {
+        accessorKey: "createdAt",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Created At" />
+        ),
+        cell: ({ cell }) => formatDate(cell.getValue()),
+      },
+      {
+        accessorKey: "updatedAt",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Updated At" />
+        ),
+        cell: ({ cell }) => formatDate(cell.getValue()),
+      },
+      {
+        id: "actions",
+        cell: function Cell({ row }) {
+          const [isUpdatePending, startUpdateTransition] = React.useTransition()
+  
+          return (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  aria-label="Open menu"
+                  variant="ghost"
+                  className="flex size-8 p-0 data-[state=open]:bg-muted"
+                >
+                  <DotsHorizontalIcon className="size-4" aria-hidden="true" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-40">
+                <DropdownMenuItem
+                  onSelect={() => setRowAction({ row, type: "update" })}
+                >
+                  Edit
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onSelect={() => setRowAction({ row, type: "delete" })}
+                >
+                  Delete
+                  <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )
+        },
+        size: 40,
+      },
+    ],
+    [
+      {
+        id: "select",
+        header: ({ table }) => (
+          <Checkbox
+            checked={
+              table.getIsAllPageRowsSelected() ||
+              (table.getIsSomePageRowsSelected() && "indeterminate")
+            }
+            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+            aria-label="Select all"
+            className="translate-y-0.5"
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(value) => row.toggleSelected(!!value)}
+            aria-label="Select row"
+            className="translate-y-0.5"
+          />
+        ),
+        enableSorting: false,
+        enableHiding: false,
+      },
+      {
+        accessorKey: "name",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Name" />
+        ),
+        cell: ({ row }) => {
+          return (
+            <div className="flex space-x-2">
+              <span className="max-w-[31.25rem] truncate font-medium">
+                {row.getValue("name")}
+              </span>
+            </div>
+          )
+        },
+        enableSorting: false,
+        enableHiding: false,
+      },
+      {
+        accessorKey: "email",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Email" />
+        ),
+        cell: ({ row }) => {
+          return (
+            <div className="flex space-x-2">
+              <span className="max-w-[31.25rem] truncate font-medium">
+                {row.getValue("email")}
+              </span>
+            </div>
+          )
+        },
+        enableSorting: false,
+        enableHiding: false,
+      },
+      {
+        accessorKey: "dateOfBirth",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="DateOfBirth" />
+        ),
+        cell: ({ cell }) => formatDate(cell.getValue()),
+      },
+      {
+        accessorKey: "createdAt",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Created At" />
+        ),
+        cell: ({ cell }) => formatDate(cell.getValue()),
+      },
+      {
+        accessorKey: "updatedAt",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Updated At" />
+        ),
+        cell: ({ cell }) => formatDate(cell.getValue()),
+      },
+      {
+        id: "actions",
+        cell: function Cell({ row }) {
+          const [isUpdatePending, startUpdateTransition] = React.useTransition()
+  
+          return (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  aria-label="Open menu"
+                  variant="ghost"
+                  className="flex size-8 p-0 data-[state=open]:bg-muted"
+                >
+                  <DotsHorizontalIcon className="size-4" aria-hidden="true" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-40">
+                <DropdownMenuItem
+                  onSelect={() => setRowAction({ row, type: "update" })}
+                >
+                  Edit
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onSelect={() => setRowAction({ row, type: "delete" })}
+                >
+                  Delete
+                  <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )
+        },
+        size: 40,
+      },
+    ],
+    [
+      {
+        id: "select",
+        header: ({ table }) => (
+          <Checkbox
+            checked={
+              table.getIsAllPageRowsSelected() ||
+              (table.getIsSomePageRowsSelected() && "indeterminate")
+            }
+            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+            aria-label="Select all"
+            className="translate-y-0.5"
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(value) => row.toggleSelected(!!value)}
+            aria-label="Select row"
+            className="translate-y-0.5"
+          />
+        ),
+        enableSorting: false,
+        enableHiding: false,
+      },
+      {
+        accessorKey: "name",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Name" />
+        ),
+        cell: ({ row }) => {
+          return (
+            <div className="flex space-x-2">
+              <span className="max-w-[31.25rem] truncate font-medium">
+                {row.getValue("name")}
+              </span>
+            </div>
+          )
+        },
+        enableSorting: false,
+        enableHiding: false,
+      },
+      {
+        accessorKey: "nameAmphitheater",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Amphitheater" />
+        ),
+        cell: ({ row }) => {
+          return (
+            <div className="flex space-x-2">
+              <span className="max-w-[31.25rem] truncate font-medium">
+                {row.getValue("nameAmphitheater")}
+              </span>
+            </div>
+          )
+        },
+        enableSorting: false,
+        enableHiding: false,
+      },
+      {
+        accessorKey: "location",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Location" />
+        ),
+        cell: ({ row }) => {
+          return (
+            <div className="flex space-x-2">
+              <span className="max-w-[31.25rem] truncate font-medium">
+                {row.getValue("location")}
+              </span>
+            </div>
+          )
+        },
+        enableSorting: false,
+        enableHiding: false,
+      },
+      {
+        accessorKey: "capacity",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Capacity" />
+        ),
+        cell: ({ row }) => {
+          return (
+            <div className="flex space-x-2">
+              <span className="max-w-[31.25rem] truncate font-medium">
+                {row.getValue("capacity")}
+              </span>
+            </div>
+          )
+        },
+      },
+      {
+        accessorKey: "createdAt",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Created At" />
+        ),
+        cell: ({ cell }) => formatDate(cell.getValue()),
+      },
+      {
+        accessorKey: "updatedAt",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Updated At" />
+        ),
+        cell: ({ cell }) => formatDate(cell.getValue()),
+      },
+      {
+        id: "actions",
+        cell: function Cell({ row }) {
+          const [isUpdatePending, startUpdateTransition] = React.useTransition()
+  
+          return (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  aria-label="Open menu"
+                  variant="ghost"
+                  className="flex size-8 p-0 data-[state=open]:bg-muted"
+                >
+                  <DotsHorizontalIcon className="size-4" aria-hidden="true" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-40">
+                <DropdownMenuItem
+                  onSelect={() => setRowAction({ row, type: "update" })}
+                >
+                  Edit
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onSelect={() => setRowAction({ row, type: "delete" })}
+                >
+                  Delete
+                  <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )
+        },
+        size: 40,
+      },
+    ],
+    [
+      {
+        id: "select",
+        header: ({ table }) => (
+          <Checkbox
+            checked={
+              table.getIsAllPageRowsSelected() ||
+              (table.getIsSomePageRowsSelected() && "indeterminate")
+            }
+            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+            aria-label="Select all"
+            className="translate-y-0.5"
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(value) => row.toggleSelected(!!value)}
+            aria-label="Select row"
+            className="translate-y-0.5"
+          />
+        ),
+        enableSorting: false,
+        enableHiding: false,
+      },
+      {
+        accessorKey: "name",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Name" />
+        ),
+        cell: ({ row }) => {
+          return (
+            <div className="flex space-x-2">
+              <span className="max-w-[31.25rem] truncate font-medium">
+                {row.getValue("name")}
+              </span>
+            </div>
+          )
+        },
+        enableSorting: false,
+        enableHiding: false,
+      },
+      {
+        accessorKey: "content",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Content" />
+        ),
+        cell: ({ row }) => {
+          return (
+            <div className="flex space-x-2">
+              <span className="max-w-[31.25rem] truncate font-medium">
+                {row.getValue("content")}
+              </span>
+            </div>
+          )
+        },
+        enableSorting: false,
+        enableHiding: false,
+      },
+      {
+        accessorKey: "owner",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Owner" />
+        ),
+        cell: ({ row }) => {
+          return (
+            <div className="flex space-x-2">
+              <span className="max-w-[31.25rem] truncate font-medium">
+                {row.getValue("owner")}
+              </span>
+            </div>
+          )
+        },
+        enableSorting: false,
+        enableHiding: false,
+      },
+      {
+        accessorKey: "isGeneralSchoolNews",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="IsGeneralSchoolNews" />
+        ),
+        cell: ({ row }) => (
+          <Badge variant="outline">{row.original.isGeneralSchoolNews ? "Yes" : "No"}</Badge>
+        ),
+      },
+      {
+        accessorKey: "type",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Type" />
+        ),
+        cell: ({ row }) => {
+          return (
+            <div className="flex space-x-2">
+              <span className="max-w-[31.25rem] truncate font-medium">
+                {lables[row.getValue("type")]}
+              </span>
+            </div>
+          )
+        },
+        enableSorting: false,
+        enableHiding: false,
+      },
+      {
+        accessorKey: "location",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Location" />
+        ),
+        cell: ({ row }) => {
+          return (
+            <div className="flex space-x-2">
+              <span className="max-w-[31.25rem] truncate font-medium">
+                {row.getValue("location")}
+              </span>
+            </div>
+          )
+        },
+        enableSorting: false,
+        enableHiding: false,
+      },
+      {
+        accessorKey: "time",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Time" />
+        ),
+        cell: ({ cell }) => formatDate(cell.getValue()),
+      },
+      {
+        accessorKey: "createdAt",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Created At" />
+        ),
+        cell: ({ cell }) => formatDate(cell.getValue()),
+      },
+      {
+        accessorKey: "updatedAt",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Updated At" />
+        ),
+        cell: ({ cell }) => formatDate(cell.getValue()),
+      },
+      {
+        id: "actions",
+        cell: function Cell({ row }) {
+          const [isUpdatePending, startUpdateTransition] = React.useTransition()
+  
+          return (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  aria-label="Open menu"
+                  variant="ghost"
+                  className="flex size-8 p-0 data-[state=open]:bg-muted"
+                >
+                  <DotsHorizontalIcon className="size-4" aria-hidden="true" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-40">
+                <DropdownMenuItem
+                  onSelect={() => setRowAction({ row, type: "update" })}
+                >
+                  Edit
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onSelect={() => setRowAction({ row, type: "delete" })}
+                >
+                  Delete
+                  <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )
+        },
+        size: 40,
+      }
+    ]
   ]
+
+  return colums[selected];
 }

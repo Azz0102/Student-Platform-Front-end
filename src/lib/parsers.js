@@ -22,6 +22,7 @@ export const getSortingStateParser = (
   return createParser({
     parse: (value) => {
       try {
+        // console.log('getSorting', typeof value)
         const parsed = JSON.parse(value)
         const result = z.array(sortingItemSchema).safeParse(parsed)
 
@@ -30,7 +31,7 @@ export const getSortingStateParser = (
         if (validKeys && result.data.some((item) => !validKeys.has(item.id))) {
           return null
         }
-
+        // console.log('getSorting', result.data)
         return result.data
       } catch {
         return null
@@ -65,22 +66,15 @@ export const getFiltersStateParser = (originalRow) => {
   const au = createParser({
     parse: (value) => {
       try {
-        let parsed = value; // value có thể là một mảng hoặc đối tượng
-        console.log("parsed", parsed);
-        // Kiểm tra xem parsed có phải là mảng không, nếu không thì chuyển thành mảng
-        if (!Array.isArray(parsed)) {
-          parsed = [parsed]; // Chuyển thành mảng chứa một phần tử
-        }
+        // console.log('parsed', typeof value)
+        const parsed = JSON.parse(value)
         const result = z.array(filterSchema).safeParse(parsed)
-        console.log("result", !result.success);
         if (!result.success) return null
 
         if (validKeys && result.data.some((item) => !validKeys.has(item.id))) {
           return null
         }
-
-        console.log("result", result.data);
-
+        // console.log('parsed', result.data)
         return result.data
       } catch {
         return null
@@ -97,7 +91,5 @@ export const getFiltersStateParser = (originalRow) => {
           filter.operator === b[index]?.operator
       ),
   })
-
-  console.log("createParser", au);
   return au;
 }

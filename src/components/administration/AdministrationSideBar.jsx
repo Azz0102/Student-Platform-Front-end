@@ -10,8 +10,17 @@ import {
 } from "@/components/ui/tooltip";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Users } from "lucide-react";
+import { usePathname, useRouter,useSearchParams } from 'next/navigation';
+import { setSelectedContent } from "@/lib/features/adminContentSlice";
+import { useDispatch } from "react-redux";
 
-const AdministrationSideBar = ({ lists, setSelected, isCollapsed }) => {
+
+const AdministrationSideBar = ({ lists, isCollapsed,setsearched }) => {
+
+	const router = useRouter();
+
+	const dispatch = useDispatch();
+
 	return (
 		<div
 			data-collapsed={isCollapsed}
@@ -36,7 +45,9 @@ const AdministrationSideBar = ({ lists, setSelected, isCollapsed }) => {
 										)}
 										onClick={(e) => {
 											e.preventDefault();
-											setSelected(list.id);
+											dispatch(setSelectedContent(list.id));
+											setsearched('/vn/admin/quantri')
+											router.push(`/vn/admin/quantri/${list.id}`);
 										}}
 									>
 										{/* <Avatar className='flex items-center justify-center'>
@@ -77,7 +88,9 @@ const AdministrationSideBar = ({ lists, setSelected, isCollapsed }) => {
 							)}
 							onClick={(e) => {
 								e.preventDefault();
-								setSelected(list.id);
+								setsearched('/vn/admin/quantri')
+								dispatch(setSelectedContent(list.id));
+								router.push(`/vn/admin/quantri/${list.id}`);
 							}}
 						>
 							<div className='flex max-w-28 flex-row items-center'>

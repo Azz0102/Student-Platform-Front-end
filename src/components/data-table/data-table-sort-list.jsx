@@ -55,6 +55,7 @@ export function DataTableSortList({
     (sort, index, self) => index === self.findIndex((t) => t.id === sort.id)
   )
 
+  // console.log("uniqueSorting",sorting);
   const debouncedSetSorting = useDebouncedCallback(setSorting, debounceMs)
 
   const sortableColumns = table

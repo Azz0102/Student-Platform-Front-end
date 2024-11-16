@@ -9,6 +9,9 @@ export function formatDate(
   date,
   opts = {}
 ) {
+
+  // console.log("dateeee", date)
+
   return new Intl.DateTimeFormat("en-US", {
     month: opts.month ?? "long",
     day: opts.day ?? "numeric",

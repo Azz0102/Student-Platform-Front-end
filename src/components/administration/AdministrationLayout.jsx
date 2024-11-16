@@ -24,19 +24,17 @@ import {
 	Users,
 	UsersRound,
 } from "lucide-react";
-import { useRouter } from 'next/navigation';
-import { useSearchParams } from 'next/navigation'
+
+import { usePathname, useRouter,useSearchParams } from 'next/navigation';
+import { useDispatch, useSelector } from "react-redux";
+import { setSelectedContent } from "@/lib/features/adminContentSlice";
 
 const lists = [
-	{
-		id: 0,
-		name: "SinhVien",
-		icon: <Users />,
-	},
+	{ id: 0,name: "SinhVien",icon: <Users />,},
 	{ id: 1, name: "GiaoVien", icon: <UsersRound /> },
 	{ id: 2, name: "PhongHoc", icon: <Building2 /> },
 	{ id: 3, name: "TinTuc", icon: <Newspaper /> },
-	{ id: 4, name: "BuoiHoc", icon: <CalendarClock /> },
+	{ id: 4, name: "BuoiHoc", icon: <CalendarClock />},
 	{ id: 5, name: "Monhoc", icon: <LibraryBig /> },
 ];
 
@@ -44,21 +42,26 @@ const AdministrationLayout = ({
 	defaultLayout = [320, 480],
 	defaultCollapsed = false,
 	navCollapsedSize,
-	// promises,
-	search
+	search,
+	id
 }) => {
 	const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed);
 	const [isMobile, setIsMobile] = useState(false);
 	const { width, height } = useWindowDimensions();
-	const [selected, setSelected] = useState(0);
 	
 	const { t } = useTranslation();
+	const selected = useSelector((state) => state.adminContent.selectedContent);
+	const dispatch = useDispatch();
 
-	const router = useRouter();
-	const searchParams = useSearchParams()
-	const paramsObject = Object.fromEntries(searchParams.entries());
-	console.log("searchParams",paramsObject)
+	useEffect(()=>{
+		dispatch(setSelectedContent(id));
+	},[id,dispatch])
 
+	const [searched, setsearched] = useState(search);
+
+	useEffect(()=>{
+		setsearched(search);
+	},[search])
 	useEffect(() => {
 		const checkScreenWidth = () => {
 			setIsMobile(window.innerWidth <= 768);
@@ -116,11 +119,11 @@ const AdministrationLayout = ({
 					lists={lists.map((list) => ({
 						id: list.id,
 						name: list.name,
-						variant: selected === list.id ? "secondary" : "ghost",
+						variant: id === list.id ? "secondary" : "ghost",
 						icon: list.icon,
 					}))}
 					isCollapsed={isCollapsed || isMobile}
-					setSelected={setSelected}
+					setsearched={setsearched}
 				/>
 			</ResizablePanel>
 
@@ -130,15 +133,14 @@ const AdministrationLayout = ({
 				<AdministrationContent
 					content={
 						lists.find((list) => {
-							return list.id == selected;
+							return list.id === id;
 						}).name
 					}
 				>
 					{/* <Suspense fallback={<div>Loading...</div>}>
 					 </Suspense> */}
 						< Table 
-						// promises={promises}
-						search={search}
+							search={searched}
 						 />
 				</AdministrationContent>
 			</ResizablePanel>

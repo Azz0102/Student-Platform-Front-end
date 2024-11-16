@@ -47,7 +47,8 @@ export function getStatusIcon(status) {
     todo: QuestionMarkCircledIcon,
   }
 
-  return statusIcons[status] || CircleIcon
+  // return statusIcons[status] || CircleIcon
+  return CircleIcon
 }
 
 /**

@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/tooltip"
 import { Kbd } from "@/components/kbd"
 
-import { deleteTasks, updateTasks } from "../_lib/actions"
+import { deleteTasks } from "../_lib/actions"
 
 
 export function TasksTableFloatingBar({ table }) {
