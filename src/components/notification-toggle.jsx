@@ -35,7 +35,10 @@ export function NotiToggle() {
 		userId = jwtDecode(Cookies.get("refreshToken")).userId;
 	}
 
-	const { data, isLoading, isError } = useGetListNotiQuery(userId);
+	const { data, isLoading, isError } = useGetListNotiQuery(userId, {
+		refetchOnFocus: true,
+		refetchOnMountOrArgChange: true,
+	});
 	const [updateNotiUser, {}] = useUpdateNotiUserMutation();
 	const [notiList, setNotiList] = useState([]);
 	const router = useRouter();

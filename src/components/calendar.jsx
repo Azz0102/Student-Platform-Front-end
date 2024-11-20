@@ -55,7 +55,13 @@ export function MyCalendar({ className }) {
 		isLoading,
 		isError,
 		isSuccess,
-	} = useGetcalenderQuery({ userId: userId });
+	} = useGetcalenderQuery(
+		{ userId: userId },
+		{
+			refetchOnFocus: true,
+			refetchOnMountOrArgChange: true,
+		}
+	);
 
 	const [myEventsList, setMyEventsList] = useState([]);
 

@@ -16,6 +16,7 @@
 	"addALink": "Thêm liên kết (ctrl + l)",
 	"addImage": "Thêm hình ảnh (ctrl + k)",
 	"insertComment": "Chèn bình luận (ctrl + /)",
+	"insertCode": "Chèn code (ctrl + j)",
 	"insertCodeBlock": "Chèn khối mã (ctrl + shift + j)",
 	"addUnorderedList": "Thêm danh sách không có thứ tự (ctrl + shift + u)",
 	"addOrderedList": "Thêm danh sách theo thứ tự (ctrl + shift + o)",

@@ -25,9 +25,17 @@ export const subscriptionApi = createApi({
 				body: { endpoint },
 			}),
 		}),
+		subscribe: builder.mutation({
+			query: ({ userName }) => ({
+				url: "channel/subscribe",
+				method: "POST",
+				body: { channel: "coke_studio", username: userName },
+			}),
+		}),
 	}),
 });
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useSubSubscriptionMutation } = subscriptionApi;
+export const { useSubSubscriptionMutation, useSubscribeMutation } =
+	subscriptionApi;

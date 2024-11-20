@@ -31,6 +31,35 @@ import MarkdownPreview from "@uiw/react-markdown-preview";
 import { useTranslation } from "react-i18next";
 import { allowedTypes } from "@/constants/AllowedTypes";
 import { Button } from "./ui/button";
+import {
+	Bold,
+	CircleHelp,
+	CodeXml,
+	Columns2,
+	Equal,
+	Fullscreen,
+	Heading,
+	Heading1,
+	Heading2,
+	Heading3,
+	Heading4,
+	Heading5,
+	Heading6,
+	Image,
+	Italic,
+	Link,
+	List,
+	ListChecks,
+	ListOrdered,
+	MessageSquareCode,
+	PanelLeft,
+	PanelRight,
+	Paperclip,
+	Quote,
+	Strikethrough,
+	Table,
+	WrapText,
+} from "lucide-react";
 
 const MDEditor = dynamic(
 	() => import("@uiw/react-md-editor").then((mod) => mod.default),
@@ -98,13 +127,19 @@ export function Note() {
 		data: noteList = [],
 		error: noteError,
 		isLoading: isNoteLoading,
-	} = useGetListNoteQuery(userId);
+	} = useGetListNoteQuery(userId, {
+		refetchOnFocus: true,
+		refetchOnMountOrArgChange: true,
+	});
 
 	const {
 		data: tagList = [],
 		error: tagError,
 		isLoading: isTagLoading,
-	} = useGetListTagQuery(userId);
+	} = useGetListTagQuery(userId, {
+		refetchOnFocus: true,
+		refetchOnMountOrArgChange: true,
+	});
 
 	const { t } = useTranslation();
 
@@ -174,15 +209,17 @@ export function Note() {
 		keyCommand: "attach-file",
 		buttonProps: { "aria-label": "Attach File", title: t("attachAFile") },
 		icon: (
-			<svg
-				viewBox='0 0 24 24'
-				fill='currentColor'
-				height='1em'
-				width='1em'
-			>
-				<path fill='none' d='M0 0h24v24H0z' />
-				<path d='M14.828 7.757l-5.656 5.657a1 1 0 101.414 1.414l5.657-5.656A3 3 0 1012 4.929l-5.657 5.657a5 5 0 107.071 7.07L19.071 12l1.414 1.414-5.657 5.657a7 7 0 11-9.9-9.9l5.658-5.656a5 5 0 017.07 7.07L12 16.244A3 3 0 117.757 12l5.657-5.657 1.414 1.414z' />
-			</svg>
+			// <svg
+			// 	viewBox='0 0 24 24'
+			// 	fill='currentColor'
+			// 	height='1em'
+			// 	width='1em'
+			// >
+			// 	<path fill='none' d='M0 0h24v24H0z' />
+			// 	<path d='M14.828 7.757l-5.656 5.657a1 1 0 101.414 1.414l5.657-5.656A3 3 0 1012 4.929l-5.657 5.657a5 5 0 107.071 7.07L19.071 12l1.414 1.414-5.657 5.657a7 7 0 11-9.9-9.9l5.658-5.656a5 5 0 017.07 7.07L12 16.244A3 3 0 117.757 12l5.657-5.657 1.414 1.414z' />
+			// </svg>
+
+			<Paperclip size={14} />
 		),
 		execute: () => {
 			const fileInput = document.createElement("input");
@@ -244,69 +281,94 @@ export function Note() {
 		switch (cmd.name) {
 			case "bold":
 				cmd.buttonProps.title = t("addBoldText");
+				cmd.icon = <Bold size={14} />;
 				break;
 			case "italic":
 				cmd.buttonProps.title = t("addItalicText");
+				cmd.icon = <Italic size={14} />;
 				break;
 			case "strikethrough":
 				cmd.buttonProps.title = t("addStrikethroughText");
+				cmd.icon = <Strikethrough size={14} />;
 				break;
 			case "quote":
 				cmd.buttonProps.title = t("insertAQuote");
+				cmd.icon = <Quote size={14} />;
 				break;
 			case "link":
 				cmd.buttonProps.title = t("addALink");
+				cmd.icon = <Link size={14} />;
 				break;
 			case "image":
 				cmd.buttonProps.title = t("addImage");
+				cmd.icon = <Image size={14} />;
+				break;
+			case "code":
+				cmd.buttonProps.title = t("insertCode");
+				cmd.icon = <CodeXml size={14} />;
 				break;
 			case "comment":
 				cmd.buttonProps.title = t("insertComment");
+				cmd.icon = <MessageSquareCode size={14} />;
 				break;
 			case "codeBlock":
 				cmd.buttonProps.title = t("insertCodeBlock");
+				cmd.icon = <WrapText size={14} />;
 				break;
 			case "unordered-list":
 				cmd.buttonProps.title = t("addUnorderedList");
+				cmd.icon = <List size={14} strokeWidth={4} />;
 				break;
 			case "ordered-list":
 				cmd.buttonProps.title = t("addOrderedList");
+				cmd.icon = <ListOrdered size={14} strokeWidth={2.5} />;
 				break;
 			case "checked-list":
 				cmd.buttonProps.title = t("addCheckedList");
+				cmd.icon = <ListChecks size={14} />;
 				break;
 			case "title":
 				cmd.buttonProps.title = t("insertTitle");
+				cmd.icon = <Heading size={14} />;
 				break;
 			case "title1":
 				cmd.buttonProps.title = t("insertTitle1");
+				// cmd.icon = <Heading1 size={14} />;
 				break;
 			case "title2":
 				cmd.buttonProps.title = t("insertTitle2");
+				// cmd.icon = <Heading2 size={14} />;
 				break;
 			case "title3":
 				cmd.buttonProps.title = t("insertTitle3");
+				// cmd.icon = <Heading3 size={14} />;
 				break;
 			case "title4":
 				cmd.buttonProps.title = t("insertTitle4");
+				// cmd.icon = <Heading4 size={14} />;
 				break;
 			case "title5":
 				cmd.buttonProps.title = t("insertTitle5");
+				// cmd.icon = <Heading5 size={14} />;
 				break;
 			case "title6":
 				cmd.buttonProps.title = t("insertTitle6");
+				// cmd.icon = <Heading6 size={14} />;
 				break;
 			case "help":
 				cmd.buttonProps.title = t("openHelp");
+				cmd.icon = <CircleHelp size={14} />;
 				break;
 			case "hr":
 				cmd.buttonProps.title = t("insertHR");
+				cmd.icon = <Equal size={14} />;
 				break;
 			case "issue":
 				cmd.buttonProps.title = t("addIssue");
 				break;
 			case "table":
 				cmd.buttonProps.title = t("addTable");
+				cmd.icon = <Table size={14} />;
 				break;
 			default:
 				break;
@@ -318,15 +380,19 @@ export function Note() {
 		switch (cmd.name) {
 			case "fullscreen":
 				cmd.buttonProps.title = t("toggleFullscreen");
+				cmd.icon = <Fullscreen size={14} />;
 				break;
 			case "preview":
 				cmd.buttonProps.title = t("previewCode");
+				cmd.icon = <PanelLeft size={14} />;
 				break;
 			case "live":
 				cmd.buttonProps.title = t("liveCode");
+				cmd.icon = <Columns2 size={14} />;
 				break;
 			case "edit":
 				cmd.buttonProps.title = t("editCode");
+				cmd.icon = <PanelRight size={14} />;
 				break;
 			default:
 				break;

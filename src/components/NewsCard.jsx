@@ -44,7 +44,13 @@ export function NewsCard() {
 		isLoading,
 		isError,
 		isSuccess,
-	} = useGetUserRelatedNewsQuery({ userId: userId });
+	} = useGetUserRelatedNewsQuery(
+		{ userId: userId },
+		{
+			refetchOnFocus: true,
+			refetchOnMountOrArgChange: true,
+		}
+	);
 
 	const [newsItems, setNewsItems] = useState(null);
 	const { t } = useTranslation();

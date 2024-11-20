@@ -76,7 +76,13 @@ export default function ClassId() {
 		isLoading,
 		isError,
 		isSuccess,
-	} = useGetclassInfoQuery({ classSessionId });
+	} = useGetclassInfoQuery(
+		{ classSessionId },
+		{
+			refetchOnFocus: true,
+			refetchOnMountOrArgChange: true,
+		}
+	);
 
 	const [classInfo, setclassInfo] = useState({});
 
