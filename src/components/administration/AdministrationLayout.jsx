@@ -23,6 +23,9 @@ import {
 	Newspaper,
 	Users,
 	UsersRound,
+	GraduationCap,
+	Book,
+	UserPlus
 } from "lucide-react";
 
 import { usePathname, useRouter,useSearchParams } from 'next/navigation';
@@ -34,8 +37,11 @@ const lists = [
 	{ id: 1, name: "GiaoVien", icon: <UsersRound /> },
 	{ id: 2, name: "PhongHoc", icon: <Building2 /> },
 	{ id: 3, name: "TinTuc", icon: <Newspaper /> },
-	{ id: 4, name: "BuoiHoc", icon: <CalendarClock />},
-	{ id: 5, name: "Monhoc", icon: <LibraryBig /> },
+	{ id: 4, name: "Monhoc", icon: <LibraryBig /> },
+	{ id: 5, name: "HocPhan", icon: <Book />},
+	{ id: 6, name: "BuoiHoc", icon: <CalendarClock />},
+	{ id: 7, name: "DiemSo", icon: <GraduationCap /> },
+	{ id: 8, name: "GhiDanh", icon: <UserPlus /> },
 ];
 
 const AdministrationLayout = ({

@@ -51,8 +51,8 @@ export const dataTableConfig = {
   selectOperators: [
     { label: "Is", value: "eq" },
     { label: "Is not", value: "ne" },
-    { label: "Is empty", value: "isEmpty" },
-    { label: "Is not empty", value: "isNotEmpty" },
+    // { label: "Is empty", value: "isEmpty" },
+    // { label: "Is not empty", value: "isNotEmpty" },
   ],
   booleanOperators: [
     { label: "Is", value: "eq" },

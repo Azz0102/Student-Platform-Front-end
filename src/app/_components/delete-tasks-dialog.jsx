@@ -29,6 +29,7 @@ import {
 import { Icons } from "@/components/icons"
 
 import { deleteTasks } from "../_lib/actions"
+import { useSelector } from "react-redux"
 
 
 export function DeleteTasksDialog({
@@ -39,12 +40,14 @@ export function DeleteTasksDialog({
 }) {
   const [isDeletePending, startDeleteTransition] = React.useTransition()
   const isDesktop = useMediaQuery("(min-width: 640px)")
+  const selected = useSelector((state) => state.adminContent.selectedContent);
+
 
   function onDelete() {
     startDeleteTransition(async () => {
       const { error } = await deleteTasks({
         ids: tasks.map((task) => task.id),
-      })
+      },selected)
 
       if (error) {
         toast.error(error)

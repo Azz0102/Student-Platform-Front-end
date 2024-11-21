@@ -29,6 +29,7 @@ import {
 import { Kbd } from "@/components/kbd"
 
 import { deleteTasks } from "../_lib/actions"
+import { useSelector } from "react-redux"
 
 
 export function TasksTableFloatingBar({ table }) {
@@ -36,6 +37,8 @@ export function TasksTableFloatingBar({ table }) {
 
   const [isPending, startTransition] = React.useTransition()
   const [action, setAction] = React.useState()
+  const selected = useSelector((state) => state.adminContent.selectedContent);
+
 
   // Clear selection on Escape key press
   React.useEffect(() => {
@@ -257,7 +260,7 @@ export function TasksTableFloatingBar({ table }) {
                         startTransition(async () => {
                           const { error } = await deleteTasks({
                             ids: rows.map((row) => row.original.id),
-                          })
+                          },selected)
 
                           if (error) {
                             toast.error(error)

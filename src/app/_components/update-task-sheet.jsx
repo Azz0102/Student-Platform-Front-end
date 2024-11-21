@@ -1,10 +1,9 @@
 "use client"
 
-import React, { useEffect, useState, useTransition } from "react"
+import { useEffect, useTransition } from "react"
 import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { toast } from "sonner"
 
+import { Icons } from "@/components/icons"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -22,41 +21,488 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet"
-import { Textarea } from "@/components/ui/textarea"
-import { Icons } from "@/components/icons"
 
-// import { updateTask } from "../_lib/actions"
-import { updateTaskSchema } from "../_lib/validations"
+import { Input01, Input40 } from "@/components/Input"
+import Minimal from "@/components/Minimal"
+import { Credenza, CredenzaClose, CredenzaContent, CredenzaDescription, CredenzaFooter, CredenzaHeader, CredenzaTitle } from "@/components/ui/credenza"
+import { useSelector } from "react-redux"
+import { toast } from "sonner"
 
 // Định nghĩa các giá trị hằng số thay thế cho enum
 const LABEL_VALUES = ["bug", "feature", "enhancement", "documentation"]
+const AMPHITHEATERS =["Amphitheater A","Amphitheater B"]
+const EVENT_TYPE = ["EXAM-001", "EVENT-002", "ASSIGNMENT-003"]
 const STATUS_VALUES = ["todo", "in-progress", "done", "canceled"]
 const PRIORITY_VALUES = ["low", "medium", "high"]
 
-const list  ={
-  name:'phamducdat'
+const Form0 = ({form,onSubmit,isUpdatePending,selected})=>{
+  switch (selected) {
+    case 0:
+      return(
+        <Form {...form}>
+          <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="flex flex-col gap-4"
+          >
+              <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                  <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                      <Input01 
+                        placeholder="Do a kickflip"
+                        type="number"
+                        {...field}
+                      />
+                  </FormControl>
+                  <FormMessage />
+                  </FormItem>
+              )}
+              />
+              <CredenzaFooter className="gap-2 pt-2 sm:space-x-0">
+                  <CredenzaClose asChild>
+                    <Button type="button" variant="outline">
+                      Cancel
+                    </Button>
+                  </CredenzaClose>
+                  <Button disabled={isUpdatePending}>
+                    {isUpdatePending && (
+                      <Icons.spinner
+                        className="mr-2 size-4 animate-spin"
+                        aria-hidden="true"
+                      />
+                    )}
+                    Save
+                  </Button>
+            </CredenzaFooter>
+          </form>
+        </Form>
+      );
+    
+    case 1:
+        return(
+          <Form {...form}>
+            <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="flex flex-col gap-4"
+            >
+                <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                        {/* <Textarea
+                        placeholder="Do a kickflip"
+                        className="resize-none"
+                        {...field}
+                        /> */}
+                        <Input01 
+                          placeholder="Do a kickflip"
+                          {...field}
+                        />
+                    </FormControl>
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
+                <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                        {/* <Textarea
+                        placeholder="Do a kickflip"
+                        className="resize-none"
+                        {...field}
+                        /> */}
+                        <Input01 
+                          placeholder="Do a kickflip"
+                          {...field}
+                        />
+                    </FormControl>
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
+                <FormField
+                control={form.control}
+                name="dateOfBirth"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>DateOfBirth</FormLabel>
+                    <FormControl>
+                        <Input40 
+                          placeholder="Do a kickflip"
+                          {...field}
+                        />
+                    </FormControl>
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
+                <CredenzaFooter className="gap-2 pt-2 sm:space-x-0">
+                    <CredenzaClose asChild>
+                      <Button type="button" variant="outline">
+                        Cancel
+                      </Button>
+                    </CredenzaClose>
+                    <Button disabled={isUpdatePending}>
+                      {isUpdatePending && (
+                        <Icons.spinner
+                          className="mr-2 size-4 animate-spin"
+                          aria-hidden="true"
+                        />
+                      )}
+                      Save
+                    </Button>
+              </CredenzaFooter>
+            </form>
+          </Form>
+        );
+    
+    case 2:
+      return(
+        <Form {...form}>
+          <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="flex flex-col gap-4"
+          >
+              <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                  <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                      {/* <Textarea
+                      placeholder="Do a kickflip"
+                      className="resize-none"
+                      {...field}
+                      /> */}
+                      <Input01 
+                        placeholder="Do a kickflip"
+                        {...field}
+                      />
+                  </FormControl>
+                  <FormMessage />
+                  </FormItem>
+              )}
+              />
+              {/* <FormField
+              control={form.control}
+              name="capacity"
+              render={({ field }) => (
+                  <FormItem>
+                  <FormLabel>Capacity</FormLabel>
+                  <FormControl>
+                      <Input01 
+                        placeholder="Do a kickflip"
+                        type={'number'}
+                        {...field}
+                      />
+                  </FormControl>
+                  <FormMessage />
+                  </FormItem>
+              )}
+              /> */}
+              {/* <FormField
+              control={form.control}
+              name="nameAmphitheater"
+              render={({ field }) => (
+                  <FormItem>
+                  <FormLabel>Amphitheater</FormLabel>
+                  <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                  >
+                      <FormControl>
+                      <SelectTrigger className="capitalize">
+                          <SelectValue placeholder="Select a Amphitheater" />
+                      </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                      <SelectGroup>
+                          {AMPHITHEATERS.map((item) => (
+                          <SelectItem
+                              key={item}
+                              value={item}
+                              className="capitalize"
+                          >
+                              {item}
+                          </SelectItem>
+                          ))}
+                      </SelectGroup>
+                      </SelectContent>
+                  </Select>
+                  <FormMessage />
+                  </FormItem>
+              )}
+              /> */}
+              <CredenzaFooter className="gap-2 pt-2 sm:space-x-0">
+                  <CredenzaClose asChild>
+                    <Button type="button" variant="outline">
+                      Cancel
+                    </Button>
+                  </CredenzaClose>
+                  <Button disabled={isUpdatePending}>
+                    {isUpdatePending && (
+                      <Icons.spinner
+                        className="mr-2 size-4 animate-spin"
+                        aria-hidden="true"
+                      />
+                    )}
+                    Save
+                  </Button>
+            </CredenzaFooter>
+          </form>
+        </Form>
+      );
+    
+    case 3:
+      return(
+        <Form {...form}>
+          <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="flex flex-col gap-4"
+          >
+              <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                  <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                      <Input01 
+                        placeholder="Do a kickflip"
+                        {...field}
+                      />
+                  </FormControl>
+                  <FormMessage />
+                  </FormItem>
+              )}
+              />
+              <FormField
+              control={form.control}
+              name="content"
+              render={({ field }) => (
+                  <FormItem>
+                  <FormControl>
+                    <Minimal {...field} />
+                  </FormControl>
+                  <FormMessage />
+                  </FormItem>
+              )}
+              />
+              <FormField
+              control={form.control}
+              name="type"
+              render={({ field }) => (
+                  <FormItem>
+                  <FormLabel>Amphitheater</FormLabel>
+                  <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                  >
+                      <FormControl>
+                      <SelectTrigger className="capitalize">
+                          <SelectValue placeholder="Select a Type" />
+                      </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                      <SelectGroup>
+                          {EVENT_TYPE.map((item) => (
+                          <SelectItem
+                              key={item}
+                              value={item}
+                              className="capitalize"
+                          >
+                              {item}
+                          </SelectItem>
+                          ))}
+                      </SelectGroup>
+                      </SelectContent>
+                  </Select>
+                  <FormMessage />
+                  </FormItem>
+              )}
+              />
+              <FormField
+              control={form.control}
+              name="location"
+              render={({ field }) => (
+                  <FormItem>
+                  <FormLabel>Location</FormLabel>
+                  <FormControl>
+                      <Input01 
+                        placeholder="Do a kickflip"
+                        {...field}
+                      />
+                  </FormControl>
+                  <FormMessage />
+                  </FormItem>
+              )}
+              />
+              <FormField
+                control={form.control}
+                name="time"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Time</FormLabel>
+                    <FormControl>
+                        <Input40 
+                          placeholder="Do a kickflip"
+                          {...field}
+                        />
+                    </FormControl>
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
+              <CredenzaFooter className="gap-2 pt-2 sm:space-x-0">
+                  <CredenzaClose asChild>
+                    <Button type="button" variant="outline">
+                      Cancel
+                    </Button>
+                  </CredenzaClose>
+                  <Button disabled={isUpdatePending}>
+                    {isUpdatePending && (
+                      <Icons.spinner
+                        className="mr-2 size-4 animate-spin"
+                        aria-hidden="true"
+                      />
+                    )}
+                    Save
+                  </Button>
+            </CredenzaFooter>
+          </form>
+        </Form>
+      );
+    
+    case 4:
+    return(
+      <Form {...form}>
+        <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col gap-4"
+        >
+            <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+                <FormItem>
+                <FormLabel>Name</FormLabel>
+                <FormControl>
+                    {/* <Textarea
+                    placeholder="Do a kickflip"
+                    className="resize-none"
+                    {...field}
+                    /> */}
+                    <Input01 
+                      placeholder="Do a kickflip"
+                      {...field}
+                    />
+                </FormControl>
+                <FormMessage />
+                </FormItem>
+            )}
+            />
+            <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+                <FormItem>
+                <FormLabel>Description</FormLabel>
+                <FormControl>
+                    <Input01 
+                      placeholder="Do a kickflip"
+                      {...field}
+                    />
+                </FormControl>
+                <FormMessage />
+                </FormItem>
+            )}
+            />
+            <CredenzaFooter className="gap-2 pt-2 sm:space-x-0">
+                <CredenzaClose asChild>
+                  <Button type="button" variant="outline">
+                    Cancel
+                  </Button>
+                </CredenzaClose>
+                <Button disabled={isUpdatePending}>
+                  {isUpdatePending && (
+                    <Icons.spinner
+                      className="mr-2 size-4 animate-spin"
+                      aria-hidden="true"
+                    />
+                  )}
+                  Save
+                </Button>
+          </CredenzaFooter>
+        </form>
+      </Form>
+    );
+
+    case 7:
+    return(
+      <Form {...form}>
+        <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col gap-4"
+        >
+            <FormField
+            control={form.control}
+            name="value"
+            render={({ field }) => (
+                <FormItem>
+                <FormLabel>Value</FormLabel>
+                <FormControl>
+                    <Input01 
+                      placeholder="Do a kickflip"
+                      type="number"
+                      {...field}
+                    />
+                </FormControl>
+                <FormMessage />
+                </FormItem>
+            )}
+            />
+            <CredenzaFooter className="gap-2 pt-2 sm:space-x-0">
+                <CredenzaClose asChild>
+                  <Button type="button" variant="outline">
+                    Cancel
+                  </Button>
+                </CredenzaClose>
+                <Button disabled={isUpdatePending}>
+                  {isUpdatePending && (
+                    <Icons.spinner
+                      className="mr-2 size-4 animate-spin"
+                      aria-hidden="true"
+                    />
+                  )}
+                  Save
+                </Button>
+          </CredenzaFooter>
+        </form>
+      </Form>
+    );
+
+
+    default:
+      break;
+  }
 }
 
 export function UpdateTaskSheet({ task, ...props }) {
   const [isUpdatePending, startUpdateTransition] = useTransition()
+  const selected = useSelector((state) => state.adminContent.selectedContent);
 
   const form = useForm({  
-    resolver: zodResolver(updateTaskSchema),
-    defaultValues: {
-      name: task?.name ?? "",
-      // label: task?.label,
-      // status: task?.status,
-      // priority: task?.priority,
-    },
   })
 
   useEffect(() => {
@@ -64,18 +510,19 @@ export function UpdateTaskSheet({ task, ...props }) {
   }, [task, form])
 
   function onSubmit(input) {
+    console.log("input",input)
     startUpdateTransition(async () => {
       if (!task) return
 
-      const { error } = await updateTask({
-        id: task.id,
-        ...input,
-      })
+      // const { error } = await updateTask({
+      //   id: task.id,
+      //   ...input,
+      // })
 
-      if (error) {
-        toast.error(error)
-        return
-      }
+      // if (error) {
+      //   toast.error(error)
+      //   return
+      // }
 
       form.reset()
       props.onOpenChange?.(false)
@@ -83,155 +530,24 @@ export function UpdateTaskSheet({ task, ...props }) {
     })
   }
 
+
+
   return (
-    <Sheet {...props}>
-      <SheetContent className="flex flex-col gap-6 sm:max-w-md">
-        <SheetHeader className="text-left">
-          <SheetTitle>Update task</SheetTitle>
-          <SheetDescription>
-            Update the task details and save the changes
-          </SheetDescription>
-        </SheetHeader>
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="flex flex-col gap-4"
-          >
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Do a kickflip"
-                      className="resize-none"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            {/* <FormField
-              control={form.control}
-              name="label"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Label</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="capitalize">
-                        <SelectValue placeholder="Select a label" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectGroup>
-                        {LABEL_VALUES.map((item) => (
-                          <SelectItem
-                            key={item}
-                            value={item}
-                            className="capitalize"
-                          >
-                            {item}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Status</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="capitalize">
-                        <SelectValue placeholder="Select a status" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectGroup>
-                        {STATUS_VALUES.map((item) => (
-                          <SelectItem
-                            key={item}
-                            value={item}
-                            className="capitalize"
-                          >
-                            {item}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="priority"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Priority</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="capitalize">
-                        <SelectValue placeholder="Select a priority" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectGroup>
-                        {PRIORITY_VALUES.map((item) => (
-                          <SelectItem
-                            key={item}
-                            value={item}
-                            className="capitalize"
-                          >
-                            {item}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            /> */}
-            <SheetFooter className="gap-2 pt-2 sm:space-x-0">
-              <SheetClose asChild>
-                <Button type="button" variant="outline">
-                  Cancel
-                </Button>
-              </SheetClose>
-              <Button disabled={isUpdatePending}>
-                {isUpdatePending && (
-                  <Icons.spinner
-                    className="mr-2 size-4 animate-spin"
-                    aria-hidden="true"
-                  />
-                )}
-                Save
-              </Button>
-            </SheetFooter>
-          </form>
-        </Form>
-      </SheetContent>
-    </Sheet>
+    <Credenza {...props}>
+      <CredenzaContent className="flex flex-col gap-6 sm:max-w-md">
+        <CredenzaHeader className="text-left">
+          <CredenzaTitle>Update</CredenzaTitle>
+          <CredenzaDescription>
+            Update details and save the changes.
+          </CredenzaDescription>
+        </CredenzaHeader>
+
+        {/* <TabsDemo form={form} onSubmit={onSubmit} /> */}
+
+        <Form0 form={form} onSubmit={onSubmit} isUpdatePending={isUpdatePending} selected={selected} />
+
+      </CredenzaContent>
+    </Credenza>
   )
 }
+

@@ -1,20 +1,32 @@
 "use client"
 
-import { DownloadIcon } from "@radix-ui/react-icons"
-
+import { DownloadIcon,PlusCircledIcon } from "@radix-ui/react-icons"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 import { exportTableToCSV } from "@/lib/export"
 import { Button } from "@/components/ui/button"
 
 import { DeleteTasksDialog } from "./delete-tasks-dialog"
 import { useRouter } from 'next/navigation';
+import { Input26, Input8 } from "@/components/Input"
+import { useSelector } from "react-redux"
+import { CreactTaskSheet } from "./creact-task-sheet"
 
 export function TasksTableToolbarActions({
   table,
-  setLoadingDelete
+  setLoadingDelete,
+  onOpenChange
 }) {
 
   const router = useRouter();
+  const selected = useSelector((state) => state.adminContent.selectedContent);
 
   return (
     <div className="flex items-center gap-2">
@@ -29,6 +41,35 @@ export function TasksTableToolbarActions({
           }}
         />
       ) : null}
+
+      {(selected == 6 || selected == 7) && <Input26 />}
+      {selected == 8 && <Input8 />}
+      
+      <Button
+        variant="outline"
+        size="sm"
+        className="gap-2"
+        asChild
+      >
+        <div>
+          <PlusCircledIcon className="size-4" aria-hidden="true" />
+          <CreactTaskSheet setLoadingDelete={setLoadingDelete}  onOpenChange={onOpenChange} />
+          {/* <DropdownMenu  >
+            <DropdownMenuTrigger >Creat</DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={(e)=>{
+                e.preventDefault();
+                e.stopPropagation();
+              }}>
+                <CreactTaskSheet />
+              </DropdownMenuItem>
+              <DropdownMenuItem>Excel</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu> */}
+        </div>
+      </Button>
+
       <Button
         variant="outline"
         size="sm"

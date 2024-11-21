@@ -16,6 +16,8 @@ export function formatDate(
     month: opts.month ?? "long",
     day: opts.day ?? "numeric",
     year: opts.year ?? "numeric",
+    hour: opts.hour ?? "2-digit", // Thêm giờ
+    minute: opts.minute ?? "2-digit", // Thêm phút
     ...opts,
   }).format(new Date(date))
 }
