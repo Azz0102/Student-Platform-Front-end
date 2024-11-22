@@ -70,7 +70,7 @@ export function ChatList({
 
 			if (element.file && checkTypeFile(element.message)) {
 				const imgdata = await axios.get(
-					`https://localhost:3001/api/message/file/${element.id}`,
+					`https://${process.env.NEXT_PUBLIC_BASE_URL}/api/message/file/${element.id}`,
 					{
 						headers: {
 							refreshToken: Cookies.get("refreshToken"),
