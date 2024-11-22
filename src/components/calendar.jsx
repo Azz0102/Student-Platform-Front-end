@@ -24,7 +24,6 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 
 const localizer = dayjsLocalizer(dayjs);
-
 // const myEventsList = [
 // 	{
 // 		id: 1,
@@ -84,10 +83,14 @@ export function MyCalendar({ className }) {
 			// Only update state if the messages have changed
 			setMyEventsList(
 				listEvents.metadata.map((item, index) => {
+					let startTime = new Date(item.start);
+					let endTime = new Date(item.end);
+					startTime.setHours(startTime.getHours() + 7);
+					endTime.setHours(endTime.getHours() + 7);
 					return {
 						...item,
-						start: new Date(item.start),
-						end: new Date(item.end),
+						start: startTime,
+						end: endTime,
 					};
 				})
 			);

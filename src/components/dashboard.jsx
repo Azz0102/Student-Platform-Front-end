@@ -13,6 +13,7 @@ import { useEffect } from "react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
 
 export function Dashboard() {
 	const { token, notificationPermissionStatus } = useFcmToken();

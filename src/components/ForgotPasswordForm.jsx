@@ -81,8 +81,8 @@ export default function ForgotPasswordForm() {
 							</Field>
 							<ErrorMessage
 								name='newPassword'
-								component='div'
-								style={{ color: "red" }}
+								component='p'
+								className='text-xs text-destructive'
 							/>
 							{/* <Input
                                             id="email"
@@ -112,8 +112,8 @@ export default function ForgotPasswordForm() {
 							</Field>
 							<ErrorMessage
 								name='confirmPassword'
-								component='div'
-								style={{ color: "red" }}
+								component='p'
+								className='text-xs text-destructive'
 							/>
 							{/* <Input id="password" type="password" required /> */}
 						</div>

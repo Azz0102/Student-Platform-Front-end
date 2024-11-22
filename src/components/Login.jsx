@@ -4,6 +4,7 @@ import Image from "next/image";
 
 import { useWindowDimensions } from "@/hooks/useWindowDimension";
 import vercel from "/public/android-chrome-512x512.png";
+import uet from "/public/vnu-uet.jpg";
 import ModeToggle from "@/components/mode-toggle";
 import LoginForm from "@/components/LoginForm";
 import LanguageToggle from "@/components/LanguageToggle";
@@ -40,11 +41,11 @@ export default function Login() {
 
 			<div className='hidden bg-muted lg:block lg:h-full lg:w-1/2'>
 				<Image
-					src={vercel}
+					src={uet}
 					alt='Image'
 					width='1920'
 					height='1080'
-					className='h-full w-full object-cover dark:brightness-[0.2] dark:grayscale'
+					className='h-full w-full object-cover dark:brightness-[0.4]'
 				/>
 			</div>
 		</div>
