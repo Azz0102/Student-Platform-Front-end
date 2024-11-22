@@ -52,7 +52,13 @@ export default function NewsId({}) {
 		isLoading,
 		isError,
 		isSuccess,
-	} = useGetUserRelatedNewsQuery({ userId: userId });
+	} = useGetUserRelatedNewsQuery(
+		{ userId: userId },
+		{
+			refetchOnFocus: true,
+			refetchOnMountOrArgChange: true,
+		}
+	);
 
 	const pathname = usePathname().split("/");
 	const NewsId = pathname[pathname.length - 1];

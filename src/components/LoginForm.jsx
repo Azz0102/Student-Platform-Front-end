@@ -88,8 +88,8 @@ export default function LoginForm() {
 							</Field>
 							<ErrorMessage
 								name='name'
-								component='div'
-								style={{ color: "red" }}
+								component='p'
+								className='text-xs text-destructive'
 							/>
 							{/* <Input
                                             id="email"
@@ -153,8 +153,8 @@ export default function LoginForm() {
 							</Field>
 							<ErrorMessage
 								name='password'
-								component='div'
-								style={{ color: "red" }}
+								component='p'
+								className='text-xs text-destructive'
 							/>
 							{/* <Input id="password" type="password" required /> */}
 						</div>

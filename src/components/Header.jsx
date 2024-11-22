@@ -20,7 +20,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import favicon from "../app/[locale]/favicon.ico";
+import uet from "../../public/vnu-uet.jpg";
 import ModeToggle from "./mode-toggle";
 import { NotiToggle } from "./notification-toggle";
 import { DynamicBreadcrumb } from "./DynamicBreadcrumb";
@@ -112,7 +112,7 @@ function Header() {
 						className='overflow-hidden rounded-full'
 					>
 						<Image
-							src={favicon}
+							src={uet}
 							width={36}
 							height={36}
 							alt='Avatar'

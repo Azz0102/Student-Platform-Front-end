@@ -48,7 +48,13 @@ export function ChatLayout({
 		isLoading,
 		isError,
 		isSuccess,
-	} = useGetChatListQuery({ userId: userId });
+	} = useGetChatListQuery(
+		{ userId: userId },
+		{
+			refetchOnFocus: true,
+			refetchOnMountOrArgChange: true,
+		}
+	);
 
 	const selectedChat = useSelector((state) => state.chat.selectedChat);
 	// const messages = useSelector((state) => state.chat.messages);

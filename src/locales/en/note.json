@@ -16,6 +16,7 @@
 	"addALink": "Add a link (ctrl + l)",
 	"addImage": "Add image (ctrl + k)",
 	"insertComment": "Insert comment (ctrl + /)",
+	"insertCode": "Insert code (ctrl + j)",
 	"insertCodeBlock": "Insert Code Block (ctrl + shift + j)",
 	"addUnorderedList": "Add unordered list (ctrl + shift + u)",
 	"addOrderedList": "Add ordered list (ctrl + shift + o)",

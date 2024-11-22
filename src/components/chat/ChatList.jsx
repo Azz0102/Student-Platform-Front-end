@@ -61,11 +61,6 @@ export function ChatList({
 	}
 
 	const doSth = async () => {
-		if (messagesContainerRef.current) {
-			messagesContainerRef.current.scrollTop =
-				messagesContainerRef.current.scrollHeight;
-		}
-
 		if (messages.length < 0) {
 			return;
 		}
@@ -136,6 +131,20 @@ export function ChatList({
 			console.log("Cleaning up...");
 		};
 	}, [messages]);
+
+	useEffect(() => {
+		if (messagesContainerRef.current) {
+			console.log(
+				"Scroll Height:",
+				messagesContainerRef.current.scrollHeight
+			);
+			console.log("Scroll Top:", messagesContainerRef.current.scrollTop);
+			messagesContainerRef.current.scrollTop =
+				messagesContainerRef.current.scrollHeight;
+
+			console.log("Scroll Top:", messagesContainerRef.current.scrollTop);
+		}
+	}, [messages, imageArray]);
 
 	// useDeepCompareEffect(() => {}, []);
 
