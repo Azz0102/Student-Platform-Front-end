@@ -85,8 +85,8 @@ export function MyCalendar({ className }) {
 				listEvents.metadata.map((item, index) => {
 					let startTime = new Date(item.start);
 					let endTime = new Date(item.end);
-					startTime.setHours(startTime.getHours() + 7);
-					endTime.setHours(endTime.getHours() + 7);
+					// startTime.setHours(startTime.getHours() + 7);
+					// endTime.setHours(endTime.getHours() + 7);
 					return {
 						...item,
 						start: startTime,
