@@ -77,7 +77,7 @@ export function MyCalendar({ className }) {
 	}, [i18n.language]);
 
 	useDeepCompareEffect(() => {
-		if (listEvents) {
+		if (listEvents && listEvents.metadata.length > 0) {
 			console.log("listEvents2", listEvents);
 
 			// Only update state if the messages have changed

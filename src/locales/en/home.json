@@ -36,7 +36,14 @@
 		"link": "Link",
 		"exam": "Exam",
 		"event": "Event",
-		"assignment": "Assignment"
+		"assignment": "Assignment",
+		"Monday": "Monday",
+		"Tuesday": "Tuesday",
+		"Wednesday": "Wednesday",
+        "Thursday": "Thursday",
+        "Friday": "Friday",
+        "Saturday": "Saturday",
+        "Sunday": "Sunday"
 	},
 	"newsId": {
 		"relatedNews": "Related News",

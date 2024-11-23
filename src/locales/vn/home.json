@@ -25,7 +25,7 @@
 		"scores": "Điểm số",
 		"assessment": "Đánh giá",
 		"score": "Điểm",
-		"weight": "Cân nặng",
+		"weight": "Trọng số",
 		"overallGrade": "Điểm tổng thể",
 		"openClassChat": "Mở trò chuyện trong lớp",
 		"relatedNotes": "Ghi chú liên quan",
@@ -36,7 +36,14 @@
 		"link": "liên kết",
 		"exam": "Bài thi",
 		"event": "Sự kiện",
-		"assignment": "Phân công"
+		"assignment": "Phân công",
+		"Monday": "Thứ hai",
+		"Tuesday": "Thứ ba",
+		"Wednesday": "Thứ Tư",
+		"Thursday": "Thứ năm",
+		"Friday": "Thứ sáu",
+		"Saturday": "Thứ bảy",
+		"Sunday": "Chủ nhật"
 	},
 	"newsId": {
 		"relatedNews": "Tin tức liên quan",

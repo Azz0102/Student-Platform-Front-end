@@ -149,7 +149,7 @@ export function NotiToggle() {
 										onClick={() =>
 											handleNotificationClick(
 												notification.NotiUsers[0].id,
-												notification.noti_senderId
+												notification.noti_sender_id
 											)
 										}
 										className={`flex h-auto w-72 flex-col items-start rounded-lg p-3 text-left ${

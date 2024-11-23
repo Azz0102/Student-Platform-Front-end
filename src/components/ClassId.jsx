@@ -103,14 +103,14 @@ export default function ClassId() {
 					classInfos.metadata.classSessionDetails.SessionDetails.map(
 						(item) => {
 							return {
-								day: item.dayOfWeek,
+								day: t(`classId.${item.dayOfWeek}`),
 								time: formatTime(
 									item.startTime,
 									item.numOfHour
 								),
 								location:
 									item.Classroom.name +
-									", " +
+									" - " +
 									item.Classroom.Amphitheater.name,
 							};
 						}
