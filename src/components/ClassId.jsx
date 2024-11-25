@@ -91,14 +91,16 @@ export default function ClassId() {
 			console.log("classInfo", classInfos);
 			setclassInfo({
 				name: classInfos.metadata.classSessionDetails.name,
-				teacher: {
-					name: classInfos.metadata.classSessionDetails
-						.SessionDetails[0].Teacher.name,
-					email: classInfos.metadata.classSessionDetails
-						.SessionDetails[0].Teacher.email,
-					// office: "Room 305, CS Building",
-					// officeHours: "Tuesdays and Thursdays, 2-4 PM",
-				},
+				// teacher: {
+				// 	name: classInfos.metadata.classSessionDetails
+				// 		.SessionDetails[0].Teacher.name,
+				// 	email: classInfos.metadata.classSessionDetails
+				// 		.SessionDetails[0].Teacher.email,
+				// },
+				teacher:
+					classInfos.metadata.classSessionDetails.SessionDetails.map(
+						(item) => item.Teacher
+					),
 				sessions:
 					classInfos.metadata.classSessionDetails.SessionDetails.map(
 						(item) => {
@@ -178,8 +180,8 @@ export default function ClassId() {
 						</CardTitle>
 					</CardHeader>
 					<CardContent className='space-y-6'>
-						<div className='grid gap-6 md:grid-cols-2'>
-							<div>
+						{/* <div className='grid gap-6 md:grid-cols-2'> */}
+						{/* <div>
 								<h3 className='mb-2 text-lg font-semibold'>
 									{t("classId.teacherInformation")}
 								</h3>
@@ -195,46 +197,60 @@ export default function ClassId() {
 											classInfo.teacher.email}
 									</p>
 								</div>
-							</div>
-							<div>
-								<h3 className='mb-2 text-lg font-semibold'>
-									{t("classId.classSessions")}
-								</h3>
-								<Table>
-									<TableHeader>
-										<TableRow>
-											<TableHead>
-												{t("classId.day")}
-											</TableHead>
-											<TableHead>
-												{t("classId.time")}
-											</TableHead>
-											<TableHead>
-												{t("classId.location")}
-											</TableHead>
-										</TableRow>
-									</TableHeader>
-									<TableBody>
-										{classInfo.sessions &&
-											classInfo.sessions.map(
-												(session, index) => (
-													<TableRow key={index}>
-														<TableCell>
-															{session.day}
-														</TableCell>
-														<TableCell>
-															{session.time}
-														</TableCell>
-														<TableCell>
-															{session.location}
-														</TableCell>
-													</TableRow>
-												)
-											)}
-									</TableBody>
-								</Table>
-							</div>
+							</div> */}
+						<div>
+							<h3 className='mb-2 text-lg font-semibold'>
+								{t("classId.classSessions")}
+							</h3>
+							<Table>
+								<TableHeader>
+									<TableRow>
+										<TableHead>
+											{t("classId.day")}
+										</TableHead>
+										<TableHead>
+											{t("classId.time")}
+										</TableHead>
+										<TableHead>
+											{t("classId.location")}
+										</TableHead>
+										<TableHead>
+											{t("classId.teacherInformation")}
+										</TableHead>
+									</TableRow>
+								</TableHeader>
+								<TableBody>
+									{classInfo.sessions &&
+										classInfo.sessions.map(
+											(session, index) => (
+												<TableRow key={index}>
+													<TableCell>
+														{session.day}
+													</TableCell>
+													<TableCell>
+														{session.time}
+													</TableCell>
+													<TableCell>
+														{session.location}
+													</TableCell>
+													<TableCell>
+														{
+															classInfo.teacher[index]
+																.name
+														}{" "}
+														-{" "}
+														{
+															classInfo.teacher[index]
+																.email
+														}
+													</TableCell>
+												</TableRow>
+											)
+										)}
+								</TableBody>
+							</Table>
 						</div>
+						{/* </div> */}
 
 						<div>
 							<h3 className='mb-2 text-lg font-semibold'>
