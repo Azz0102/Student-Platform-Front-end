@@ -54,19 +54,6 @@ export function TasksTableToolbarActions({
         <div>
           <PlusCircledIcon className="size-4" aria-hidden="true" />
           <CreactTaskSheet setLoadingDelete={setLoadingDelete}  onOpenChange={onOpenChange} />
-          {/* <DropdownMenu  >
-            <DropdownMenuTrigger >Creat</DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={(e)=>{
-                e.preventDefault();
-                e.stopPropagation();
-              }}>
-                <CreactTaskSheet />
-              </DropdownMenuItem>
-              <DropdownMenuItem>Excel</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu> */}
         </div>
       </Button>
 

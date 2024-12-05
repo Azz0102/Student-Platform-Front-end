@@ -1,6 +1,5 @@
 "use client";
 
-import React, { Suspense, useEffect, useState } from "react";
 import {
 	ResizableHandle,
 	ResizablePanel,
@@ -8,29 +7,27 @@ import {
 } from "@/components/ui/resizable";
 import { useWindowDimensions } from "@/hooks/useWindowDimension";
 import { cn } from "@/lib/utils";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Table from '../Table';
 // import dynamic from "next/dynamic";
 // const Table = dynamic(() => import("../Table"), { ssr: false });
-import { Sidebar } from "../ChatSideBar";
-import AdministrationSideBar from "./AdministrationSideBar";
-import AdministrationContent from "./AdministrationContent";
 import {
-	Building,
+	Book,
 	Building2,
 	CalendarClock,
+	GraduationCap,
 	LibraryBig,
 	Newspaper,
+	UserPlus,
 	Users,
-	UsersRound,
-	GraduationCap,
-	Book,
-	UserPlus
+	UsersRound
 } from "lucide-react";
+import AdministrationContent from "./AdministrationContent";
+import AdministrationSideBar from "./AdministrationSideBar";
 
-import { usePathname, useRouter,useSearchParams } from 'next/navigation';
-import { useDispatch, useSelector } from "react-redux";
 import { setSelectedContent } from "@/lib/features/adminContentSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const lists = [
 	{ id: 0,name: "SinhVien",icon: <Users />,},

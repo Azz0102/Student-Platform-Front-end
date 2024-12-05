@@ -186,11 +186,6 @@ const Form0 = ({form,onSubmit,isUpdatePending,selected,selectedClassSession})=>{
                   <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                      {/* <Textarea
-                      placeholder="Do a kickflip"
-                      className="resize-none"
-                      {...field}
-                      /> */}
                       <Input01 
                         placeholder="Do a kickflip"
                         {...field}
@@ -992,7 +987,7 @@ const Form0 = ({form,onSubmit,isUpdatePending,selected,selectedClassSession})=>{
           </form>
         </Form>
       );
-
+    
     default:
       break;
   }
@@ -1003,13 +998,8 @@ export function CreactTaskSheet({setLoadingDelete, ...props}) {
   const [isOpen, setIsOpen] = useState(false);
   const selected = useSelector((state) => state.adminContent.selectedContent);
   const selectedClassSession = useSelector((state) => state.adminContent.selectedClassSession);
-  console.log("selectedClassSession",selectedClassSession)
   const form = useForm({  
   })
-
-//   useEffect(() => {
-//     form.reset(task)
-//   }, [task, form])
 
   function onSubmit(input) {
     console.log("input",input)
@@ -1047,12 +1037,15 @@ export function CreactTaskSheet({setLoadingDelete, ...props}) {
               <Form0 form={form} onSubmit={onSubmit} isUpdatePending={isUpdatePending} selected={selected} selectedClassSession={selectedClassSession} />
             </ScrollArea>
 
-            <Button
+            {selected<9 && 
+              <Button
               variant="outline"
               size="sm"
               className="gap-2"> 
                 Excel 
             </Button>
+            }
+
         </CredenzaContent>
     </Credenza>
   )
