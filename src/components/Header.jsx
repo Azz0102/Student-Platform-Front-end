@@ -20,7 +20,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import uet from "../../public/vnu-uet.jpg";
+// import favicon from "../app/[locale]/favicon.ico";
 import ModeToggle from "./mode-toggle";
 import { NotiToggle } from "./notification-toggle";
 import { DynamicBreadcrumb } from "./DynamicBreadcrumb";
@@ -34,6 +34,7 @@ import io from "socket.io-client";
 import { useLogoutMutation } from "@/lib/services/auth";
 import { useTranslation, withTranslation } from "react-i18next";
 import { jwtDecode } from "jwt-decode";
+import uet from "/public/favicon-96x96.png";
 // Kết nối tới server socket với HTTPS và port 5000
 export const socket = io(`wss://${process.env.NEXT_PUBLIC_BASE_URL}`, {
 	transports: ["websocket"],
