@@ -40,49 +40,91 @@ export function middleware(request) {
 	if (refreshToken) {
 		const roleId = jwtDecode(refreshToken).roleId;
 
-		if (pathname === "/login") {
-			return NextResponse.redirect(
-				new URL(`/${locale}/user/dashboard`, request.url)
-			);
+		if (roleId == 2) {
+			if (pathname === "/login") {
+				return NextResponse.redirect(
+					new URL(`/${locale}/user/dashboard`, request.url)
+				);
+			}
+
+			if (pathname === `${locale}/login}`) {
+				return NextResponse.redirect(
+					new URL(`/${locale}/user/dashboard`, request.url)
+				);
+			}
+
+			if (
+				pathname === "/user/dashboard/news" ||
+				pathname === "/user/dashboard/class" ||
+				pathname === `/${locale}/user/dashboard/news` ||
+				pathname === `/${locale}/user/dashboard/class`
+			) {
+				// Just return and let the user stay on these pages
+				return;
+			}
+
+			// Handle the case where the user goes to "/"
+			if (pathname === "/" || pathname === "/user") {
+				const defaultLocale =
+					localeFromCookie || i18nConfig.defaultLocale || "en"; // Use locale from cookie or fallback to default locale
+
+				return NextResponse.redirect(
+					new URL(`/${defaultLocale}/user/dashboard`, request.url)
+				);
+			}
+
+			// Handle the case where the user goes to "/[locale]" or "/[locale]/user"
+			if (
+				(pathname === `/${locale}/user` || pathname === `/${locale}`) &&
+				i18nConfig.locales.includes(locale)
+			) {
+				return NextResponse.redirect(
+					new URL(`/${locale}/user/dashboard`, request.url)
+				);
+			}
+		}
+		if (roleId == 1) {
+			if (pathname === "/login") {
+				return NextResponse.redirect(
+					new URL(`/${locale}/admin/dashboard`, request.url)
+				);
+			}
+			if (pathname === `${locale}/login}`) {
+				return NextResponse.redirect(
+					new URL(`/${locale}/admin/dashboard`, request.url)
+				);
+			}
+
+			if (
+				pathname === "/admin/quantri" ||
+				pathname === `/${locale}/user/quantri`
+			) {
+				return NextResponse.redirect(
+					new URL(`/${locale}/admin/quantri/0`, request.url)
+				);
+			}
+
+			// Handle the case where the user goes to "/"
+			if (pathname === "/" || pathname === "/admin") {
+				const defaultLocale =
+					localeFromCookie || i18nConfig.defaultLocale || "en"; // Use locale from cookie or fallback to default locale
+
+				return NextResponse.redirect(
+					new URL(`/${defaultLocale}/admin/dashboard`, request.url)
+				);
+			}
+
+			// Handle the case where the user goes to "/[locale]" or "/[locale]/user"
+			if (
+				(pathname === `/${locale}/admin` || pathname === `/${locale}`) &&
+				i18nConfig.locales.includes(locale)
+			) {
+				return NextResponse.redirect(
+					new URL(`/${locale}/admin/dashboard`, request.url)
+				);
+			}
 		}
 
-		if (pathname === `${locale}/login}`) {
-			return NextResponse.redirect(
-				new URL(`/${locale}/user/dashboard`, request.url)
-			);
-		}
-
-		if (
-			pathname === "/user/dashboard/news" ||
-			pathname === "/user/dashboard/class" ||
-			pathname === `/${locale}/user/dashboard/news` ||
-			pathname === `/${locale}/user/dashboard/class`
-		) {
-			// Just return and let the user stay on these pages
-			return;
-		}
-
-		// Handle the case where the user goes to "/"
-		if (pathname === "/" || pathname === "/user") {
-			const defaultLocale =
-				localeFromCookie || i18nConfig.defaultLocale || "en"; // Use locale from cookie or fallback to default locale
-
-			if (roleId === 1) return;
-			return NextResponse.redirect(
-				new URL(`/${defaultLocale}/user/dashboard`, request.url)
-			);
-		}
-
-		// Handle the case where the user goes to "/[locale]" or "/[locale]/user"
-		if (
-			(pathname === `/${locale}/user` || pathname === `/${locale}`) &&
-			i18nConfig.locales.includes(locale)
-		) {
-			if (roleId === 1) return;
-			return NextResponse.redirect(
-				new URL(`/${locale}/user/dashboard`, request.url)
-			);
-		}
 	}
 
 	// Default i18n routing

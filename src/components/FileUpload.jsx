@@ -1,295 +1,205 @@
 "use client";
 
-import axios, { AxiosProgressEvent, CancelTokenSource } from "axios";
-import {
-	AudioWaveform,
-	File,
-	FileImage,
-	FolderArchive,
-	UploadCloud,
-	Video,
-	X,
-} from "lucide-react";
 import { useCallback, useState } from "react";
+import axios from "axios";
+import Papa from "papaparse";
 import { useDropzone } from "react-dropzone";
 import { Input } from "./ui/input";
 import { Progress } from "./ui/progress";
 import { ScrollArea } from "./ui/scroll-area";
+import { X, UploadCloud ,File} from "lucide-react";
 
-const ImageColor = {
-	bgColor: "bg-purple-600",
-	fillColor: "fill-purple-600",
-};
+const FILE_TYPES = [
+	"sessionDetails",
+	"classrooms",
+	"constantSessionsFixedTimeLocation",
+	"constantSessionsFixedLocation",
+	"constantSessionsFixedTime",
+	"noConflictingClassSessions",
+];
 
-const PdfColor = {
-	bgColor: "bg-blue-400",
-	fillColor: "fill-blue-400",
-};
-
-const AudioColor = {
-	bgColor: "bg-yellow-400",
-	fillColor: "fill-yellow-400",
-};
-
-const VideoColor = {
-	bgColor: "bg-green-400",
-	fillColor: "fill-green-400",
-};
-
-const OtherColor = {
-	bgColor: "bg-gray-400",
-	fillColor: "fill-gray-400",
-};
-
-const FileTypes = {
-	Image: "image",
-	Pdf: "pdf",
-	Audio: "audio",
-	Video: "video",
-	Other: "other",
-};
-
-export default function ImageUpload() {
+export const ImageUpload = ({setData}) => {
 	const [uploadedFiles, setUploadedFiles] = useState([]);
 	const [filesToUpload, setFilesToUpload] = useState([]);
+	// const [data, setData] = useState({});
 
-	const getFileIconAndColor = (file) => {
-		if (file.type.includes(FileTypes.Image)) {
-			return {
-				icon: <FileImage size={40} className={ImageColor.fillColor} />,
-				color: ImageColor.bgColor,
-			};
-		}
+	const onDrop = useCallback((acceptedFiles) => {
+		setFilesToUpload((prev) => [
+			...prev,
+			...acceptedFiles.map((file) => ({
+				file,
+				progress: 6,
+			})),
+		]);
 
-		if (file.type.includes(FileTypes.Pdf)) {
-			return {
-				icon: <File size={40} className={PdfColor.fillColor} />,
-				color: PdfColor.bgColor,
-			};
-		}
-
-		if (file.type.includes(FileTypes.Audio)) {
-			return {
-				icon: (
-					<AudioWaveform size={40} className={AudioColor.fillColor} />
-				),
-				color: AudioColor.bgColor,
-			};
-		}
-
-		if (file.type.includes(FileTypes.Video)) {
-			return {
-				icon: <Video size={40} className={VideoColor.fillColor} />,
-				color: VideoColor.bgColor,
-			};
-		}
-
-		return {
-			icon: <FolderArchive size={40} className={OtherColor.fillColor} />,
-			color: OtherColor.bgColor,
-		};
-	};
-
-	// feel free to mode all these functions to separate utils
-	// here is just for simplicity
-	const onUploadProgress = (progressEvent, file, cancelSource) => {
-		const progress = Math.round(
-			(progressEvent.loaded / (progressEvent.total ?? 0)) * 100
-		);
-
-		if (progress === 100) {
-			setUploadedFiles((prevUploadedFiles) => {
-				return [...prevUploadedFiles, file];
-			});
-
-			setFilesToUpload((prevUploadProgress) => {
-				return prevUploadProgress.filter((item) => item.File !== file);
-			});
-
-			return;
-		}
-
-		setFilesToUpload((prevUploadProgress) => {
-			return prevUploadProgress.map((item) => {
-				if (item.File.name === file.name) {
-					return {
-						...item,
-						progress,
-						source: cancelSource,
-					};
-				} else {
-					return item;
-				}
-			});
-		});
-	};
-
-	const uploadImageToCloudinary = async (
-		formData,
-		onUploadProgress,
-		cancelSource
-	) => {
-		return axios.post(
-			`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUD_NAME}/image/upload`,
-			formData,
-			{
-				onUploadProgress,
-				cancelToken: cancelSource.token,
+		acceptedFiles.forEach((file) => {
+			const fileType = getFileType(file.name);
+			if (fileType === "noConflictingClassSessions" && file.name.endsWith(".txt")) {
+				readTextFile(file);
+			} else if (file.name.endsWith(".csv")) {
+				parseCSVFile(file, fileType);
 			}
-		);
-	};
-
-	const removeFile = (file) => {
-		setFilesToUpload((prevUploadProgress) => {
-			return prevUploadProgress.filter((item) => item.File !== file);
 		});
-
-		setUploadedFiles((prevUploadedFiles) => {
-			return prevUploadedFiles.filter((item) => item !== file);
-		});
-	};
-
-	const onDrop = useCallback(async (acceptedFiles) => {
-		setFilesToUpload((prevUploadProgress) => {
-			return [
-				...prevUploadProgress,
-				...acceptedFiles.map((file) => {
-					return {
-						progress: 0,
-						File: file,
-						source: null,
-					};
-				}),
-			];
-		});
-
-		// cloudinary upload
-
-		// const fileUploadBatch = acceptedFiles.map((file) => {
-		//   const formData = new FormData();
-		//   formData.append("file", file);
-		//   formData.append(
-		//     "upload_preset",
-		//     process.env.NEXT_PUBLIC_UPLOAD_PRESET as string
-		//   );
-
-		//   const cancelSource = axios.CancelToken.source();
-		//   return uploadImageToCloudinary(
-		//     formData,
-		//     (progressEvent) => onUploadProgress(progressEvent, file, cancelSource),
-		//     cancelSource
-		//   );
-		// });
-
-		// try {
-		//   await Promise.all(fileUploadBatch);
-		//   alert("All files uploaded successfully");
-		// } catch (error) {
-		//   console.error("Error uploading files: ", error);
-		// }
 	}, []);
 
 	const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
+	const getFileType = (fileName) => {
+		return FILE_TYPES.find((type) => fileName.includes(type)) || "unknown";
+	};
+
+	const readTextFile = (file) => {
+		const reader = new FileReader();
+		reader.onload = () => {
+			try {
+				const parsedData = JSON.parse(reader.result);
+				setData((prev) => ({ ...prev, noConflictingClassSessions: parsedData }));
+			} catch (error) {
+				console.error("Error parsing JSON from TXT file:", error);
+			}
+		};
+		reader.readAsText(file);
+	};
+
+	const parseCSVFile = (file, fileType) => {
+		Papa.parse(file, {
+			complete: (result) => {
+				setData((prev) => ({
+					...prev,
+					[fileType]: processCSVData(result.data, fileType),
+				}));
+				// setUploadedFiles((prev) => [...prev, file]);
+				// setFilesToUpload((prev) => prev.filter((item) => item.file !== file));
+			},
+			header: true,
+			skipEmptyLines: true,
+		});
+	};
+
+	const processCSVData = (data, fileType) => {
+		switch (fileType) {
+			case "sessionDetails":
+				return data.map((item) => ({
+					detail: {
+						classSessionName: item.classSessionName,
+						numOfHour: item.numOfHour,
+						sessionType: item.sessionType,
+						capacity: item.capacity,
+					},
+					teacher: { name: item.teacherName },
+				}));
+			case "classrooms":
+				return data.map((item) => ({
+					name: item.name,
+					capacity: item.capacity,
+					type: item.type,
+				}));
+			case "constantSessionsFixedTimeLocation":
+				return data.map((item) => ({
+					detail: {
+						classSessionName: item.classSessionName,
+						numOfHour: item.numOfHour,
+						sessionType: item.sessionType,
+						capacity: item.capacity,
+						startTime: item.startTime,
+						dayOfWeek: item.dayOfWeek,
+					},
+					classroom: {
+						name: item.classroomName,
+						capacity: item.classroomCapacity,
+						type: item.classroomType,
+					},
+					teacher: { name: item.teacherName },
+				}));
+			case "constantSessionsFixedLocation":
+				return data.map((item) => ({
+					detail: {
+						classSessionName: item.classSessionName,
+						numOfHour: item.numOfHour,
+						sessionType: item.sessionType,
+						capacity: item.capacity,
+					},
+					classroom: {
+						name: item.classroomName,
+						capacity: item.classroomCapacity,
+						type: item.classroomType,
+					},
+					teacher: { name: item.teacherName },
+				}));
+			case "constantSessionsFixedTime":
+				return data.map((item) => ({
+					detail: {
+						classSessionName: item.classSessionName,
+						numOfHour: item.numOfHour,
+						sessionType: item.sessionType,
+						capacity: item.capacity,
+						startTime: item.startTime,
+						dayOfWeek: item.dayOfWeek,
+					},
+					teacher: { name: item.teacherName },
+				}));
+			default:
+				return data;
+		}
+	};
+
+	const removeFile = (file) => {
+		setFilesToUpload((prev) => prev.filter((item) => item.file !== file));
+		setUploadedFiles((prev) => prev.filter((item) => item !== file));
+	};
+
 	return (
 		<div>
-			<div>
-				<label
-					{...getRootProps()}
-					className='relative flex w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 !bg-background bg-gray-50 py-6 hover:bg-gray-100'
-				>
-					<div className='text-center'>
-						<div className='mx-auto max-w-min rounded-md border p-2'>
-							<UploadCloud size={20} />
-						</div>
-
-						<p className='mt-2 text-sm text-foreground'>
-							<span className='font-semibold'>Drag files</span>
-						</p>
-						<p className='text-xs text-foreground'>
-							Click to upload files &#40;files should be under 10
-							MB &#41;
-						</p>
+			<div
+				{...getRootProps()}
+				className="relative flex w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 !bg-background bg-gray-50 py-6 hover:bg-gray-100"
+			>
+				<div className="text-center">
+					<div className="mx-auto max-w-min rounded-md border p-2">
+						<UploadCloud size={20} />
 					</div>
-				</label>
-
-				<Input
-					{...getInputProps()}
-					id='dropzone-file'
-					accept='image/png, image/jpeg'
-					type='file'
-					className='hidden'
-				/>
+					<p className="mt-2 text-sm text-foreground">
+						<span className="font-semibold">Drag files</span>
+					</p>
+					<p className="text-xs text-foreground">
+						Click to upload files &#40;files should be under 10 MB &#41;
+					</p>
+				</div>
+				<Input {...getInputProps()} accept=".csv,.txt" id="dropzone-file" type="file" className="hidden" />
 			</div>
 
-			{filesToUpload.length > 0 && (
-				<div>
-					<ScrollArea className='h-40'>
-						<p className='my-2 mt-6 text-sm font-medium text-muted-foreground'>
-							Files to upload
-						</p>
-						<div className='space-y-2 pr-3'>
-							{filesToUpload.map((fileUploadProgress) => {
-								return (
-									<div
-										key={
-											fileUploadProgress.File.lastModified
-										}
-										className='group flex justify-between gap-2 overflow-hidden rounded-lg border border-slate-100 pr-2 hover:pr-0'
-									>
-										<div className='flex flex-1 items-center p-2'>
-											<div className='text-white'>
-												{
-													getFileIconAndColor(
-														fileUploadProgress.File
-													).icon
-												}
-											</div>
 
-											<div className='ml-2 w-full space-y-1'>
-												<div className='flex justify-between text-sm'>
-													<p className='text-muted-foreground'>
-														{fileUploadProgress.File.name.slice(
-															0,
-															25
-														)}
-													</p>
-													<span className='text-xs'>
-														{
-															fileUploadProgress.progress
-														}
-														%
-													</span>
-												</div>
-												<Progress
-													progress={
-														fileUploadProgress.progress
-													}
-													className={
-														getFileIconAndColor(
-															fileUploadProgress.File
-														).color
-													}
-												/>
+
+			{filesToUpload.length > 0 && (
+				<div className="mt-2" >
+					<ScrollArea className="h-40">
+						{/* <p className="my-2 mt-6 text-sm font-medium text-muted-foreground">
+							Files to upload
+						</p> */}
+						<div className="space-y-2 pr-3">
+							{filesToUpload.map(({ file, progress }) => (
+								<div
+									key={file.name}
+									className="group flex justify-between gap-2 overflow-hidden rounded-lg border border-slate-100 pr-2 hover:pr-0"
+								>
+									<div className="flex flex-1 items-center p-2">
+									<div className='text-white'>
+									<File size={40} className=" fill-blue-400" />
+
 											</div>
+										<div className="text-muted-foreground">
+											{file.name.slice(0, 35)}
 										</div>
-										<button
-											onClick={() => {
-												if (fileUploadProgress.source)
-													fileUploadProgress.source.cancel(
-														"Upload cancelled"
-													);
-												removeFile(
-													fileUploadProgress.File
-												);
-											}}
-											className='hidden cursor-pointer items-center justify-center bg-red-500 px-2 text-white transition-all group-hover:flex'
-										>
-											<X size={20} />
-										</button>
+										{/* <Progress progress={progress} className="ml-2 flex-grow" /> */}
 									</div>
-								);
-							})}
+									<button
+										onClick={() => removeFile(file)}
+										className="hidden items-center justify-center bg-red-500 px-2 text-white transition-all group-hover:flex"
+									>
+										<X size={16} />
+									</button>
+								</div>
+							))}
 						</div>
 					</ScrollArea>
 				</div>
@@ -297,40 +207,27 @@ export default function ImageUpload() {
 
 			{uploadedFiles.length > 0 && (
 				<div>
-					<p className='my-2 mt-6 text-sm font-medium text-muted-foreground'>
-						Uploaded Files
-					</p>
-					<div className='space-y-2 pr-3'>
-						{uploadedFiles.map((file) => {
-							return (
-								<div
-									key={file.lastModified}
-									className='group flex justify-between gap-2 overflow-hidden rounded-lg border border-slate-100 pr-2 transition-all hover:border-slate-300 hover:pr-0'
-								>
-									<div className='flex flex-1 items-center p-2'>
-										<div className='text-white'>
-											{getFileIconAndColor(file).icon}
-										</div>
-										<div className='ml-2 w-full space-y-1'>
-											<div className='flex justify-between text-sm'>
-												<p className='text-muted-foreground'>
-													{file.name.slice(0, 25)}
-												</p>
-											</div>
-										</div>
-									</div>
-									<button
-										onClick={() => removeFile(file)}
-										className='hidden items-center justify-center bg-red-500 px-2 text-white transition-all group-hover:flex'
-									>
-										<X size={20} />
-									</button>
+					<p className="my-2 mt-6 text-sm font-medium text-muted-foreground">Uploaded Files</p>
+					<div className="space-y-2 pr-3">
+						{uploadedFiles.map((file) => (
+							<div
+								key={file.name}
+								className="group flex justify-between gap-2 overflow-hidden rounded-lg border border-slate-100 pr-2 hover:border-slate-300 hover:pr-0"
+							>
+								<div className="flex flex-1 items-center p-2">
+									<div className="text-muted-foreground">{file.name.slice(0, 25)}</div>
 								</div>
-							);
-						})}
+								<button
+									onClick={() => removeFile(file)}
+									className="hidden items-center justify-center bg-red-500 px-2 text-white transition-all group-hover:flex"
+								>
+									<X size={16} />
+								</button>
+							</div>
+						))}
 					</div>
 				</div>
 			)}
 		</div>
-	);
+	)
 }
