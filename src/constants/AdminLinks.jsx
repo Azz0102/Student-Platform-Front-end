@@ -1,4 +1,10 @@
-import { Home, Calendar, AppWindow,UserRoundCog,Newspaper } from "lucide-react";
+import {
+	Home,
+	Calendar,
+	AppWindow,
+	UserRoundCog,
+	Newspaper,
+} from "lucide-react";
 
 const links = [
 	{
@@ -15,11 +21,6 @@ const links = [
 		href: "/admin/quantri/0",
 		icon: <UserRoundCog className='h-5 w-5' />,
 		title: "Quan Tri",
-	},
-	{
-		href: "/admin/news",
-		icon: <Newspaper className='h-5 w-5' />,
-		title: "New",
 	},
 ];
 

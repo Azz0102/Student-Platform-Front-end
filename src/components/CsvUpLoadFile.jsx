@@ -8,20 +8,19 @@ import { Button } from "@/components/ui/button";
 import { useSelector } from "react-redux";
 
 const createCsv = [
-    'admin/sign-up-multiple',
-    'teacher/multiple',
-    'classroom/bulk',
-    '',
-    'subject/bulk',
-    'class-session/bulk',
-    '',
-    'grade/bulk',
-    'user_session_details/bulk'
-]
+	"admin/sign-up-multiple",
+	"teacher/multiple",
+	"classroom/bulk",
+	"",
+	"subject/bulk",
+	"class-session/bulk",
+	"",
+	"grade/bulk",
+	"user_session_details/bulk",
+];
 
 export default function CsvUpLoadFile() {
-
-    const selected = useSelector((state) => state.adminContent.selectedContent);
+	const selected = useSelector((state) => state.adminContent.selectedContent);
 
 	const handleFileUpload = (file) => {
 		const reader = new FileReader();
@@ -30,19 +29,26 @@ export default function CsvUpLoadFile() {
 			const csvData = event.target.result;
 
 			// Parse CSV to JSON
-			const parsedData = Papa.parse(csvData, { header: true, skipEmptyLines: true });
+			const parsedData = Papa.parse(csvData, {
+				header: true,
+				skipEmptyLines: true,
+			});
 			const dataObject = parsedData.data;
 
 			console.log("ParsedData:", dataObject);
 			try {
-				const response = await axios.post(`https://localhost:3001/api/${createCsv[selected]}`, dataObject, {
-					headers: {
-						"Content-Type": "application/json",
-					},
-				});
-				toast.success("Thành công")
+				const response = await axios.post(
+					`https://localhost:3001/api/${createCsv[selected]}`,
+					dataObject,
+					{
+						headers: {
+							"Content-Type": "application/json",
+						},
+					}
+				);
+				toast.success("Thành công");
 			} catch (error) {
-				toast.error("Thất Bại")
+				toast.error("Thất Bại");
 			}
 		};
 
@@ -70,9 +76,9 @@ export default function CsvUpLoadFile() {
 
 	return (
 		<Button
-			variant="outline"
-			size="sm"
-			className="gap-2"
+			variant='outline'
+			size='sm'
+			className='mx-1 gap-2'
 			onClick={handleClick}
 		>
 			Import CSV file

@@ -9,7 +9,7 @@ import { useWindowDimensions } from "@/hooks/useWindowDimension";
 import { cn } from "@/lib/utils";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import Table from '../Table';
+import Table from "../Table";
 // import dynamic from "next/dynamic";
 // const Table = dynamic(() => import("../Table"), { ssr: false });
 import {
@@ -21,7 +21,7 @@ import {
 	Newspaper,
 	UserPlus,
 	Users,
-	UsersRound
+	UsersRound,
 } from "lucide-react";
 import AdministrationContent from "./AdministrationContent";
 import AdministrationSideBar from "./AdministrationSideBar";
@@ -30,13 +30,13 @@ import { setSelectedContent } from "@/lib/features/adminContentSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 const lists = [
-	{ id: 0,name: "SinhVien",icon: <Users />,},
+	{ id: 0, name: "SinhVien", icon: <Users /> },
 	{ id: 1, name: "GiaoVien", icon: <UsersRound /> },
 	{ id: 2, name: "PhongHoc", icon: <Building2 /> },
 	{ id: 3, name: "TinTuc", icon: <Newspaper /> },
 	{ id: 4, name: "Monhoc", icon: <LibraryBig /> },
-	{ id: 5, name: "HocPhan", icon: <Book />},
-	{ id: 6, name: "BuoiHoc", icon: <CalendarClock />},
+	{ id: 5, name: "HocPhan", icon: <Book /> },
+	{ id: 6, name: "BuoiHoc", icon: <CalendarClock /> },
 	{ id: 7, name: "DiemSo", icon: <GraduationCap /> },
 	{ id: 8, name: "GhiDanh", icon: <UserPlus /> },
 ];
@@ -46,25 +46,25 @@ const AdministrationLayout = ({
 	defaultCollapsed = false,
 	navCollapsedSize,
 	search,
-	id
+	id,
 }) => {
 	const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed);
 	const [isMobile, setIsMobile] = useState(false);
 	const { width, height } = useWindowDimensions();
-	
+
 	const { t } = useTranslation();
 	const selected = useSelector((state) => state.adminContent.selectedContent);
 	const dispatch = useDispatch();
 
-	useEffect(()=>{
+	useEffect(() => {
 		dispatch(setSelectedContent(id));
-	},[id,dispatch])
+	}, [id, dispatch]);
 
 	const [searched, setsearched] = useState(search);
 
-	useEffect(()=>{
+	useEffect(() => {
 		setsearched(search);
-	},[search])
+	}, [search]);
 	useEffect(() => {
 		const checkScreenWidth = () => {
 			setIsMobile(window.innerWidth <= 768);
@@ -142,9 +142,7 @@ const AdministrationLayout = ({
 				>
 					{/* <Suspense fallback={<div>Loading...</div>}>
 					 </Suspense> */}
-						< Table 
-							search={searched}
-						 />
+					<Table search={searched} />
 				</AdministrationContent>
 			</ResizablePanel>
 		</ResizablePanelGroup>

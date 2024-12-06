@@ -1,5 +1,4 @@
-"use client";
-
+"use client";;
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -8,27 +7,35 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LineChart, Package2, PanelLeft, Search, Settings } from "lucide-react";
+import { Package2, PanelLeft, Settings } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import favicon from "../app/[locale]/favicon.ico";
+// import favicon from "../app/[locale]/favicon.ico";
 import  ModeToggle  from "./mode-toggle";
-import { NotiToggle } from "./notification-toggle";
 import { DynamicBreadcrumb } from "./DynamicBreadcrumb";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import links from "@/constants/AdminLinks";
 import { usePathname, useRouter } from "next/navigation";
 import { filterUrl } from "@/utils/filterUrl";
 import Cookies from "js-cookie";
 import { useLogoutMutation } from "@/lib/services/auth";
+import uet from "/public/favicon-96x96.png";
+import { jwtDecode } from "jwt-decode";
 
 export default function AdminHeader() {
 	const pathName = usePathname();
 	const router = useRouter();
 	const [logout, { isLoading, isError }] = useLogoutMutation();
+
+	const refreshToken = Cookies.get("refreshToken");
+
+	let name = "";
+
+	if (refreshToken) {
+		name = jwtDecode(refreshToken).name;
+	}
 	return (
 		<header className='sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6'>
 			<Sheet>
@@ -88,7 +95,7 @@ export default function AdminHeader() {
 						className='overflow-hidden rounded-full'
 					>
 						<Image
-							src={favicon}
+							src={uet}
 							width={36}
 							height={36}
 							alt='Avatar'
@@ -97,7 +104,7 @@ export default function AdminHeader() {
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align='end'>
-					<DropdownMenuLabel>My Account</DropdownMenuLabel>
+					<DropdownMenuLabel>{name ? name : ""}</DropdownMenuLabel>
 					<DropdownMenuSeparator />
 					<DropdownMenuItem
 						onSelect={() => {

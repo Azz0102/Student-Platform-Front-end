@@ -28,7 +28,7 @@ import {
 
 const chartConfig = {
   desktop: {
-    label: "Desktop",
+    label: "Sinh viên",
     color: "hsl(var(--chart-1))",
   },
   mobile: {

@@ -107,7 +107,7 @@ export default function BarGraph({ chartData }) {
 								<ChartTooltip
 									content={
 										<ChartTooltipContent
-											className='w-[150px]'
+											className='w-40'
 											nameKey={activeChart}
 											labelFormatter={(value) => {
 												return value;

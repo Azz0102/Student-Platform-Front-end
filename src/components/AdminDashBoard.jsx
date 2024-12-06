@@ -1,35 +1,10 @@
-"use client";
-
-import * as React from "react";
-
-import LineChartDashBoard from "./LineChartDashBoard";
-import AreaGraph from "./AreaGraph";
+"use client";;
 import BarGraph from "./BarGraph";
-import PieGraph from "./PieGraph";
-import CalendarDateRangePicker from "@/components/DateRangePicker";
 import PageContainer from "@/components/PageContainer";
-import RecentSales from "./RecentSales";
-import { Button } from "@/components/ui/button";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 
-import {
-	Book,
-	Building2,
-	CalendarClock,
-	GraduationCap,
-	LibraryBig,
-	Newspaper,
-	UserPlus,
-	Users,
-	UsersRound
-} from "lucide-react";
+import { Book, Building2, CalendarClock, Users } from "lucide-react";
 import BarChartHorizontSubject from "./BarChartHorizontSubject";
 import BarChartHorizontalTeacher from "./BarChartHorizontalTeacher";
 import {

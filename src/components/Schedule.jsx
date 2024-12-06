@@ -10,7 +10,6 @@ import "react-big-calendar/lib/css/react-big-calendar.css"; // Import styles
 import "../styles/customCalendar.scss";
 import { CustomToolbar } from "./CustomToolbarCalendar";
 
-
 import {
 	Select,
 	SelectContent,
@@ -20,9 +19,13 @@ import {
 } from "@/components/ui/select";
 
 import { Label } from "@/components/ui/label";
-import { useGetlistEventQuery, useGetlistRoomQuery, useGetlistSemesterQuery } from "@/lib/services/calender";
+import {
+	useGetlistEventQuery,
+	useGetlistRoomQuery,
+	useGetlistSemesterQuery,
+} from "@/lib/services/calender";
 import { PlusCircledIcon } from "@radix-ui/react-icons";
-import { ArrowDownToLine } from 'lucide-react';
+import { ArrowDownToLine } from "lucide-react";
 import { CreactSemester } from "./CreactSemester";
 import { ScheduleItem } from "./ScheduleItem";
 import { toast } from "sonner";
@@ -43,9 +46,8 @@ function isTodayInRange(fromDate, endDate) {
 }
 
 const Empty = () => {
-	return <div className="h-2"></div>;
+	return <div className='h-2'></div>;
 };
-
 
 const Schedule = () => {
 	const { width, height } = useWindowDimensions();
@@ -56,23 +58,29 @@ const Schedule = () => {
 		data: listSemester,
 		isLoading: isLoadingSemester,
 		refetch: refetchSemester,
-	} = useGetlistSemesterQuery({}, {
-		refetchOnFocus: true,
-		refetchOnMountOrArgChange: true,
-	});
+	} = useGetlistSemesterQuery(
+		{},
+		{
+			refetchOnFocus: true,
+			refetchOnMountOrArgChange: true,
+		}
+	);
 
 	useEffect(() => {
 		if (listSemester) {
-			setTheme(listSemester.metadata.find((item) => {
-				return isTodayInRange(item.fromDate, item.endDate);
-			}));
-			console.log("theme", listSemester.metadata.find((item) => {
-				return isTodayInRange(item.fromDate, item.endDate);
-			}).name)
+			setTheme(
+				listSemester.metadata.find((item) => {
+					return isTodayInRange(item.fromDate, item.endDate);
+				})
+			);
+			console.log(
+				"theme",
+				listSemester.metadata.find((item) => {
+					return isTodayInRange(item.fromDate, item.endDate);
+				}).name
+			);
 		}
-	}, [listSemester])
-
-
+	}, [listSemester]);
 
 	const {
 		data: listRoom,
@@ -80,11 +88,14 @@ const Schedule = () => {
 		isError,
 		isSuccess,
 		refetch,
-	} = useGetlistRoomQuery({}, {
-		skip: !theme,
-		refetchOnFocus: true,
-		refetchOnMountOrArgChange: true,
-	});
+	} = useGetlistRoomQuery(
+		{},
+		{
+			skip: !theme,
+			refetchOnFocus: true,
+			refetchOnMountOrArgChange: true,
+		}
+	);
 
 	const {
 		data: listEvent,
@@ -103,31 +114,35 @@ const Schedule = () => {
 	const [listEventSaved, setListEventSaved] = useState([]);
 	const [Metadata, setMetadata] = useState([]);
 
-	console.log('listEventSaved', Metadata)
+	console.log("listEventSaved", Metadata);
 
 	useEffect(() => {
 		if (listRoom) {
-			setResources(listRoom.metadata.data.map((item) => {
-				return {
-					resourceId: item.name,
-					resourceTitle: item.name
-				}
-			}))
+			setResources(
+				listRoom.metadata.data.map((item) => {
+					return {
+						resourceId: item.name,
+						resourceTitle: item.name,
+					};
+				})
+			);
 		}
-	}, [listRoom])
+	}, [listRoom]);
 
 	useEffect(() => {
 		if (listEvent) {
-			setEvents(listEvent.metadata.map((item) => {
-				return {
-					title: item.title,
-					resourceId: item.resourceId,
-					start: new Date(item.start),
-					end: new Date(item.end)
-				}
-			}))
+			setEvents(
+				listEvent.metadata.map((item) => {
+					return {
+						title: item.title,
+						resourceId: item.resourceId,
+						start: new Date(item.start),
+						end: new Date(item.end),
+					};
+				})
+			);
 		}
-	}, [listEvent])
+	}, [listEvent]);
 
 	const [date, setDate] = useState(new Date());
 	const [view, setView] = useState(Views.WEEK);
@@ -151,7 +166,7 @@ const Schedule = () => {
 		[router]
 	);
 	const handleThemeChange = (value) => {
-		console.log('value', value)
+		console.log("value", value);
 		setTheme(value);
 		setDate(new Date(value.fromDate));
 		// setResources();
@@ -160,11 +175,9 @@ const Schedule = () => {
 	};
 
 	if (isLoading || isLoadinglistEvent || isLoadingSemester) {
-		return (
-			<h1>Loading...</h1>
-		)
+		return <h1>Loading...</h1>;
 	}
-	
+
 	return (
 		<div className='flex flex-col lg:flex-row'>
 			<div
@@ -174,7 +187,7 @@ const Schedule = () => {
 				}}
 				className='w-full lg:w-4/5'
 			>
-				{!edited ?
+				{!edited ? (
 					<Calendar
 						date={date}
 						localizer={localizer}
@@ -194,7 +207,7 @@ const Schedule = () => {
 							toolbar: CustomToolbar,
 						}}
 					/>
-					:
+				) : (
 					<Calendar
 						date={date}
 						localizer={localizer}
@@ -214,7 +227,7 @@ const Schedule = () => {
 							toolbar: Empty,
 						}}
 					/>
-				}
+				)}
 			</div>
 			<div
 				className='m-2 flex flex-col items-center justify-between lg:w-1/5'
@@ -222,41 +235,47 @@ const Schedule = () => {
 					height: `${height - 100}px`,
 				}}
 			>
-				<div className="flex flex-col gap-2 items-center">
+				<div className='flex flex-col items-center gap-2'>
 					<Button
-						variant="outline"
-						size="sm"
-						className="gap-2 w-[180px]"
+						variant='outline'
+						size='sm'
+						className='w-[180px] gap-2'
 						asChild
 					>
 						<div>
-							<PlusCircledIcon className="size-4" aria-hidden="true" />
-							<CreactSemester
-								refetchSemester={refetchSemester}
+							<PlusCircledIcon
+								className='size-4'
+								aria-hidden='true'
 							/>
+							<CreactSemester refetchSemester={refetchSemester} />
 						</div>
 					</Button>
 					<Select value={theme} onValueChange={handleThemeChange}>
-						<SelectTrigger className="w-[180px]">
-							<SelectValue placeholder="Chọn Kỳ Học" />
+						<SelectTrigger className='w-[180px]'>
+							<SelectValue placeholder='Chọn Kỳ Học' />
 						</SelectTrigger>
 						<SelectContent>
 							{listSemester.metadata.map((item, index) => {
 								return (
-									<SelectItem key={index} value={item}>{item.name}</SelectItem>
-								)
+									<SelectItem key={index} value={item}>
+										{item.name}
+									</SelectItem>
+								);
 							})}
 						</SelectContent>
 					</Select>
 					{/* <ImageUpload /> */}
 					<Button
-						variant="outline"
-						size="sm"
-						className="gap-2 w-[180px]"
+						variant='outline'
+						size='sm'
+						className='w-[180px] gap-2'
 						asChild
 					>
 						<div>
-							<PlusCircledIcon className="size-4" aria-hidden="true" />
+							<PlusCircledIcon
+								className='size-4'
+								aria-hidden='true'
+							/>
 							<ScheduleItem
 								semester={theme}
 								setEdited={setEdited}
@@ -268,86 +287,104 @@ const Schedule = () => {
 					</Button>
 
 					<Button
-						variant="outline"
-						size="sm"
-						className="gap-2 w-[180px]"
-						onClick={async() => {
-							const response = await axios.get(`https://localhost:3001/api/session_details/down/${theme.id}`, {
-								headers: {
-									refreshToken: Cookies.get("refreshToken"),
-								},
-								responseType: 'blob',
-							});
+						variant='outline'
+						size='sm'
+						className='w-[180px] gap-2'
+						onClick={async () => {
+							const response = await axios.get(
+								`https://localhost:3001/api/session_details/down/${theme.id}`,
+								{
+									headers: {
+										refreshToken:
+											Cookies.get("refreshToken"),
+									},
+									responseType: "blob",
+								}
+							);
 							// Tạo URL từ blob dữ liệu trả về
-							const url = window.URL.createObjectURL(new Blob([response.data]));
-					
+							const url = window.URL.createObjectURL(
+								new Blob([response.data])
+							);
+
 							// Tạo một thẻ <a> tạm để tải xuống file
-							const link = document.createElement('a');
+							const link = document.createElement("a");
 							link.href = url;
-							link.setAttribute('download', 'class_sessions.csv'); // Tên file tải xuống
+							link.setAttribute("download", "class_sessions.csv"); // Tên file tải xuống
 							document.body.appendChild(link);
 							link.click(); // Kích hoạt tải xuống
 							document.body.removeChild(link); // Xóa thẻ <a> tạm sau khi tải xong
 						}}
 					>
-						<div className="flex flex-row items-center justify-center">
-							<ArrowDownToLine className="size-4 mr-2" aria-hidden="true" />
+						<div className='flex flex-row items-center justify-center'>
+							<ArrowDownToLine
+								className='mr-2 size-4'
+								aria-hidden='true'
+							/>
 							<div>Tải lịch học</div>
 						</div>
 					</Button>
 
-					<div className="flex flex-col gap-2 w-full">
-						<Label htmlFor="email">Ngày Bắt Đầu</Label>
-						<div className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+					<div className='flex w-full flex-col gap-2'>
+						<Label htmlFor='email'>Ngày Bắt Đầu</Label>
+						<div className='flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'>
 							{moment(theme?.fromDate).format("DD/MM/YYYY")}
 						</div>
 					</div>
-					<div className="flex flex-col gap-2 w-full">
-						<Label htmlFor="email">Ngày Kết Thúc </Label>
-						<div className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
-						{moment(theme?.endDate).format("DD/MM/YYYY")}
+					<div className='flex w-full flex-col gap-2'>
+						<Label htmlFor='email'>Ngày Kết Thúc </Label>
+						<div className='flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'>
+							{moment(theme?.endDate).format("DD/MM/YYYY")}
 						</div>
 					</div>
 				</div>
 
-				{edited && <div className="flex my-2 mx-8 justify-between w-5/6">
-					<Button type="button" variant="outline" onClick={() => {
-						setEdited(false);
-						refetchlistEvent();
-					}}>
-						Cancel
-					</Button>
-					<Button
-					// disabled={isUpdatePending}
-					onClick ={async()=>{
-						try {
-							const response = await axios.post(`https://${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/save-schedule`, {
-								data: Metadata,
-								id: theme.id,
-							  }, {
-								headers: {
-								  'Content-Type': 'application/json',
+				{edited && (
+					<div className='mx-8 my-2 flex w-5/6 justify-between'>
+						<Button
+							type='button'
+							variant='outline'
+							onClick={() => {
+								setEdited(false);
+								refetchlistEvent();
+							}}
+						>
+							Cancel
+						</Button>
+						<Button
+							// disabled={isUpdatePending}
+							onClick={async () => {
+								try {
+									const response = await axios.post(
+										`https://${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/save-schedule`,
+										{
+											data: Metadata,
+											id: theme.id,
+										},
+										{
+											headers: {
+												"Content-Type":
+													"application/json",
+											},
+										}
+									);
+									setEdited(false);
+									refetchlistEvent();
+								} catch (error) {
+									console.log("error", error);
+									toast.error(error.response.data.message);
 								}
-							  });
-							setEdited(false);
-							refetchlistEvent();
-
-						} catch (error) {
-							console.log("error",error);
-							toast.error(error.response.data.message)
-						}
-					}}
-					>
-						{/* {isUpdatePending && (
+							}}
+						>
+							{/* {isUpdatePending && (
 								<Icons.spinner
 									className="mr-2 size-4 animate-spin"
 									aria-hidden="true"
 								/>
 							)} */}
-						Save
-					</Button>
-				</div>}
-
+							Save
+						</Button>
+					</div>
+				)}
 			</div>
 		</div>
 	);
