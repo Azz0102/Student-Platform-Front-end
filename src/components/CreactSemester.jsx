@@ -135,7 +135,7 @@ export function CreactSemester({refetchSemester}) {
             <CredenzaContent className="flex flex-col gap-6 sm:max-w-md">
                 <CredenzaHeader className="text-left">
                     <CredenzaDescription>
-                        Creat item and save.
+                        Create item and save.
                     </CredenzaDescription>
                     <CredenzaTitle>Thêm Học Kỳ</CredenzaTitle>
                 </CredenzaHeader>

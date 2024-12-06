@@ -4,7 +4,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     selectedContent: 0,
     selectedClassSession: "",
-    selectedSessionDetail: null
+    selectedSessionDetail: ''
 };
 
 const adminContentSlice = createSlice({

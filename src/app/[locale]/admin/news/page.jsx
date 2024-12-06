@@ -1,16 +1,12 @@
 "use client";
 
-import CSVReader from "@/components/AddFile";
-import NewAdmin from "@/components/news-admin/NewAdmin";
+import React from "react";
+
+import CsvUpLoadFile from "@/components/CsvUpLoadFile";
 
 export default function Page() {
+	
 	return (
-		<div>
-			{/* <NewAdmin /> */}
-      <CSVReader />
-		</div>
+		<CsvUpLoadFile />
 	);
 }
-
-
-

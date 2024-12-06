@@ -1,5 +1,6 @@
 
 import { revalidateTag, unstable_noStore } from "next/cache"
+import Cookies from "js-cookie";
 
 const creactList = [
     "admin/sign-up",
@@ -54,6 +55,7 @@ export async function updateTask(input) {
 
     }
 }
+const refreshToken = Cookies.get("refreshToken");
 
 export const creactTask = async (data, selected) => {
     unstable_noStore()
@@ -62,6 +64,7 @@ export const creactTask = async (data, selected) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'refreshToken': refreshToken,
             },
             body: JSON.stringify(data),
         });

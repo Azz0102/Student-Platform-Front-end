@@ -13,12 +13,11 @@ import { setClassSession, setSessionDetail } from "@/lib/features/adminContentSl
 
 
 const Input01= React.forwardRef(({ className, ...props }, ref) => {
-  console.log("props",props)
-
+  console.log("props",props);
   return (
     <div >
       {/* <Label htmlFor="input-01">Simple input</Label> */}
-      <Input ref={ref} value={props.value ??""} onChange={props.onChange} id="input-01" type={props.type} />
+      <Input ref={ref} value={props.value ?? props.values ??""} disabled={props.disabled} onChange={props.onChange} id="input-01" type={props.type} />
       {/* <p className="mt-2 text-xs text-destructive" role="alert" aria-live="polite">
         User is not found
       </p> */}

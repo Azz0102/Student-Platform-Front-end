@@ -16,71 +16,8 @@ import {
 // import { searchParamsCache } from "@/app/_lib/validations"
 
 export default function Table(
-  {search}
+  { search }
 ) {
-
-    // const searchParams = await props.searchParams
-    // if (typeof searchParams.filters === 'string') {
-    //   try {
-    //     searchParams.filters = JSON.parse(searchParams.filters); // Phân tích chuỗi JSON
-    //   } catch (error) {
-    //     console.error("Lỗi phân tích JSON:", error);
-    //     searchParams.filters = []; // Gán mảng rỗng nếu có lỗi
-    //   }
-    // }
-    // const search = searchParamsCache.parse(searchParams)
-    // const validFilters = getValidFilters(search.filters)
-
-    // const tasksData = await getList(search)
-    // console.log("TableRender");
-
-//   const promises = Promise.all([
-//     getTasks({
-//       ...search,
-//       filters: validFilters,
-//     }),
-//     getTaskStatusCounts(),
-//     getTaskPriorityCounts(),
-//   ])
-    // const promises= new Promise(async function(myResolve, myReject) {
-    //   try {
-    //     const result = await getList(search);  // Gọi getList và đợi kết quả
-    //     myResolve([
-    //       result.metadata,
-    //       {
-    //         "todo": 10,
-    //         "in-progress": 5,
-    //         "done": 8,
-    //         "canceled": 2
-    //     },
-    //     {
-    //         "low": 6,
-    //         "medium": 15,
-    //         "high": 9
-    //       } 
-    //     ]); // Gọi myResolve với kết quả khi thành công
-    //   } catch (error) {
-    //     myReject(error); // Gọi myReject với lỗi khi thất bại
-    //   }
-    // });
-
-    // const promises= promisess.then((item)=> item)
-
-
-    // const promises=[
-    //     tasksData.metadata,
-    //     {
-    //         "todo": 10,
-    //         "in-progress": 5,
-    //         "done": 8,
-    //         "canceled": 2
-    //     },
-    //     {
-    //         "low": 6,
-    //         "medium": 15,
-    //         "high": 9
-    //       }     
-    // ]
 
   return (
     <Shell className="gap-2">
@@ -96,7 +33,7 @@ export default function Table(
             />
           }
         >
-          <TasksTable 
+          <TasksTable
             searchAs={search}
           />
         </React.Suspense>
