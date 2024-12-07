@@ -105,7 +105,7 @@ export default function AdminDashBoard() {
 					<div className='items-center space-x-2'>
 						{/* <CalendarDateRangePicker /> */}
 						<Select value={theme} onValueChange={handleThemeChange}>
-							<SelectTrigger className='w-[180px]'>
+							<SelectTrigger className='w-[200px]'>
 								<SelectValue placeholder='Chọn Kỳ Học' />
 							</SelectTrigger>
 							<SelectContent>
