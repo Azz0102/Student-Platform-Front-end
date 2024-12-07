@@ -49,9 +49,9 @@ import { useTranslation } from "react-i18next";
 
 // Định nghĩa các giá trị hằng số thay thế cho enum
 const LABEL_VALUES = ["bug", "feature", "enhancement", "documentation"];
-const AMPHITHEATERS = ["Amphitheater A", "Amphitheater B"];
+const AMPHITHEATERS = ["G2", "GĐ2","GĐ3","E3","E5"];
 const TYPE = ["Theory", "Practice"];
-const SEMESTER = ["Hoc Ky I Nam 2024", "Hoc Ky II Nam 2024"];
+const SEMESTER = ["Học Kỳ I 2023-2024", "Học Kỳ II 2023-2024"];
 const DAY_OF_WEEK = [
 	"Monday",
 	"Tuesday",
@@ -1142,8 +1142,8 @@ export function CreactTaskSheet({ setLoadingDelete, ...props }) {
 				toast.error(metadata);
 				return;
 			}
-			setIsOpen(false);
-			form.reset();
+			// setIsOpen(false);
+			// form.reset();
 			props.onOpenChange?.(false);
 			toast.success(t("success"));
 		});
