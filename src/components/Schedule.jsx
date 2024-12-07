@@ -161,9 +161,9 @@ const Schedule = () => {
 
 	const onSelectEvent = useCallback(
 		(event) => {
-			router.push(`/user/dashboard/class/${event.id}`);
+			
 		},
-		[router]
+		[]
 	);
 	const handleThemeChange = (value) => {
 		console.log("value", value);
