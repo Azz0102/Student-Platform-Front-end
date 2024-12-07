@@ -19,23 +19,27 @@ export const calenderApi = createApi({
 	endpoints: (builder) => ({
 		getcalender: builder.query({
 			query: ({ userId }) => `session_details/user/${userId}`,
-
-			// transformResponse: (rawResult, meta) => {
-			//     console.log("rawResult", rawResult.metadata);
-			//     console.log("meta", meta);
-
-			// return rawResult.map((item) => {
-			//     return {
-			//         start: new Date(item.start),
-			//         end: new Date(item.end),
-			//         ...item
-			//     }
-			// })
-			// }
+		}),
+		getlistRoom: builder.query({
+			query: () => `classroom/all`,
+		}),
+		getlistEvent: builder.query({
+			query: (semester) => `session_details/all/${semester}`,
+		}),
+		getlistSemester: builder.query({
+			query: () => `semester`,
+		}),
+		getlistDashboard: builder.query({
+			query: (semester) => `semester/${semester}`,
+		}),
+		getlistClassSession: builder.query({
+			query: () => `class-session/list`,
 		}),
 	}),
 });
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useGetcalenderQuery } = calenderApi;
+export const { useGetcalenderQuery, useGetlistRoomQuery, useGetlistEventQuery,
+	useGetlistSemesterQuery, useGetlistDashboardQuery, useGetlistClassSessionQuery
+} = calenderApi;

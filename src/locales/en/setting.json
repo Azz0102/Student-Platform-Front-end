@@ -27,5 +27,8 @@
 	"thisSettingWillChangeTheLanguageOfTheUserInterface": "This setting will change the language of the user interface. Your content will remain in its original language.",
 	"exam": "Exam",
 	"event": "Event",
-	"assignment": "Assignment"
+	"assignment": "Assignment",
+	"schedule": "Schedule",
+	"administration": "Administration",
+	"admin": "Admin"
 }

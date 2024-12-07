@@ -5,13 +5,15 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { University, Settings, UniversityIcon } from "lucide-react";
+import { Settings, UniversityIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { filterUrl } from "@/utils/filterUrl";
 import links from "@/constants/AdminLinks";
+import { useTranslation } from "react-i18next";
 
 export default function AdminNavBar() {
+	const { t } = useTranslation();
 	const pathName = usePathname();
 	return (
 		<TooltipProvider>
@@ -38,12 +40,12 @@ export default function AdminNavBar() {
 									>
 										{link.icon}
 										<span className='sr-only'>
-											Dashboard
+											{t("dashboard")}
 										</span>
 									</Link>
 								</TooltipTrigger>
 								<TooltipContent side='right'>
-									{link.title}
+									{t(`${link.title}`)}
 								</TooltipContent>
 							</Tooltip>
 						);
@@ -61,10 +63,12 @@ export default function AdminNavBar() {
 								} transition-colors hover:text-foreground md:h-8 md:w-8`}
 							>
 								<Settings className='h-5 w-5' />
-								<span className='sr-only'>Settings</span>
+								<span className='sr-only'>{t("settings")}</span>
 							</Link>
 						</TooltipTrigger>
-						<TooltipContent side='right'>Settings</TooltipContent>
+						<TooltipContent side='right'>
+							{t("settings")}
+						</TooltipContent>
 					</Tooltip>
 				</nav>
 			</aside>

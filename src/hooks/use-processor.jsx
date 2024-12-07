@@ -9,40 +9,44 @@ import { Mention } from "@/components/Mention";
 import { jsx } from "react/jsx-runtime";
 
 export function useProcessor(md) {
-	const [content, setContent] = useState(null);
-	// console.log("md", md);
-	const mentionRegex = /@(\w+)/g;
-	const text = md.replace(mentionRegex, '<mention handle="$1">@$1</mention>');
+    const [content, setContent] = useState(null);
 
-	// console.log("text", text);
+    useEffect(() => {
+        const extendedSchema = {
+            ...defaultSchema,
+            tagNames: [...defaultSchema.tagNames, "mention", "img"], // Cho phép thẻ <img>
+            attributes: {
+                ...defaultSchema.attributes,
+                mention: ["handle"],
+                img: [
+                    ["src", /^data:image\/[a-z]+;base64,/], // Cho phép chuỗi Base64 trong thuộc tính src
+                    "alt",
+                    "title",
+                    "width",
+                    "height",
+                ],
+            },
+        };
 
-	useEffect(() => {
-		unified()
-			.use(remarkParse)
-			.use(remarkRehype, { allowDangerousHtml: true })
-			.use(rehypeRaw)
-			.use(rehypeSanitize, {
-				...defaultSchema,
-				tagNames: [...defaultSchema.tagNames, "mention"],
-				attributes: {
-					...defaultSchema.attributes,
-					mention: ["handle"],
-				},
-			})
-			.use(rehypeReact, {
-				createElement: createElement,
-				Fragment: Fragment,
-				jsx: jsx,
-				jsxs: jsx,
-				components: {
-					mention: Mention,
-				},
-			})
-			.process(text)
-			.then((file) => {
-				setContent(file.result);
-			});
-	}, [text]);
+        unified()
+            .use(remarkParse) // Xử lý Markdown nếu cần
+            .use(remarkRehype, { allowDangerousHtml: true }) // Cho phép HTML
+            .use(rehypeRaw) // Xử lý HTML thô
+            .use(rehypeSanitize, extendedSchema) // Sử dụng cấu hình mở rộng
+            .use(rehypeReact, {
+                createElement: createElement,
+                Fragment: Fragment,
+                jsx: jsx,
+                jsxs: jsx,
+                components: {
+                    mention: Mention,
+                },
+            })
+            .process(md) // Xử lý chuỗi HTML/Markdown
+            .then((file) => {
+                setContent(file.result);
+            });
+    }, [md]);
 
-	return content;
+    return content;
 }

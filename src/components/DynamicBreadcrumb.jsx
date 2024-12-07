@@ -13,6 +13,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import i18nConfig from "@/i18nConfig";
 import { useTranslation } from "react-i18next";
+import { Fragment } from "react";
 
 // Assuming you have a predefined list of supported locales
 const supportedLocales = i18nConfig.locales; // Add your supported locales here
@@ -37,7 +38,7 @@ export function DynamicBreadcrumb() {
 					const isLastItem = index === pathNames.length - 1;
 
 					return (
-						<>
+						<Fragment key={index}>
 							{!isLastItem ? (
 								<>
 									<BreadcrumbItem key={index}>
@@ -56,7 +57,8 @@ export function DynamicBreadcrumb() {
 									</BreadcrumbPage>
 								</BreadcrumbItem>
 							)}
-						</>
+						</Fragment>
+						
 					);
 				})}
 			</BreadcrumbList>

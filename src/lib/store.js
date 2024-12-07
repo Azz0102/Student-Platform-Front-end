@@ -7,6 +7,7 @@ import { noteApi } from "./services/note";
 import chatReducer from "./features/chatSlice";
 import noteReducer from "./features/noteSlice";
 import newsReducer from "./features/newsSlice";
+import adminContentReducer from "./features/adminContentSlice";
 import { chatApi } from "./services/chat";
 import { notiApi } from "./services/noti";
 import { calenderApi } from "./services/calender";
@@ -28,6 +29,7 @@ export const makeStore = () => {
 			chat: chatReducer,
 			note: noteReducer,
 			news: newsReducer,
+			adminContent: adminContentReducer,
 		},
 		middleware: (getDefaultMiddleware) =>
 			getDefaultMiddleware()

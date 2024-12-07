@@ -26,6 +26,7 @@
 	"chooseYourPreferredLanguageForTheInterface": "Chọn ngôn ngữ ưa thích của bạn cho giao diện",
 	"thisSettingWillChangeTheLanguageOfTheUserInterface": "Cài đặt này sẽ thay đổi ngôn ngữ của giao diện người dùng. ",
 	"exam": "Bài thi",
-	"event": "Sự kiện",
-	"assignment": "Phân công"
+	"schedule": "Sắp TKB",
+	"administration": "Quản lý",
+	"admin": "Admin"
 }
