@@ -7,7 +7,8 @@ import { useDropzone } from "react-dropzone";
 import { Input } from "./ui/input";
 import { Progress } from "./ui/progress";
 import { ScrollArea } from "./ui/scroll-area";
-import { X, UploadCloud ,File} from "lucide-react";
+import { X, UploadCloud, File } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const FILE_TYPES = [
 	"sessionDetails",
@@ -18,10 +19,10 @@ const FILE_TYPES = [
 	"noConflictingClassSessions",
 ];
 
-export const ImageUpload = ({setData}) => {
+export const ImageUpload = ({ setData }) => {
 	const [uploadedFiles, setUploadedFiles] = useState([]);
 	const [filesToUpload, setFilesToUpload] = useState([]);
-	// const [data, setData] = useState({});
+	const { t } = useTranslation();
 
 	const onDrop = useCallback((acceptedFiles) => {
 		setFilesToUpload((prev) => [
@@ -34,7 +35,10 @@ export const ImageUpload = ({setData}) => {
 
 		acceptedFiles.forEach((file) => {
 			const fileType = getFileType(file.name);
-			if (fileType === "noConflictingClassSessions" && file.name.endsWith(".txt")) {
+			if (
+				fileType === "noConflictingClassSessions" &&
+				file.name.endsWith(".txt")
+			) {
 				readTextFile(file);
 			} else if (file.name.endsWith(".csv")) {
 				parseCSVFile(file, fileType);
@@ -53,7 +57,10 @@ export const ImageUpload = ({setData}) => {
 		reader.onload = () => {
 			try {
 				const parsedData = JSON.parse(reader.result);
-				setData((prev) => ({ ...prev, noConflictingClassSessions: parsedData }));
+				setData((prev) => ({
+					...prev,
+					noConflictingClassSessions: parsedData,
+				}));
 			} catch (error) {
 				console.error("Error parsing JSON from TXT file:", error);
 			}
@@ -152,49 +159,59 @@ export const ImageUpload = ({setData}) => {
 		<div>
 			<div
 				{...getRootProps()}
-				className="relative flex w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 !bg-background bg-gray-50 py-6 hover:bg-gray-100"
+				className='relative flex w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 !bg-background bg-gray-50 py-6 hover:bg-gray-100'
 			>
-				<div className="text-center">
-					<div className="mx-auto max-w-min rounded-md border p-2">
+				<div className='text-center'>
+					<div className='mx-auto max-w-min rounded-md border p-2'>
 						<UploadCloud size={20} />
 					</div>
-					<p className="mt-2 text-sm text-foreground">
-						<span className="font-semibold">Drag files</span>
+					<p className='mt-2 text-sm text-foreground'>
+						<span className='font-semibold'>
+							{t("admin.dragFiles")}
+						</span>
 					</p>
-					<p className="text-xs text-foreground">
-						Click to upload files &#40;files should be under 10 MB &#41;
+					<p className='text-xs text-foreground'>
+						{t("admin.clickToUploadFiles")} &#40;
+						{t("admin.filesShouldBeUnder10MB")}
+						&#41;
 					</p>
 				</div>
-				<Input {...getInputProps()} accept=".csv,.txt" id="dropzone-file" type="file" className="hidden" />
+				<Input
+					{...getInputProps()}
+					accept='.csv,.txt'
+					id='dropzone-file'
+					type='file'
+					className='hidden'
+				/>
 			</div>
 
-
-
 			{filesToUpload.length > 0 && (
-				<div className="mt-2" >
-					<ScrollArea className="h-40">
+				<div className='mt-2'>
+					<ScrollArea className='h-40'>
 						{/* <p className="my-2 mt-6 text-sm font-medium text-muted-foreground">
 							Files to upload
 						</p> */}
-						<div className="space-y-2 pr-3">
+						<div className='space-y-2 pr-3'>
 							{filesToUpload.map(({ file, progress }) => (
 								<div
 									key={file.name}
-									className="group flex justify-between gap-2 overflow-hidden rounded-lg border border-slate-100 pr-2 hover:pr-0"
+									className='group flex justify-between gap-2 overflow-hidden rounded-lg border border-slate-100 pr-2 hover:pr-0'
 								>
-									<div className="flex flex-1 items-center p-2">
-									<div className='text-white'>
-									<File size={40} className=" fill-blue-400" />
-
-											</div>
-										<div className="text-muted-foreground">
+									<div className='flex flex-1 items-center p-2'>
+										<div className='text-white'>
+											<File
+												size={40}
+												className='fill-blue-400'
+											/>
+										</div>
+										<div className='text-muted-foreground'>
 											{file.name.slice(0, 35)}
 										</div>
 										{/* <Progress progress={progress} className="ml-2 flex-grow" /> */}
 									</div>
 									<button
 										onClick={() => removeFile(file)}
-										className="hidden items-center justify-center bg-red-500 px-2 text-white transition-all group-hover:flex"
+										className='hidden items-center justify-center bg-red-500 px-2 text-white transition-all group-hover:flex'
 									>
 										<X size={16} />
 									</button>
@@ -207,19 +224,23 @@ export const ImageUpload = ({setData}) => {
 
 			{uploadedFiles.length > 0 && (
 				<div>
-					<p className="my-2 mt-6 text-sm font-medium text-muted-foreground">Uploaded Files</p>
-					<div className="space-y-2 pr-3">
+					<p className='my-2 mt-6 text-sm font-medium text-muted-foreground'>
+						{t("admin.uploadedFiles")}
+					</p>
+					<div className='space-y-2 pr-3'>
 						{uploadedFiles.map((file) => (
 							<div
 								key={file.name}
-								className="group flex justify-between gap-2 overflow-hidden rounded-lg border border-slate-100 pr-2 hover:border-slate-300 hover:pr-0"
+								className='group flex justify-between gap-2 overflow-hidden rounded-lg border border-slate-100 pr-2 hover:border-slate-300 hover:pr-0'
 							>
-								<div className="flex flex-1 items-center p-2">
-									<div className="text-muted-foreground">{file.name.slice(0, 25)}</div>
+								<div className='flex flex-1 items-center p-2'>
+									<div className='text-muted-foreground'>
+										{file.name.slice(0, 25)}
+									</div>
 								</div>
 								<button
 									onClick={() => removeFile(file)}
-									className="hidden items-center justify-center bg-red-500 px-2 text-white transition-all group-hover:flex"
+									className='hidden items-center justify-center bg-red-500 px-2 text-white transition-all group-hover:flex'
 								>
 									<X size={16} />
 								</button>
@@ -229,5 +250,5 @@ export const ImageUpload = ({setData}) => {
 				</div>
 			)}
 		</div>
-	)
-}
+	);
+};

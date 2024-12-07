@@ -5,7 +5,12 @@ import { useWindowDimensions } from "@/hooks/useWindowDimension";
 import moment from "moment";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Calendar, momentLocalizer, Views } from "react-big-calendar";
+import {
+	Calendar,
+	dayjsLocalizer,
+	momentLocalizer,
+	Views,
+} from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css"; // Import styles
 import "../styles/customCalendar.scss";
 import { CustomToolbar } from "./CustomToolbarCalendar";
@@ -17,6 +22,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import dayjs from "dayjs";
 
 import { Label } from "@/components/ui/label";
 import {
@@ -31,7 +37,11 @@ import { ScheduleItem } from "./ScheduleItem";
 import { toast } from "sonner";
 import axios from "axios";
 import Cookies from "js-cookie";
-const localizer = momentLocalizer(moment);
+import "dayjs/locale/vi"; // Import Vietnamese locale
+import "dayjs/locale/en"; // E
+import { useTranslation } from "react-i18next";
+
+const localizer = dayjsLocalizer(dayjs);
 
 function isTodayInRange(fromDate, endDate) {
 	// Lấy ngày hiện tại
@@ -50,6 +60,8 @@ const Empty = () => {
 };
 
 const Schedule = () => {
+	const { t, i18n } = useTranslation(); // Access i18n to get current language
+
 	const { width, height } = useWindowDimensions();
 	const [theme, setTheme] = useState();
 	const [edited, setEdited] = useState(false);
@@ -81,6 +93,12 @@ const Schedule = () => {
 			);
 		}
 	}, [listSemester]);
+
+	useEffect(() => {
+		// Update dayjs locale whenever i18n.language changes
+		const locale = i18n.language === "vn" ? "vi" : "en";
+		dayjs.locale(locale);
+	}, [i18n.language]);
 
 	const {
 		data: listRoom,
@@ -202,7 +220,7 @@ const Schedule = () => {
 						view={view}
 						onView={onView}
 						defaultDate={defaultDate}
-						onSelectEvent={onSelectEvent}
+						// onSelectEvent={onSelectEvent}
 						components={{
 							toolbar: CustomToolbar,
 						}}
@@ -222,7 +240,7 @@ const Schedule = () => {
 						view={view}
 						onView={onView}
 						defaultDate={defaultDate}
-						onSelectEvent={onSelectEvent}
+						// onSelectEvent={onSelectEvent}
 						components={{
 							toolbar: Empty,
 						}}
@@ -239,7 +257,7 @@ const Schedule = () => {
 					<Button
 						variant='outline'
 						size='sm'
-						className='w-[180px] gap-2'
+						className='w-[240px] gap-2'
 						asChild
 					>
 						<div>
@@ -251,7 +269,7 @@ const Schedule = () => {
 						</div>
 					</Button>
 					<Select value={theme} onValueChange={handleThemeChange}>
-						<SelectTrigger className='w-[180px]'>
+						<SelectTrigger className='w-[240px]'>
 							<SelectValue placeholder='Chọn Kỳ Học' />
 						</SelectTrigger>
 						<SelectContent>
@@ -268,7 +286,7 @@ const Schedule = () => {
 					<Button
 						variant='outline'
 						size='sm'
-						className='w-[180px] gap-2'
+						className='w-[240px] gap-2'
 						asChild
 					>
 						<div>
@@ -289,7 +307,7 @@ const Schedule = () => {
 					<Button
 						variant='outline'
 						size='sm'
-						className='w-[180px] gap-2'
+						className='w-[240px] gap-2'
 						onClick={async () => {
 							const response = await axios.get(
 								`https://localhost:3001/api/session_details/down/${theme.id}`,
@@ -320,18 +338,18 @@ const Schedule = () => {
 								className='mr-2 size-4'
 								aria-hidden='true'
 							/>
-							<div>Tải lịch học</div>
+							<div>{t("admin.downloadClassSchedule")}</div>
 						</div>
 					</Button>
 
 					<div className='flex w-full flex-col gap-2'>
-						<Label htmlFor='email'>Ngày Bắt Đầu</Label>
+						<Label htmlFor='email'>{t("admin.startDate")}</Label>
 						<div className='flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'>
 							{moment(theme?.fromDate).format("DD/MM/YYYY")}
 						</div>
 					</div>
 					<div className='flex w-full flex-col gap-2'>
-						<Label htmlFor='email'>Ngày Kết Thúc </Label>
+						<Label htmlFor='email'>{t("admin.endDate")}</Label>
 						<div className='flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'>
 							{moment(theme?.endDate).format("DD/MM/YYYY")}
 						</div>
@@ -348,7 +366,7 @@ const Schedule = () => {
 								refetchlistEvent();
 							}}
 						>
-							Cancel
+							{t("admin.cancel")}
 						</Button>
 						<Button
 							// disabled={isUpdatePending}
@@ -381,7 +399,7 @@ const Schedule = () => {
 									aria-hidden="true"
 								/>
 							)} */}
-							Save
+							{t("admin.save")}
 						</Button>
 					</div>
 				)}

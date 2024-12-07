@@ -1,9 +1,20 @@
 import AdminDashBoard from "@/components/AdminDashBoard";
+import TranslationsProvider from "@/components/TranslationsProvider";
+import initTranslations from "@/app/i18n";
 
-export default function Page() {
+const i18nNamespaces = ["home"];
+export default async function Page({ params: { locale } }) {
+	const { resources } = await initTranslations(locale, i18nNamespaces);
+
 	return (
-		<div>
-			<AdminDashBoard />
-		</div>
+		<TranslationsProvider
+			namespaces={i18nNamespaces}
+			locale={locale}
+			resources={resources}
+		>
+			<div>
+				<AdminDashBoard />
+			</div>
+		</TranslationsProvider>
 	);
 }

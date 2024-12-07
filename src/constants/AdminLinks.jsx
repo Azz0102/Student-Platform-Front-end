@@ -10,17 +10,17 @@ const links = [
 	{
 		href: "/admin/dashboard",
 		icon: <Home className='h-5 w-5' />,
-		title: "Dashboard",
+		title: "dashboard",
 	},
 	{
 		href: "/admin/schedule",
 		icon: <Calendar className='h-5 w-5' />,
-		title: "Schedule",
+		title: "schedule",
 	},
 	{
-		href: "/admin/quantri/0",
+		href: "/admin/administration/0",
 		icon: <UserRoundCog className='h-5 w-5' />,
-		title: "Quan Tri",
+		title: "administration",
 	},
 ];
 

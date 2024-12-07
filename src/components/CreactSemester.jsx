@@ -27,20 +27,21 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSelector } from "react-redux";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
-const Form0 = ({ form, onSubmit, isUpdatePending }) => {
+const Form0 = ({ form, onSubmit, isUpdatePending, t }) => {
 	return (
 		<Form {...form}>
 			<form
 				onSubmit={form.handleSubmit(onSubmit)}
-				className='flex flex-col gap-4 mx-1'
+				className='mx-1 flex flex-col gap-4'
 			>
 				<FormField
 					control={form.control}
 					name='name'
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>Tên Học Kỳ</FormLabel>
+							<FormLabel>{t("admin.semesterName")}</FormLabel>
 							<FormControl>
 								<Input01
 									placeholder='Do a kickflip'
@@ -56,7 +57,7 @@ const Form0 = ({ form, onSubmit, isUpdatePending }) => {
 					name='fromDate'
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>Ngày Bắt Đầu</FormLabel>
+							<FormLabel>{t("admin.startDate")}</FormLabel>
 							<FormControl>
 								<Input40
 									placeholder='Do a kickflip'
@@ -73,7 +74,7 @@ const Form0 = ({ form, onSubmit, isUpdatePending }) => {
 					name='endDate'
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>Ngày Kết Thúc</FormLabel>
+							<FormLabel>{t("admin.endDate")}</FormLabel>
 							<FormControl>
 								<Input40
 									placeholder='Do a kickflip'
@@ -87,7 +88,7 @@ const Form0 = ({ form, onSubmit, isUpdatePending }) => {
 				<CredenzaFooter className='gap-2 pt-2 sm:space-x-0'>
 					<CredenzaClose asChild>
 						<Button type='button' variant='outline'>
-							Cancel
+							{t("admin.cancel")}
 						</Button>
 					</CredenzaClose>
 					<Button disabled={isUpdatePending}>
@@ -97,7 +98,7 @@ const Form0 = ({ form, onSubmit, isUpdatePending }) => {
 								aria-hidden='true'
 							/>
 						)}
-						Save
+						{t("admin.save")}
 					</Button>
 				</CredenzaFooter>
 			</form>
@@ -105,6 +106,7 @@ const Form0 = ({ form, onSubmit, isUpdatePending }) => {
 	);
 };
 export function CreactSemester({ refetchSemester }) {
+	const { t } = useTranslation();
 	const [isUpdatePending, startUpdateTransition] = useTransition();
 	const [isOpen, setIsOpen] = useState(false);
 	const selected = useSelector((state) => state.adminContent.selectedContent);
@@ -133,25 +135,28 @@ export function CreactSemester({ refetchSemester }) {
 			}
 			setIsOpen(false);
 			form.reset();
-			toast.success("Creacted!");
+			toast.success(t("admin.success"));
 		});
 	}
 
 	return (
 		<Credenza open={isOpen} onOpenChange={setIsOpen}>
 			<CredenzaTrigger onClick={() => setIsOpen(true)}>
-				Thêm Học Kỳ
+				{t("admin.addSemester")}
 			</CredenzaTrigger>
 			<CredenzaContent className='flex flex-col gap-6 sm:max-w-md'>
 				<CredenzaHeader className='text-left'>
-					<CredenzaTitle>Thêm Học Kỳ</CredenzaTitle>
-					<CredenzaDescription>Thêm Học Kỳ mới</CredenzaDescription>
+					<CredenzaTitle>{t("admin.addSemester")}</CredenzaTitle>
+					<CredenzaDescription>
+						{t("admin.addNewSemester")}
+					</CredenzaDescription>
 				</CredenzaHeader>
 				<ScrollArea className='max-h-96 overflow-auto rounded-md'>
 					<Form0
 						form={form}
 						onSubmit={onSubmit}
 						isUpdatePending={isUpdatePending}
+						t={t}
 					/>
 				</ScrollArea>
 			</CredenzaContent>

@@ -1,4 +1,3 @@
-import React from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
@@ -8,15 +7,11 @@ import {
 	TooltipTrigger,
 	TooltipProvider,
 } from "@/components/ui/tooltip";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { Users } from "lucide-react";
-import { usePathname, useRouter,useSearchParams } from 'next/navigation';
+import { useRouter } from "next/navigation";
 import { setSelectedContent } from "@/lib/features/adminContentSlice";
 import { useDispatch } from "react-redux";
 
-
-const AdministrationSideBar = ({ lists, isCollapsed,setsearched }) => {
-
+const AdministrationSideBar = ({ lists, isCollapsed, setsearched }) => {
 	const router = useRouter();
 
 	const dispatch = useDispatch();
@@ -45,9 +40,13 @@ const AdministrationSideBar = ({ lists, isCollapsed,setsearched }) => {
 										)}
 										onClick={(e) => {
 											e.preventDefault();
-											dispatch(setSelectedContent(list.id));
-											setsearched('/vn/admin/quantri')
-											router.push(`/vn/admin/quantri/${list.id}`);
+											dispatch(
+												setSelectedContent(list.id)
+											);
+											setsearched("/vn/admin/administration");
+											router.push(
+												`/vn/admin/administration/${list.id}`
+											);
 										}}
 									>
 										{/* <Avatar className='flex items-center justify-center'>
@@ -67,7 +66,7 @@ const AdministrationSideBar = ({ lists, isCollapsed,setsearched }) => {
 								</TooltipTrigger>
 								<TooltipContent
 									side='right'
-									className='flex items-center gap-4'
+									className='flex items-center gap-4 z-50'
 								>
 									{list.name}
 								</TooltipContent>
@@ -88,9 +87,9 @@ const AdministrationSideBar = ({ lists, isCollapsed,setsearched }) => {
 							)}
 							onClick={(e) => {
 								e.preventDefault();
-								setsearched('/vn/admin/quantri')
+								setsearched("/vn/admin/administration");
 								dispatch(setSelectedContent(list.id));
-								router.push(`/vn/admin/quantri/${list.id}`);
+								router.push(`/vn/admin/administration/${list.id}`);
 							}}
 						>
 							<div className='flex max-w-28 flex-row items-center'>

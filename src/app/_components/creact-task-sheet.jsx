@@ -45,6 +45,7 @@ import { useEffect } from "react";
 import { useGetlistClassSessionQuery } from "@/lib/services/calender";
 import { Input } from "@/components/ui/input";
 import Cookies from "js-cookie";
+import { useTranslation } from "react-i18next";
 
 // Định nghĩa các giá trị hằng số thay thế cho enum
 const LABEL_VALUES = ["bug", "feature", "enhancement", "documentation"];
@@ -75,6 +76,7 @@ const Form0 = ({
 	onSubmitFile,
 	handleSwitchChange,
 	isGeneralSchoolNews,
+	t,
 }) => {
 	switch (selected) {
 		case 0:
@@ -82,14 +84,14 @@ const Form0 = ({
 				<Form {...form}>
 					<form
 						onSubmit={form.handleSubmit(onSubmit)}
-						className='flex flex-col gap-4 mx-1'
+						className='mx-1 flex flex-col gap-4'
 					>
 						<FormField
 							control={form.control}
 							name='name'
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Name</FormLabel>
+									<FormLabel>{t("name")}</FormLabel>
 									<FormControl>
 										<Input01
 											placeholder='Do a kickflip'
@@ -104,7 +106,7 @@ const Form0 = ({
 						<CredenzaFooter className='gap-2 pt-2 sm:space-x-0'>
 							<CredenzaClose asChild>
 								<Button type='button' variant='outline'>
-									Cancel
+									{t("cancel")}
 								</Button>
 							</CredenzaClose>
 							<Button disabled={isUpdatePending}>
@@ -114,7 +116,7 @@ const Form0 = ({
 										aria-hidden='true'
 									/>
 								)}
-								Save
+								{t("save")}
 							</Button>
 						</CredenzaFooter>
 					</form>
@@ -126,14 +128,14 @@ const Form0 = ({
 				<Form {...form}>
 					<form
 						onSubmit={form.handleSubmit(onSubmit)}
-						className='flex flex-col gap-4 mx-1'
+						className='mx-1 flex flex-col gap-4'
 					>
 						<FormField
 							control={form.control}
 							name='name'
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Name</FormLabel>
+									<FormLabel>{t("name")}</FormLabel>
 									<FormControl>
 										{/* <Textarea
                         placeholder="Do a kickflip"
@@ -175,7 +177,7 @@ const Form0 = ({
 							name='dateOfBirth'
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>DateOfBirth</FormLabel>
+									<FormLabel>{t("dateOfBirth")}</FormLabel>
 									<FormControl>
 										<Input40
 											placeholder='Do a kickflip'
@@ -189,7 +191,7 @@ const Form0 = ({
 						<CredenzaFooter className='gap-2 pt-2 sm:space-x-0'>
 							<CredenzaClose asChild>
 								<Button type='button' variant='outline'>
-									Cancel
+									{t("cancel")}
 								</Button>
 							</CredenzaClose>
 							<Button disabled={isUpdatePending}>
@@ -199,7 +201,7 @@ const Form0 = ({
 										aria-hidden='true'
 									/>
 								)}
-								Save
+								{t("save")}
 							</Button>
 						</CredenzaFooter>
 					</form>
@@ -211,14 +213,14 @@ const Form0 = ({
 				<Form {...form}>
 					<form
 						onSubmit={form.handleSubmit(onSubmit)}
-						className='flex flex-col gap-4 mx-1'
+						className='mx-1 flex flex-col gap-4'
 					>
 						<FormField
 							control={form.control}
 							name='name'
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Name</FormLabel>
+									<FormLabel>{t("name")}</FormLabel>
 									<FormControl>
 										<Input01
 											placeholder='Do a kickflip'
@@ -234,7 +236,7 @@ const Form0 = ({
 							name='type'
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Type</FormLabel>
+									<FormLabel>{t("type")}</FormLabel>
 									<Select
 										onValueChange={field.onChange}
 										defaultValue={field.value}
@@ -267,7 +269,7 @@ const Form0 = ({
 							name='capacity'
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Capacity</FormLabel>
+									<FormLabel>{t("capacity")}</FormLabel>
 									<FormControl>
 										<Input01
 											placeholder='Do a kickflip'
@@ -284,14 +286,18 @@ const Form0 = ({
 							name='nameAmphitheater'
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Amphitheater</FormLabel>
+									<FormLabel>{t("amphitheater")}</FormLabel>
 									<Select
 										onValueChange={field.onChange}
 										defaultValue={field.value}
 									>
 										<FormControl>
 											<SelectTrigger className='capitalize'>
-												<SelectValue placeholder='Select a Amphitheater' />
+												<SelectValue
+													placeholder={t(
+														"selectAAmphitheater"
+													)}
+												/>
 											</SelectTrigger>
 										</FormControl>
 										<SelectContent>
@@ -315,7 +321,7 @@ const Form0 = ({
 						<CredenzaFooter className='gap-2 pt-2 sm:space-x-0'>
 							<CredenzaClose asChild>
 								<Button type='button' variant='outline'>
-									Cancel
+									{t("cancel")}
 								</Button>
 							</CredenzaClose>
 							<Button disabled={isUpdatePending}>
@@ -325,7 +331,7 @@ const Form0 = ({
 										aria-hidden='true'
 									/>
 								)}
-								Save
+								{t("save")}
 							</Button>
 						</CredenzaFooter>
 					</form>
@@ -337,7 +343,7 @@ const Form0 = ({
 				<Form {...form}>
 					<form
 						onSubmit={form.handleSubmit(onSubmitFile)}
-						className='flex flex-col gap-4 mx-1'
+						className='mx-1 flex flex-col gap-4'
 						enctype='multipart/form-data'
 					>
 						<FormField
@@ -345,7 +351,9 @@ const Form0 = ({
 							name='isGeneralSchoolNews'
 							render={({ field }) => (
 								<FormItem className='flex flex-row items-center justify-between'>
-									<FormLabel>isGeneralSchoolNews</FormLabel>
+									<FormLabel>
+										{t("isGeneralSchoolNews")}
+									</FormLabel>
 									<FormControl>
 										<Switch
 											checked={field.value}
@@ -366,7 +374,9 @@ const Form0 = ({
 								name='classSessionIds'
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>classSessionIds</FormLabel>
+										<FormLabel>
+											{t("classSessionIds")}
+										</FormLabel>
 										<FormControl>
 											<MultipleSelector
 												defaultOptions={classSession}
@@ -390,7 +400,7 @@ const Form0 = ({
 							name='name'
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Name</FormLabel>
+									<FormLabel>{t("name")}</FormLabel>
 									<FormControl>
 										<Input01
 											placeholder='Do a kickflip'
@@ -418,14 +428,18 @@ const Form0 = ({
 							name='type'
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Amphitheater</FormLabel>
+									<FormLabel>{t("type")}</FormLabel>
 									<Select
 										onValueChange={field.onChange}
 										defaultValue={field.value}
 									>
 										<FormControl>
 											<SelectTrigger className='capitalize'>
-												<SelectValue placeholder='Select a Type' />
+												<SelectValue
+													placeholder={t(
+														"selectAType"
+													)}
+												/>
 											</SelectTrigger>
 										</FormControl>
 										<SelectContent>
@@ -451,7 +465,7 @@ const Form0 = ({
 							name='location'
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Location</FormLabel>
+									<FormLabel>{t("location")}</FormLabel>
 									<FormControl>
 										<Input01
 											placeholder='Do a kickflip'
@@ -467,7 +481,7 @@ const Form0 = ({
 							name='time'
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Time</FormLabel>
+									<FormLabel>{t("time")}</FormLabel>
 									<FormControl>
 										<Input40
 											placeholder='Do a kickflip'
@@ -484,7 +498,7 @@ const Form0 = ({
 							name='files'
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Upload Files</FormLabel>
+									<FormLabel>{t("uploadFiles")}</FormLabel>
 									<FormControl>
 										<Input
 											type='file'
@@ -505,7 +519,7 @@ const Form0 = ({
 						<CredenzaFooter className='gap-2 pt-2 sm:space-x-0'>
 							<CredenzaClose asChild>
 								<Button type='button' variant='outline'>
-									Cancel
+									{t("cancel")}
 								</Button>
 							</CredenzaClose>
 							<Button disabled={isUpdatePending}>
@@ -515,7 +529,7 @@ const Form0 = ({
 										aria-hidden='true'
 									/>
 								)}
-								Save
+								{t("save")}
 							</Button>
 						</CredenzaFooter>
 					</form>
@@ -527,14 +541,14 @@ const Form0 = ({
 				<Form {...form}>
 					<form
 						onSubmit={form.handleSubmit(onSubmit)}
-						className='flex flex-col gap-4 mx-1'
+						className='mx-1 flex flex-col gap-4'
 					>
 						<FormField
 							control={form.control}
 							name='name'
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Name</FormLabel>
+									<FormLabel>{t("name")}</FormLabel>
 									<FormControl>
 										{/* <Textarea
                     placeholder="Do a kickflip"
@@ -555,7 +569,7 @@ const Form0 = ({
 							name='description'
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Description</FormLabel>
+									<FormLabel>{t("description")}</FormLabel>
 									<FormControl>
 										<Input01
 											placeholder='Do a kickflip'
@@ -569,7 +583,7 @@ const Form0 = ({
 						<CredenzaFooter className='gap-2 pt-2 sm:space-x-0'>
 							<CredenzaClose asChild>
 								<Button type='button' variant='outline'>
-									Cancel
+									{t("cancel")}
 								</Button>
 							</CredenzaClose>
 							<Button disabled={isUpdatePending}>
@@ -579,7 +593,7 @@ const Form0 = ({
 										aria-hidden='true'
 									/>
 								)}
-								Save
+								{t("save")}
 							</Button>
 						</CredenzaFooter>
 					</form>
@@ -591,14 +605,14 @@ const Form0 = ({
 				<Form {...form}>
 					<form
 						onSubmit={form.handleSubmit(onSubmit)}
-						className='flex flex-col gap-4 mx-1'
+						className='mx-1 flex flex-col gap-4'
 					>
 						<FormField
 							control={form.control}
 							name='name'
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Name</FormLabel>
+									<FormLabel>{t("name")}</FormLabel>
 									<FormControl>
 										<Input01
 											placeholder='Do a kickflip'
@@ -614,7 +628,7 @@ const Form0 = ({
 							name='nameSubject'
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Subject</FormLabel>
+									<FormLabel>{t("subject")}</FormLabel>
 									<FormControl>
 										<Input01
 											placeholder='Do a kickflip'
@@ -630,14 +644,18 @@ const Form0 = ({
 							name='nameSemester'
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Semester</FormLabel>
+									<FormLabel>{t("semester")}</FormLabel>
 									<Select
 										onValueChange={field.onChange}
 										defaultValue={field.value}
 									>
 										<FormControl>
 											<SelectTrigger className='capitalize'>
-												<SelectValue placeholder='Select a Semester' />
+												<SelectValue
+													placeholder={t(
+														"selectASemester"
+													)}
+												/>
 											</SelectTrigger>
 										</FormControl>
 										<SelectContent>
@@ -663,7 +681,7 @@ const Form0 = ({
 							name='fromDate'
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>FromDate</FormLabel>
+									<FormLabel>{t("fromDate")}</FormLabel>
 									<FormControl>
 										<Input40
 											placeholder='Do a kickflip'
@@ -679,7 +697,7 @@ const Form0 = ({
 							name='endDate'
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>EndDate</FormLabel>
+									<FormLabel>{t("endDate")}</FormLabel>
 									<FormControl>
 										<Input40
 											placeholder='Do a kickflip'
@@ -695,7 +713,7 @@ const Form0 = ({
 							name='capacity'
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Capacity</FormLabel>
+									<FormLabel>{t("capacity")}</FormLabel>
 									<FormControl>
 										<Input01
 											placeholder='Do a kickflip'
@@ -710,7 +728,7 @@ const Form0 = ({
 						<CredenzaFooter className='gap-2 pt-2 sm:space-x-0'>
 							<CredenzaClose asChild>
 								<Button type='button' variant='outline'>
-									Cancel
+									{t("cancel")}
 								</Button>
 							</CredenzaClose>
 							<Button disabled={isUpdatePending}>
@@ -720,7 +738,7 @@ const Form0 = ({
 										aria-hidden='true'
 									/>
 								)}
-								Save
+								{t("save")}
 							</Button>
 						</CredenzaFooter>
 					</form>
@@ -732,14 +750,14 @@ const Form0 = ({
 				<Form {...form}>
 					<form
 						onSubmit={form.handleSubmit(onSubmit)}
-						className='flex flex-col gap-4 mx-1'
+						className='mx-1 flex flex-col gap-4'
 					>
 						<FormField
 							control={form.control}
 							name='nameClassSession'
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>ClassSession</FormLabel>
+									<FormLabel>{t("ClassSession")}</FormLabel>
 									<FormControl>
 										<Input01
 											values={selectedClassSession}
@@ -757,7 +775,7 @@ const Form0 = ({
 							name='nameClassroom'
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Classroom</FormLabel>
+									<FormLabel>{t("classroom")}</FormLabel>
 									<FormControl>
 										<Input01
 											placeholder='Do a kickflip'
@@ -773,7 +791,7 @@ const Form0 = ({
 							name='nameTeacher'
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Teacher</FormLabel>
+									<FormLabel>{t("teacher")}</FormLabel>
 									<FormControl>
 										<Input01
 											placeholder='Do a kickflip'
@@ -789,7 +807,7 @@ const Form0 = ({
 							name='startTime'
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>StartTime</FormLabel>
+									<FormLabel>{t("startTime")}</FormLabel>
 									<FormControl>
 										<Input40
 											placeholder='Do a kickflip'
@@ -805,7 +823,7 @@ const Form0 = ({
 							name='numOfHour'
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>NumOfHour</FormLabel>
+									<FormLabel>{t("numOfHours")}</FormLabel>
 									<FormControl>
 										<Input01
 											placeholder='Do a kickflip'
@@ -822,7 +840,7 @@ const Form0 = ({
 							name='capacity'
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Capacity</FormLabel>
+									<FormLabel>{t("capacity")}</FormLabel>
 									<FormControl>
 										<Input01
 											placeholder='Do a kickflip'
@@ -837,7 +855,7 @@ const Form0 = ({
 						<CredenzaFooter className='gap-2 pt-2 sm:space-x-0'>
 							<CredenzaClose asChild>
 								<Button type='button' variant='outline'>
-									Cancel
+									{t("cancel")}
 								</Button>
 							</CredenzaClose>
 							<Button disabled={isUpdatePending}>
@@ -847,7 +865,7 @@ const Form0 = ({
 										aria-hidden='true'
 									/>
 								)}
-								Save
+								{t("save")}
 							</Button>
 						</CredenzaFooter>
 					</form>
@@ -859,14 +877,14 @@ const Form0 = ({
 				<Form {...form}>
 					<form
 						onSubmit={form.handleSubmit(onSubmit)}
-						className='flex flex-col gap-4 mx-1'
+						className='mx-1 flex flex-col gap-4'
 					>
 						<FormField
 							control={form.control}
 							name='nameClassSession'
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>ClassSession</FormLabel>
+									<FormLabel>{t("ClassSession")}</FormLabel>
 									<FormControl>
 										<Input01
 											values={selectedClassSession}
@@ -884,7 +902,7 @@ const Form0 = ({
 							name='nameUser'
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>User</FormLabel>
+									<FormLabel>{t("user")}</FormLabel>
 									<FormControl>
 										<Input01
 											placeholder='Do a kickflip'
@@ -901,14 +919,18 @@ const Form0 = ({
 							name='name'
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Name</FormLabel>
+									<FormLabel>{t("type")}</FormLabel>
 									<Select
 										onValueChange={field.onChange}
 										defaultValue={field.value}
 									>
 										<FormControl>
 											<SelectTrigger className='capitalize'>
-												<SelectValue placeholder='Select a Name' />
+												<SelectValue
+													placeholder={t(
+														"selectAType"
+													)}
+												/>
 											</SelectTrigger>
 										</FormControl>
 										<SelectContent>
@@ -935,7 +957,7 @@ const Form0 = ({
 							name='value'
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Value</FormLabel>
+									<FormLabel>{t("value")}</FormLabel>
 									<FormControl>
 										<Input01
 											placeholder='Do a kickflip'
@@ -950,7 +972,7 @@ const Form0 = ({
 						<CredenzaFooter className='gap-2 pt-2 sm:space-x-0'>
 							<CredenzaClose asChild>
 								<Button type='button' variant='outline'>
-									Cancel
+									{t("cancel")}
 								</Button>
 							</CredenzaClose>
 							<Button disabled={isUpdatePending}>
@@ -960,7 +982,7 @@ const Form0 = ({
 										aria-hidden='true'
 									/>
 								)}
-								Save
+								{t("save")}
 							</Button>
 						</CredenzaFooter>
 					</form>
@@ -972,14 +994,14 @@ const Form0 = ({
 				<Form {...form}>
 					<form
 						onSubmit={form.handleSubmit(onSubmit)}
-						className='flex flex-col gap-4 mx-1'
+						className='mx-1 flex flex-col gap-4'
 					>
 						<FormField
 							control={form.control}
 							name='nameUser'
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>User</FormLabel>
+									<FormLabel>{t("user")}</FormLabel>
 									<FormControl>
 										<Input01
 											placeholder='Do a kickflip'
@@ -993,7 +1015,7 @@ const Form0 = ({
 						<CredenzaFooter className='gap-2 pt-2 sm:space-x-0'>
 							<CredenzaClose asChild>
 								<Button type='button' variant='outline'>
-									Cancel
+									{t("cancel")}
 								</Button>
 							</CredenzaClose>
 							<Button disabled={isUpdatePending}>
@@ -1003,7 +1025,7 @@ const Form0 = ({
 										aria-hidden='true'
 									/>
 								)}
-								Save
+								{t("save")}
 							</Button>
 						</CredenzaFooter>
 					</form>
@@ -1016,6 +1038,7 @@ const Form0 = ({
 };
 
 export function CreactTaskSheet({ setLoadingDelete, ...props }) {
+	const { t } = useTranslation();
 	const [isUpdatePending, startUpdateTransition] = useTransition();
 	const [isOpen, setIsOpen] = useState(false);
 	const selected = useSelector((state) => state.adminContent.selectedContent);
@@ -1080,7 +1103,7 @@ export function CreactTaskSheet({ setLoadingDelete, ...props }) {
 			setIsOpen(false);
 			form.reset();
 			props.onOpenChange?.(false);
-			toast.success("Creacted!");
+			toast.success(t("success"));
 		});
 	}
 
@@ -1122,7 +1145,7 @@ export function CreactTaskSheet({ setLoadingDelete, ...props }) {
 			setIsOpen(false);
 			form.reset();
 			props.onOpenChange?.(false);
-			toast.success("Creacted!");
+			toast.success(t("success"));
 		});
 	}
 
@@ -1167,13 +1190,13 @@ export function CreactTaskSheet({ setLoadingDelete, ...props }) {
 	return (
 		<Credenza open={isOpen} onOpenChange={setIsOpen}>
 			<CredenzaTrigger onClick={() => setIsOpen(true)}>
-				Create
+				{t("create")}
 			</CredenzaTrigger>
 			<CredenzaContent className='flex flex-col gap-6 sm:max-w-md'>
 				<CredenzaHeader className='text-left'>
-					<CredenzaTitle>Create</CredenzaTitle>
+					<CredenzaTitle>{t("create")}</CredenzaTitle>
 					<CredenzaDescription>
-						Create item and save.
+						{t("createItemAndSave")}
 					</CredenzaDescription>
 				</CredenzaHeader>
 				{selected != 3 && selected != 6 && <CsvUpLoadFile />}
@@ -1190,6 +1213,7 @@ export function CreactTaskSheet({ setLoadingDelete, ...props }) {
 						onSubmitFile={onSubmitFile}
 						handleSwitchChange={handleSwitchChange}
 						isGeneralSchoolNews={isGeneralSchoolNews}
+						t={t}
 					/>
 				</ScrollArea>
 			</CredenzaContent>

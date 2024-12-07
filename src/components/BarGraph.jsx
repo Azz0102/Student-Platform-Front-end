@@ -1,7 +1,13 @@
 "use client";
 
 import * as React from "react";
-import { Bar, BarChart, CartesianGrid, ResponsiveContainer, XAxis } from "recharts";
+import {
+	Bar,
+	BarChart,
+	CartesianGrid,
+	ResponsiveContainer,
+	XAxis,
+} from "recharts";
 
 import {
 	Card,
@@ -13,8 +19,9 @@ import {
 import {
 	ChartContainer,
 	ChartTooltip,
-	ChartTooltipContent
+	ChartTooltipContent,
 } from "@/components/ui/chart";
+import { useTranslation } from "react-i18next";
 
 export const description = "An interactive bar chart";
 
@@ -24,19 +31,9 @@ export const description = "An interactive bar chart";
 // 	{ date: "Phong3", frequency: 167, time: 120 },
 // ]
 
-const chartConfig = {
-	frequency: {
-		label: "Tần suất sử dụng",
-		color: "hsl(var(--chart-1))",
-	},
-	time: {
-		label: "Thời gian sử dụng",
-		color: "hsl(var(--chart-2))",
-	},
-};
-
 export default function BarGraph({ chartData }) {
 	const [activeChart, setActiveChart] = React.useState("frequency");
+	const { t } = useTranslation();
 
 	const total = React.useMemo(
 		() => ({
@@ -46,13 +43,24 @@ export default function BarGraph({ chartData }) {
 		[chartData]
 	);
 
+	const chartConfig = {
+		frequency: {
+			label: t("admin.frequencyOfUse"),
+			color: "hsl(var(--chart-1))",
+		},
+		time: {
+			label: t("admin.usageTime"),
+			color: "hsl(var(--chart-2))",
+		},
+	};
+
 	return (
 		<Card>
 			<CardHeader className='flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row'>
 				<div className='flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6'>
-					<CardTitle>Phòng học</CardTitle>
+					<CardTitle>{t("admin.classRooms")}</CardTitle>
 					<CardDescription>
-						Dữ liệu phòng học theo khoảng thời gian.
+						{t("admin.classroomDataByTimePeriod")}
 					</CardDescription>
 				</div>
 				<div className='flex'>
@@ -81,9 +89,11 @@ export default function BarGraph({ chartData }) {
 					config={chartConfig}
 					className='aspect-auto h-[480px] w-full'
 				>
-
 					<div style={{ overflowX: "auto", whiteSpace: "nowrap" }}>
-						<ResponsiveContainer width={150 * chartData.length} height={490}>
+						<ResponsiveContainer
+							width={150 * chartData.length}
+							height={490}
+						>
 							<BarChart
 								accessibilityLayer
 								data={chartData}
@@ -112,7 +122,6 @@ export default function BarGraph({ chartData }) {
 											labelFormatter={(value) => {
 												return value;
 											}}
-
 										/>
 									}
 								/>
@@ -120,9 +129,9 @@ export default function BarGraph({ chartData }) {
 									dataKey={activeChart}
 									fill={`var(--color-${activeChart})`}
 									radius={8}
-								// barSize={300}
-								// barCategoryGap="20%"
-								// barGap={10}
+									// barSize={300}
+									// barCategoryGap="20%"
+									// barGap={10}
 								/>
 							</BarChart>
 						</ResponsiveContainer>

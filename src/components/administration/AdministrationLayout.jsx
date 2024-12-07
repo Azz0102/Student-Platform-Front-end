@@ -29,18 +29,6 @@ import AdministrationSideBar from "./AdministrationSideBar";
 import { setSelectedContent } from "@/lib/features/adminContentSlice";
 import { useDispatch, useSelector } from "react-redux";
 
-const lists = [
-	{ id: 0, name: "SinhVien", icon: <Users /> },
-	{ id: 1, name: "GiaoVien", icon: <UsersRound /> },
-	{ id: 2, name: "PhongHoc", icon: <Building2 /> },
-	{ id: 3, name: "TinTuc", icon: <Newspaper /> },
-	{ id: 4, name: "Monhoc", icon: <LibraryBig /> },
-	{ id: 5, name: "HocPhan", icon: <Book /> },
-	{ id: 6, name: "BuoiHoc", icon: <CalendarClock /> },
-	{ id: 7, name: "DiemSo", icon: <GraduationCap /> },
-	{ id: 8, name: "GhiDanh", icon: <UserPlus /> },
-];
-
 const AdministrationLayout = ({
 	defaultLayout = [320, 480],
 	defaultCollapsed = false,
@@ -55,6 +43,18 @@ const AdministrationLayout = ({
 	const { t } = useTranslation();
 	const selected = useSelector((state) => state.adminContent.selectedContent);
 	const dispatch = useDispatch();
+
+	const lists = [
+		{ id: 0, name: t("student"), icon: <Users /> },
+		{ id: 1, name: t("teacher"), icon: <UsersRound /> },
+		{ id: 2, name: t("classroom"), icon: <Building2 /> },
+		{ id: 3, name: t("news"), icon: <Newspaper /> },
+		{ id: 4, name: t("subject"), icon: <LibraryBig /> },
+		{ id: 5, name: t("classSession"), icon: <Book /> },
+		{ id: 6, name: t("sessionDetails"), icon: <CalendarClock /> },
+		{ id: 7, name: t("grade"), icon: <GraduationCap /> },
+		{ id: 8, name: t("enroll"), icon: <UserPlus /> },
+	];
 
 	useEffect(() => {
 		dispatch(setSelectedContent(id));

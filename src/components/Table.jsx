@@ -10,7 +10,6 @@ import { Shell } from "@/components/shell";
 
 import { FeatureFlagsProvider } from "@/app/_components/feature-flags-provider";
 import { TasksTable } from "@/app/_components/tasks-table";
-import { getList } from "@/app/_lib/queries";
 // import { searchParamsCache } from "@/app/_lib/validations"
 
 export default function Table({ search }) {

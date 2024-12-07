@@ -1,4 +1,4 @@
-"use client";;
+"use client";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -7,13 +7,13 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Package2, PanelLeft, Settings } from "lucide-react";
+import { Package2, PanelLeft, Settings, UniversityIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 // import favicon from "../app/[locale]/favicon.ico";
-import  ModeToggle  from "./mode-toggle";
+import ModeToggle from "./mode-toggle";
 import { DynamicBreadcrumb } from "./DynamicBreadcrumb";
 import { Button } from "@/components/ui/button";
 import links from "@/constants/AdminLinks";
@@ -23,11 +23,13 @@ import Cookies from "js-cookie";
 import { useLogoutMutation } from "@/lib/services/auth";
 import uet from "/public/favicon-96x96.png";
 import { jwtDecode } from "jwt-decode";
+import { useTranslation } from "react-i18next";
 
 export default function AdminHeader() {
 	const pathName = usePathname();
 	const router = useRouter();
 	const [logout, { isLoading, isError }] = useLogoutMutation();
+	const { t } = useTranslation();
 
 	const refreshToken = Cookies.get("refreshToken");
 
@@ -42,7 +44,7 @@ export default function AdminHeader() {
 				<SheetTrigger asChild>
 					<Button size='icon' variant='outline' className='sm:hidden'>
 						<PanelLeft className='h-5 w-5' />
-						<span className='sr-only'>Toggle Menu</span>
+						<span className='sr-only'>{t("toggleMenu")}</span>
 					</Button>
 				</SheetTrigger>
 				<SheetContent side='left' className='sm:max-w-xs'>
@@ -51,7 +53,7 @@ export default function AdminHeader() {
 							href='#'
 							className='group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base'
 						>
-							<Package2 className='h-5 w-5 transition-all group-hover:scale-110' />
+							<UniversityIcon className='h-5 w-5 transition-all group-hover:scale-110' />
 							<span className='sr-only'>Acme Inc</span>
 						</Link>
 						{links.map((link, index) => {
@@ -66,7 +68,7 @@ export default function AdminHeader() {
 									}`}
 								>
 									{link.icon}
-									{link.title}
+									{t(`${link.title}`)}
 								</Link>
 							);
 						})}
@@ -79,7 +81,7 @@ export default function AdminHeader() {
 							}`}
 						>
 							<Settings className='h-5 w-5' />
-							Settings
+							{t("settings")}
 						</Link>
 					</nav>
 				</SheetContent>
@@ -111,9 +113,9 @@ export default function AdminHeader() {
 							router.push("/admin/setting");
 						}}
 					>
-						Settings
+						{t("settings")}
 					</DropdownMenuItem>
-					<DropdownMenuItem>Support</DropdownMenuItem>
+					<DropdownMenuItem>{t("support")}</DropdownMenuItem>
 					<DropdownMenuSeparator />
 					<DropdownMenuItem
 						onSelect={() => {
@@ -124,7 +126,7 @@ export default function AdminHeader() {
 							router.push("/login");
 						}}
 					>
-						Logout
+						{t("logout")}
 					</DropdownMenuItem>
 				</DropdownMenuContent>
 			</DropdownMenu>

@@ -20,6 +20,7 @@ import {
 	ChartTooltip,
 	ChartTooltipContent,
 } from "@/components/ui/chart";
+import { useTranslation } from "react-i18next";
 // const chartData = [
 //   { month: "January", desktop: 186, mobile: 80 },
 //   { month: "February", desktop: 305, mobile: 200 },
@@ -29,25 +30,27 @@ import {
 //   { month: "June", desktop: 214, mobile: 140 },
 // ]
 
-const chartConfig = {
-	desktop: {
-		label: "Giờ",
-		color: "hsl(var(--chart-1))",
-	},
-	mobile: {
-		label: "Mobile",
-		color: "hsl(var(--chart-2))",
-	},
-	label: {
-		color: "hsl(var(--background))",
-	},
-};
 export default function BarChartHorizontalTeacher({ chartData }) {
+	const { t } = useTranslation();
+
+	const chartConfig = {
+		desktop: {
+			label: t("admin.hour"),
+			color: "hsl(var(--chart-1))",
+		},
+		mobile: {
+			label: "Mobile",
+			color: "hsl(var(--chart-2))",
+		},
+		label: {
+			color: "hsl(var(--background))",
+		},
+	};
 	return (
 		<Card>
 			<CardHeader>
-				<CardTitle>6 Giáo viên dạy nhiều</CardTitle>
-				<CardDescription>Tính theo giờ</CardDescription>
+				<CardTitle>{t("admin.top6TeachersWhoTeachTheMost")}</CardTitle>
+				<CardDescription>{t("admin.calculatedByHour")}</CardDescription>
 			</CardHeader>
 			<CardContent>
 				<ChartContainer config={chartConfig}>

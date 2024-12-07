@@ -14,6 +14,10 @@
 // } from "@/app/_lib/queries"
 import { searchParamsCache } from "@/app/_lib/validations";
 import AdministrationLayout from "@/components/administration/AdministrationLayout";
+import TranslationsProvider from "@/components/TranslationsProvider";
+import initTranslations from "@/app/i18n";
+
+const i18nNamespaces = ["administration"];
 
 export default async function Page(props) {
 	const searchParams = await props.searchParams;
@@ -28,35 +32,20 @@ export default async function Page(props) {
 	//   }
 	// }
 	const search = searchParamsCache.parse(searchParams);
-	// const validFilters = getValidFilters(search.filters)
-
-	// const promises= new Promise(async function(myResolve, myReject) {
-	//   try {
-	//     const result = await getList(search);  // Gọi getList và đợi kết quả
-	//     myResolve([
-	//       result.metadata,
-	//       {
-	//         "todo": 10,
-	//         "in-progress": 5,
-	//         "done": 8,
-	//         "canceled": 2
-	//     },
-	//     {
-	//         "low": 6,
-	//         "medium": 15,
-	//         "high": 9
-	//       }
-	//     ]); // Gọi myResolve với kết quả khi thành công
-	//   } catch (error) {
-	//     myReject(error); // Gọi myReject với lỗi khi thất bại
-	//   }
-	// });
-
-	// const promises = getTasks(search);
+	const { resources } = await initTranslations(
+		props.params.locale,
+		i18nNamespaces
+	);
 
 	return (
-		<div>
-			<AdministrationLayout search={search} id={Number(id)} />
-		</div>
+		<TranslationsProvider
+			namespaces={i18nNamespaces}
+			locale={props.params.locale}
+			resources={resources}
+		>
+			<div>
+				<AdministrationLayout search={search} id={Number(id)} />
+			</div>
+		</TranslationsProvider>
 	);
 }

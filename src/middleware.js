@@ -96,11 +96,11 @@ export function middleware(request) {
 			}
 
 			if (
-				pathname === "/admin/quantri" ||
-				pathname === `/${locale}/user/quantri`
+				pathname === "/admin/administration" ||
+				pathname === `/${locale}/user/administration`
 			) {
 				return NextResponse.redirect(
-					new URL(`/${locale}/admin/quantri/0`, request.url)
+					new URL(`/${locale}/admin/administration/0`, request.url)
 				);
 			}
 

@@ -46,6 +46,7 @@ import {
 	SortableItem,
 } from "@/components/ui/sortable";
 import { Icons } from "@/components/icons";
+import { useTranslation } from "react-i18next";
 
 export function DataTableFilterList({
 	table,
@@ -64,6 +65,8 @@ export function DataTableFilterList({
 				shallow,
 			})
 	);
+
+	const { t } = useTranslation();
 
 	// console.log('filters',filters);
 
@@ -572,7 +575,7 @@ export function DataTableFilterList({
 						aria-controls={`${id}-filter-dialog`}
 					>
 						<Icons.filter className='size-3' aria-hidden='true' />
-						Filter
+						{t("filter")}
 						{filters.length > 0 && (
 							<Badge
 								variant='secondary'
@@ -592,14 +595,16 @@ export function DataTableFilterList({
 					)}
 				>
 					{filters.length > 0 ? (
-						<h4 className='font-medium leading-none'>Filters</h4>
+						<h4 className='font-medium leading-none'>
+							{t("filters")}
+						</h4>
 					) : (
 						<div className='flex flex-col gap-1'>
 							<h4 className='font-medium leading-none'>
-								No filters applied
+								{t("noFiltersApplied")}
 							</h4>
 							<p className='text-sm text-muted-foreground'>
-								Add filters to refine your results.
+								{t("addFiltersToRefineYourResults")}
 							</p>
 						</div>
 					)}
@@ -621,7 +626,7 @@ export function DataTableFilterList({
 										<div className='min-w-[4.5rem] text-center'>
 											{index === 0 ? (
 												<span className='text-sm text-muted-foreground'>
-													Where
+													{t("where")}
 												</span>
 											) : index === 1 ? (
 												<Select
@@ -796,7 +801,7 @@ export function DataTableFilterList({
 							onClick={addFilter}
 							disabled={filters.length}
 						>
-							Add filter
+							{t("addFilter")}
 						</Button>
 						{/* {filters.length > 0 ? (
               <Button

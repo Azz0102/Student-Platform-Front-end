@@ -9,6 +9,7 @@ import {
 	setClassSession,
 	setSessionDetail,
 } from "@/lib/features/adminContentSlice";
+import { useTranslation } from "react-i18next";
 
 const Input01 = React.forwardRef(({ className, ...props }, ref) => {
 	return (
@@ -85,7 +86,7 @@ function Input26() {
 		(state) => state.adminContent.selectedClassSession
 	);
 	const [searchValue, setSearchValue] = React.useState(classSession); // Quản lý trạng thái cho giá trị tìm kiếm
-
+	const { t } = useTranslation();
 	const dispatch = useDispatch();
 	const handleInputChange = (event) => {
 		setSearchValue(event.target.value); // Cập nhật giá trị tìm kiếm
@@ -103,7 +104,7 @@ function Input26() {
 				<Input
 					value={searchValue}
 					onChange={handleInputChange}
-					placeholder='Nhap ten hoc phan...'
+					placeholder={t("enterTheCourseName")}
 					id='input-26'
 					className='peer pe-9'
 					type='search'
@@ -132,6 +133,8 @@ function Input8() {
 		setSearchValue(event.target.value); // Cập nhật giá trị tìm kiếm
 	};
 
+	const { t } = useTranslation();
+
 	const handleSubmit = (event) => {
 		event.preventDefault(); // Ngăn chặn hành vi mặc định
 		console.log("Search value submitted:");
@@ -144,7 +147,7 @@ function Input8() {
 				<Input
 					value={searchValue}
 					onChange={handleInputChange}
-					placeholder='Nhap Id buoi hoc...'
+					placeholder={t("enterCourseId")}
 					id='input-26'
 					className='peer pe-9'
 					type='number'

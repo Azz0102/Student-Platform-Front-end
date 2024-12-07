@@ -6,6 +6,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 const createCsv = [
 	"admin/sign-up-multiple",
@@ -20,6 +21,7 @@ const createCsv = [
 ];
 
 export default function CsvUpLoadFile() {
+	const { t } = useTranslation();
 	const selected = useSelector((state) => state.adminContent.selectedContent);
 
 	const handleFileUpload = (file) => {
@@ -46,9 +48,9 @@ export default function CsvUpLoadFile() {
 						},
 					}
 				);
-				toast.success("Thành công");
+				toast.success(t("success"));
 			} catch (error) {
-				toast.error("Thất Bại");
+				toast.error(t("fail"));
 			}
 		};
 
@@ -81,7 +83,7 @@ export default function CsvUpLoadFile() {
 			className='mx-1 gap-2'
 			onClick={handleClick}
 		>
-			Import CSV file
+			{t("importCSVFile")}
 		</Button>
 	);
 }
