@@ -7,6 +7,8 @@ import ForgotPasswordForm from "@/components/ForgotPasswordForm";
 import ModeToggle from "@/components/mode-toggle";
 import { useWindowDimensions } from "@/hooks/useWindowDimension";
 import vercel from "/public/android-chrome-512x512.png";
+import uet from "/public/vnu-uet.jpg";
+
 import { useTranslation } from "react-i18next";
 
 export default function ForgotPassword() {
@@ -40,7 +42,7 @@ export default function ForgotPassword() {
 
 			<div className='hidden bg-muted lg:block lg:h-full lg:w-1/2'>
 				<Image
-					src={vercel}
+					src={uet}
 					alt='Image'
 					width='1920'
 					height='1080'
