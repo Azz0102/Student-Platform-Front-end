@@ -24,6 +24,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
+import { useGetUserRelatedNewsQuery } from "@/lib/services/news";
 
 // Extend dayjs with the relativeTime plugin
 dayjs.extend(relativeTime);
@@ -39,6 +40,21 @@ export function NotiToggle() {
 		refetchOnFocus: true,
 		refetchOnMountOrArgChange: true,
 	});
+
+	const {
+		data: news,
+		isNewsLoading,
+		isNewsError,
+		isSuccess,
+		refetch,
+	} = useGetUserRelatedNewsQuery(
+		{ userId: userId },
+		{
+			refetchOnFocus: true,
+			refetchOnMountOrArgChange: true,
+		}
+	);
+
 	const [updateNotiUser, {}] = useUpdateNotiUserMutation();
 	const [notiList, setNotiList] = useState([]);
 	const router = useRouter();
@@ -54,12 +70,13 @@ export function NotiToggle() {
 				],
 			};
 			setNotiList([temp, ...notiList]);
+			refetch();
 		});
 
 		return () => {
 			socket.off("NewsNoti");
 		};
-	}, [notiList, userId]);
+	}, [notiList, refetch, userId]);
 
 	useEffect(() => {
 		if (data) {
