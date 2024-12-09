@@ -49,7 +49,7 @@ import { useTranslation } from "react-i18next";
 
 // Định nghĩa các giá trị hằng số thay thế cho enum
 const LABEL_VALUES = ["bug", "feature", "enhancement", "documentation"];
-const AMPHITHEATERS = ["G2", "GĐ2","GĐ3","E3","E5"];
+const AMPHITHEATERS = ["G2", "GĐ2", "GĐ3", "E3", "E5"];
 const TYPE = ["Theory", "Practice"];
 const SEMESTER = ["Học Kỳ I 2023-2024", "Học Kỳ II 2023-2024"];
 const DAY_OF_WEEK = [
@@ -1118,7 +1118,11 @@ export function CreactTaskSheet({ setLoadingDelete, ...props }) {
 			// Thêm các field còn lại vào FormData
 			Object.keys(data).forEach((key) => {
 				if (key !== "files") {
-					formData.append(key, data[key]);
+					console.log(`${data[key]}`);
+					if (key === "classSessionIds") {
+						const Ids = JSON.stringify(data[key]);
+						formData.append(key, Ids);
+					} else formData.append(key, data[key]);
 				}
 			});
 			const response = await fetch(
