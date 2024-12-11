@@ -1203,7 +1203,10 @@ export function CreactTaskSheet({ setLoadingDelete, ...props }) {
 						{t("createItemAndSave")}
 					</CredenzaDescription>
 				</CredenzaHeader>
-				{selected != 3 && selected != 6 && <CsvUpLoadFile />}
+				{selected != 3 && selected != 6 && <CsvUpLoadFile 
+					setIsOpen={setIsOpen} 
+					onOpenChange={props.onOpenChange}
+				/>}
 
 				{/* <TabsDemo form={form} onSubmit={onSubmit} /> */}
 				<ScrollArea className='max-h-96 overflow-auto rounded-md'>

@@ -58,7 +58,7 @@ export function getColumns({ setRowAction, selected }) {
 			{
 				accessorKey: "name",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Name' />
+					<DataTableColumnHeader column={column} title='Tên' />
 				),
 				cell: ({ row }) => {
 					// const label = LABELS.find(
@@ -80,21 +80,21 @@ export function getColumns({ setRowAction, selected }) {
 			{
 				accessorKey: "lastLogin",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='LastLogin' />
+					<DataTableColumnHeader column={column} title='Đăng nhập lần cuối' />
 				),
 				cell: ({ cell }) => formatDate(cell.getValue()),
 			},
 			{
 				accessorKey: "createdAt",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Created At' />
+					<DataTableColumnHeader column={column} title='Thời gian tạo' />
 				),
 				cell: ({ cell }) => formatDate(cell.getValue()),
 			},
 			{
 				accessorKey: "updatedAt",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Updated At' />
+					<DataTableColumnHeader column={column} title='Thời gian cập nhật' />
 				),
 				cell: ({ cell }) => formatDate(cell.getValue()),
 			},
@@ -119,14 +119,14 @@ export function getColumns({ setRowAction, selected }) {
 								</Button>
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align='end' className='w-40'>
-								<DropdownMenuItem
+								{/* <DropdownMenuItem
 									onSelect={() =>
 										setRowAction({ row, type: "update" })
 									}
 								>
 									{t("edit")}
 								</DropdownMenuItem>
-								<DropdownMenuSeparator />
+								<DropdownMenuSeparator /> */}
 								<DropdownMenuItem
 									onSelect={() =>
 										setRowAction({ row, type: "delete" })
@@ -175,7 +175,7 @@ export function getColumns({ setRowAction, selected }) {
 			{
 				accessorKey: "name",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Name' />
+					<DataTableColumnHeader column={column} title='Tên' />
 				),
 				cell: ({ row }) => {
 					return (
@@ -211,7 +211,7 @@ export function getColumns({ setRowAction, selected }) {
 				header: ({ column }) => (
 					<DataTableColumnHeader
 						column={column}
-						title='DateOfBirth'
+						title='Ngày sinh'
 					/>
 				),
 				cell: ({ cell }) => formatDate(cell.getValue()),
@@ -219,14 +219,14 @@ export function getColumns({ setRowAction, selected }) {
 			{
 				accessorKey: "createdAt",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Created At' />
+					<DataTableColumnHeader column={column} title='Thời gian tạo' />
 				),
 				cell: ({ cell }) => formatDate(cell.getValue()),
 			},
 			{
 				accessorKey: "updatedAt",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Updated At' />
+					<DataTableColumnHeader column={column} title='Thời gian cập nhật' />
 				),
 				cell: ({ cell }) => formatDate(cell.getValue()),
 			},
@@ -251,14 +251,14 @@ export function getColumns({ setRowAction, selected }) {
 								</Button>
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align='end' className='w-40'>
-								<DropdownMenuItem
+								{/* <DropdownMenuItem
 									onSelect={() =>
 										setRowAction({ row, type: "update" })
 									}
 								>
 									{t("edit")}
 								</DropdownMenuItem>
-								<DropdownMenuSeparator />
+								<DropdownMenuSeparator /> */}
 								<DropdownMenuItem
 									onSelect={() =>
 										setRowAction({ row, type: "delete" })
@@ -307,7 +307,7 @@ export function getColumns({ setRowAction, selected }) {
 			{
 				accessorKey: "name",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Name' />
+					<DataTableColumnHeader column={column} title='Tên' />
 				),
 				cell: ({ row }) => {
 					return (
@@ -324,7 +324,7 @@ export function getColumns({ setRowAction, selected }) {
 			{
 				accessorKey: "type",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Type' />
+					<DataTableColumnHeader column={column} title='Kiểu' />
 				),
 				cell: ({ row }) => {
 					return (
@@ -343,7 +343,7 @@ export function getColumns({ setRowAction, selected }) {
 				header: ({ column }) => (
 					<DataTableColumnHeader
 						column={column}
-						title='Amphitheater'
+						title='Giảng đường'
 					/>
 				),
 				cell: ({ row }) => {
@@ -361,7 +361,7 @@ export function getColumns({ setRowAction, selected }) {
 			{
 				accessorKey: "location",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Location' />
+					<DataTableColumnHeader column={column} title='Địa điểm' />
 				),
 				cell: ({ row }) => {
 					return (
@@ -378,7 +378,7 @@ export function getColumns({ setRowAction, selected }) {
 			{
 				accessorKey: "capacity",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Capacity' />
+					<DataTableColumnHeader column={column} title='Sức chứa' />
 				),
 				cell: ({ row }) => {
 					return (
@@ -393,14 +393,14 @@ export function getColumns({ setRowAction, selected }) {
 			{
 				accessorKey: "createdAt",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Created At' />
+					<DataTableColumnHeader column={column} title='Thời gian tạo' />
 				),
 				cell: ({ cell }) => formatDate(cell.getValue()),
 			},
 			{
 				accessorKey: "updatedAt",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Updated At' />
+					<DataTableColumnHeader column={column} title='Thời gian cập nhật' />
 				),
 				cell: ({ cell }) => formatDate(cell.getValue()),
 			},
@@ -425,14 +425,14 @@ export function getColumns({ setRowAction, selected }) {
 								</Button>
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align='end' className='w-40'>
-								<DropdownMenuItem
+								{/* <DropdownMenuItem
 									onSelect={() =>
 										setRowAction({ row, type: "update" })
 									}
 								>
 									{t("edit")}
 								</DropdownMenuItem>
-								<DropdownMenuSeparator />
+								<DropdownMenuSeparator /> */}
 								<DropdownMenuItem
 									onSelect={() =>
 										setRowAction({ row, type: "delete" })
@@ -481,7 +481,7 @@ export function getColumns({ setRowAction, selected }) {
 			{
 				accessorKey: "name",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Name' />
+					<DataTableColumnHeader column={column} title='Tiêu đề' />
 				),
 				cell: ({ row }) => {
 					return (
@@ -515,7 +515,7 @@ export function getColumns({ setRowAction, selected }) {
 			{
 				accessorKey: "owner",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Owner' />
+					<DataTableColumnHeader column={column} title='Người tạo' />
 				),
 				cell: ({ row }) => {
 					return (
@@ -534,7 +534,7 @@ export function getColumns({ setRowAction, selected }) {
 				header: ({ column }) => (
 					<DataTableColumnHeader
 						column={column}
-						title='IsGeneralSchoolNews'
+						title='Toàn trường'
 					/>
 				),
 				cell: ({ row }) => (
@@ -546,7 +546,7 @@ export function getColumns({ setRowAction, selected }) {
 			{
 				accessorKey: "type",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Type' />
+					<DataTableColumnHeader column={column} title='Kiểu' />
 				),
 				cell: ({ row }) => {
 					return (
@@ -563,7 +563,7 @@ export function getColumns({ setRowAction, selected }) {
 			{
 				accessorKey: "location",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Location' />
+					<DataTableColumnHeader column={column} title='Địa điểm' />
 				),
 				cell: ({ row }) => {
 					return (
@@ -580,21 +580,21 @@ export function getColumns({ setRowAction, selected }) {
 			{
 				accessorKey: "time",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Time' />
+					<DataTableColumnHeader column={column} title='Thời gian' />
 				),
 				cell: ({ cell }) => formatDate(cell.getValue()),
 			},
 			{
 				accessorKey: "createdAt",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Created At' />
+					<DataTableColumnHeader column={column} title='Thời gian tạo' />
 				),
 				cell: ({ cell }) => formatDate(cell.getValue()),
 			},
 			{
 				accessorKey: "updatedAt",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Updated At' />
+					<DataTableColumnHeader column={column} title='Thời gian cập nhật' />
 				),
 				cell: ({ cell }) => formatDate(cell.getValue()),
 			},
@@ -675,7 +675,7 @@ export function getColumns({ setRowAction, selected }) {
 			{
 				accessorKey: "name",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Name' />
+					<DataTableColumnHeader column={column} title='Tên' />
 				),
 				cell: ({ row }) => {
 					return (
@@ -694,7 +694,7 @@ export function getColumns({ setRowAction, selected }) {
 				header: ({ column }) => (
 					<DataTableColumnHeader
 						column={column}
-						title='Description'
+						title='Mô tả'
 					/>
 				),
 				cell: ({ row }) => {
@@ -712,14 +712,14 @@ export function getColumns({ setRowAction, selected }) {
 			{
 				accessorKey: "createdAt",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Created At' />
+					<DataTableColumnHeader column={column} title='Thời gian tạo' />
 				),
 				cell: ({ cell }) => formatDate(cell.getValue()),
 			},
 			{
 				accessorKey: "updatedAt",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Updated At' />
+					<DataTableColumnHeader column={column} title='Thời gian cập nhật' />
 				),
 				cell: ({ cell }) => formatDate(cell.getValue()),
 			},
@@ -744,14 +744,14 @@ export function getColumns({ setRowAction, selected }) {
 								</Button>
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align='end' className='w-40'>
-								<DropdownMenuItem
+								{/* <DropdownMenuItem
 									onSelect={() =>
 										setRowAction({ row, type: "update" })
 									}
 								>
 									{t("edit")}
-								</DropdownMenuItem>
-								<DropdownMenuSeparator />
+								</DropdownMenuItem> */}
+								{/* <DropdownMenuSeparator /> */}
 								<DropdownMenuItem
 									onSelect={() =>
 										setRowAction({ row, type: "delete" })
@@ -800,7 +800,7 @@ export function getColumns({ setRowAction, selected }) {
 			{
 				accessorKey: "name",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Name' />
+					<DataTableColumnHeader column={column} title='Tên' />
 				),
 				cell: ({ row }) => {
 					return (
@@ -817,7 +817,7 @@ export function getColumns({ setRowAction, selected }) {
 			{
 				accessorKey: "nameSubject",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Subject' />
+					<DataTableColumnHeader column={column} title='Môn học' />
 				),
 				cell: ({ row }) => {
 					return (
@@ -851,7 +851,7 @@ export function getColumns({ setRowAction, selected }) {
 			{
 				accessorKey: "nameSemester",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Semester' />
+					<DataTableColumnHeader column={column} title='Học kỳ' />
 				),
 				cell: ({ row }) => {
 					return (
@@ -870,7 +870,7 @@ export function getColumns({ setRowAction, selected }) {
 				header: ({ column }) => (
 					<DataTableColumnHeader
 						column={column}
-						title='NumOfSessionAWeek'
+						title='Số buổi 1 tuần'
 					/>
 				),
 				cell: ({ row }) => {
@@ -888,7 +888,7 @@ export function getColumns({ setRowAction, selected }) {
 			{
 				accessorKey: "capacity",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Capacity' />
+					<DataTableColumnHeader column={column} title='Sức chứa' />
 				),
 				cell: ({ row }) => {
 					return (
@@ -905,14 +905,14 @@ export function getColumns({ setRowAction, selected }) {
 			{
 				accessorKey: "createdAt",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Created At' />
+					<DataTableColumnHeader column={column} title='Thời gian tạo' />
 				),
 				cell: ({ cell }) => formatDate(cell.getValue()),
 			},
 			{
 				accessorKey: "updatedAt",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Updated At' />
+					<DataTableColumnHeader column={column} title='Thời gian cập nhật' />
 				),
 				cell: ({ cell }) => formatDate(cell.getValue()),
 			},
@@ -1010,7 +1010,7 @@ export function getColumns({ setRowAction, selected }) {
 				header: ({ column }) => (
 					<DataTableColumnHeader
 						column={column}
-						title='ClassSession'
+						title='Học phần'
 					/>
 				),
 				cell: ({ row }) => {
@@ -1028,7 +1028,7 @@ export function getColumns({ setRowAction, selected }) {
 			{
 				accessorKey: "nameClassroom",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Classroom' />
+					<DataTableColumnHeader column={column} title='Phòng học' />
 				),
 				cell: ({ row }) => {
 					return (
@@ -1045,7 +1045,7 @@ export function getColumns({ setRowAction, selected }) {
 			{
 				accessorKey: "nameTeacher",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Teacher' />
+					<DataTableColumnHeader column={column} title='Giáo viên' />
 				),
 				cell: ({ row }) => {
 					return (
@@ -1062,14 +1062,14 @@ export function getColumns({ setRowAction, selected }) {
 			{
 				accessorKey: "startTime",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Start Time' />
+					<DataTableColumnHeader column={column} title='Bắt đầu' />
 				),
 				cell: ({ cell }) => formatDate(cell.getValue()),
 			},
 			{
 				accessorKey: "numOfHour",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='NumOfHour' />
+					<DataTableColumnHeader column={column} title='Số giờ' />
 				),
 				cell: ({ row }) => {
 					return (
@@ -1086,7 +1086,7 @@ export function getColumns({ setRowAction, selected }) {
 			{
 				accessorKey: "dayOfWeek",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='DayOfWeek' />
+					<DataTableColumnHeader column={column} title='Thứ' />
 				),
 				cell: ({ row }) => {
 					return (
@@ -1103,7 +1103,7 @@ export function getColumns({ setRowAction, selected }) {
 			{
 				accessorKey: "sessionType",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Type' />
+					<DataTableColumnHeader column={column} title='Kiểu' />
 				),
 				cell: ({ row }) => {
 					return (
@@ -1120,7 +1120,7 @@ export function getColumns({ setRowAction, selected }) {
 			{
 				accessorKey: "capacity",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Capacity' />
+					<DataTableColumnHeader column={column} title='Sức chứa' />
 				),
 				cell: ({ row }) => {
 					return (
@@ -1137,14 +1137,14 @@ export function getColumns({ setRowAction, selected }) {
 			{
 				accessorKey: "createdAt",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Created At' />
+					<DataTableColumnHeader column={column} title='Thời gian tạo' />
 				),
 				cell: ({ cell }) => formatDate(cell.getValue()),
 			},
 			{
 				accessorKey: "updatedAt",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Updated At' />
+					<DataTableColumnHeader column={column} title='Cập nhật' />
 				),
 				cell: ({ cell }) => formatDate(cell.getValue()),
 			},
@@ -1223,7 +1223,7 @@ export function getColumns({ setRowAction, selected }) {
 			{
 				accessorKey: "nameUser",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Name User' />
+					<DataTableColumnHeader column={column} title='Sinh viên' />
 				),
 				cell: ({ row }) => {
 					return (
@@ -1240,7 +1240,7 @@ export function getColumns({ setRowAction, selected }) {
 			{
 				accessorKey: "name",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Name' />
+					<DataTableColumnHeader column={column} title='Tên điểm' />
 				),
 				cell: ({ row }) => {
 					return (
@@ -1259,7 +1259,7 @@ export function getColumns({ setRowAction, selected }) {
 				header: ({ column }) => (
 					<DataTableColumnHeader
 						column={column}
-						title='Grade Weighting'
+						title='Trọng số'
 					/>
 				),
 				cell: ({ row }) => {
@@ -1277,7 +1277,7 @@ export function getColumns({ setRowAction, selected }) {
 			{
 				accessorKey: "value",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Value' />
+					<DataTableColumnHeader column={column} title='Giá trị' />
 				),
 				cell: ({ row }) => {
 					return (
@@ -1296,7 +1296,7 @@ export function getColumns({ setRowAction, selected }) {
 				header: ({ column }) => (
 					<DataTableColumnHeader
 						column={column}
-						title='Name ClassSession'
+						title='Học phần'
 					/>
 				),
 				cell: ({ row }) => {
@@ -1314,14 +1314,14 @@ export function getColumns({ setRowAction, selected }) {
 			{
 				accessorKey: "createdAt",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Created At' />
+					<DataTableColumnHeader column={column} title='Thời gian tạo' />
 				),
 				cell: ({ cell }) => formatDate(cell.getValue()),
 			},
 			{
 				accessorKey: "updatedAt",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Updated At' />
+					<DataTableColumnHeader column={column} title='Thời gian cập nhật' />
 				),
 				cell: ({ cell }) => formatDate(cell.getValue()),
 			},
@@ -1346,14 +1346,14 @@ export function getColumns({ setRowAction, selected }) {
 								</Button>
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align='end' className='w-40'>
-								<DropdownMenuItem
+								{/* <DropdownMenuItem
 									onSelect={() =>
 										setRowAction({ row, type: "update" })
 									}
 								>
 									{t("edit")}
 								</DropdownMenuItem>
-								<DropdownMenuSeparator />
+								<DropdownMenuSeparator /> */}
 								<DropdownMenuItem
 									onSelect={() =>
 										setRowAction({ row, type: "delete" })
@@ -1402,7 +1402,7 @@ export function getColumns({ setRowAction, selected }) {
 			{
 				accessorKey: "nameUser",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Name User' />
+					<DataTableColumnHeader column={column} title='Sinh viên' />
 				),
 				cell: ({ row }) => {
 					return (
@@ -1421,7 +1421,7 @@ export function getColumns({ setRowAction, selected }) {
 				header: ({ column }) => (
 					<DataTableColumnHeader
 						column={column}
-						title='ClassSession'
+						title='Học phần'
 					/>
 				),
 				cell: ({ row }) => {
@@ -1441,7 +1441,7 @@ export function getColumns({ setRowAction, selected }) {
 				header: ({ column }) => (
 					<DataTableColumnHeader
 						column={column}
-						title='Grade Weighting'
+						title='Kiểu'
 					/>
 				),
 				cell: ({ row }) => {
@@ -1459,7 +1459,7 @@ export function getColumns({ setRowAction, selected }) {
 			{
 				accessorKey: "dayOfWeek",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='DayOfWeek' />
+					<DataTableColumnHeader column={column} title='Thứ' />
 				),
 				cell: ({ row }) => {
 					return (
@@ -1476,21 +1476,21 @@ export function getColumns({ setRowAction, selected }) {
 			{
 				accessorKey: "startTime",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Start Time' />
+					<DataTableColumnHeader column={column} title='Bắt đầu' />
 				),
 				cell: ({ cell }) => formatDate(cell.getValue()),
 			},
 			{
 				accessorKey: "createdAt",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Created At' />
+					<DataTableColumnHeader column={column} title='Thời gian tạo' />
 				),
 				cell: ({ cell }) => formatDate(cell.getValue()),
 			},
 			{
 				accessorKey: "updatedAt",
 				header: ({ column }) => (
-					<DataTableColumnHeader column={column} title='Updated At' />
+					<DataTableColumnHeader column={column} title='Thời gian cập nhật' />
 				),
 				cell: ({ cell }) => formatDate(cell.getValue()),
 			},

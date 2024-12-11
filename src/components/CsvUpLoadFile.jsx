@@ -20,7 +20,7 @@ const createCsv = [
 	"user_session_details/bulk",
 ];
 
-export default function CsvUpLoadFile() {
+export default function CsvUpLoadFile({setIsOpen,onOpenChange}) {
 	const { t } = useTranslation();
 	const selected = useSelector((state) => state.adminContent.selectedContent);
 
@@ -48,6 +48,8 @@ export default function CsvUpLoadFile() {
 						},
 					}
 				);
+				setIsOpen(false);
+				onOpenChange?.(false);
 				toast.success(t("success"));
 			} catch (error) {
 				toast.error(t("fail"));
