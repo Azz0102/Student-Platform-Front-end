@@ -40,7 +40,7 @@ export default function CsvUpLoadFile({setIsOpen,onOpenChange}) {
 			console.log("ParsedData:", dataObject);
 			try {
 				const response = await axios.post(
-					`https://localhost:3001/api/${createCsv[selected]}`,
+					`https://${process.env.NEXT_PUBLIC_BASE_URL}/api/${createCsv[selected]}`,
 					dataObject,
 					{
 						headers: {
