@@ -310,7 +310,7 @@ const Schedule = () => {
 						className='w-[240px] gap-2'
 						onClick={async () => {
 							const response = await axios.get(
-								`https://localhost:3001/api/session_details/down/${theme.id}`,
+								`https://${process.env.NEXT_PUBLIC_BASE_URL}/api/session_details/down/${theme.id}`,
 								{
 									headers: {
 										refreshToken:
